@@ -10,15 +10,12 @@ import radial
 
 class nearby_root_finder(object):
 
-    # TODO: This is too many positional args, use kwargs
-    def __init__(self, a=0., s=-2, m=2, A_closest_to=4.+0.j, l_max=20,
-                 omega_guess=1.-1.j, tol=1e-10, n_inv=0, Nr=300,
-                 r_N=0.j):
+    def __init__(self, *args, **kwargs):
         """Object to find and store results from simultaneous roots of
         radial and angular QNM equations, following the
         Leaver and Cook-Zalutskiy approach.
 
-        Parameters
+        Keyword arguments
         ==========
         a: float [default: 0.]
           Dimensionless spin of black hole, 0 <= a < 1.
@@ -31,8 +28,8 @@ class nearby_root_finder(object):
 
         A_closest_to: complex [default: 4.+0.j]
           Complex value close to desired separation constant. This is
-          intended for tracking the l-number of a branch starting from
-          the analytically-known value at a=0
+          intended for tracking the l-number of a sequence starting
+          from the analytically-known value at a=0
 
         l_max: int [default: 20]
           Maximum value of l to include in the spherical-spheroidal
@@ -41,7 +38,7 @@ class nearby_root_finder(object):
           that angular spectral method can converge. The number of
           l's needed for convergence depends on a.
 
-        omega_guess: complex [default: 1.-1.j]
+        omega_guess: complex [default: .5-.5j]
           Initial guess of omega for root-finding
 
         tol: float [default: 1e-10]
@@ -61,24 +58,49 @@ class nearby_root_finder(object):
 
         """
 
-        # TODO: Check that values make sense
-        self.a           = a
-        self.s           = s
-        self.m           = m
-        self.A0          = A_closest_to
-        self.l_max       = l_max
-        self.omega_guess = omega_guess
-        self.tol         = tol
-        self.n_inv       = n_inv
-        self.Nr          = Nr
-        self.r_N         = r_N
+        # Set defaults before using values in kwargs
+        self.a           = 0.
+        self.s           = -2
+        self.m           = 2
+        self.A0          = 4.+0.j
+        self.l_max       = 20
+        self.omega_guess = .5-.5j
+        self.tol         = 1e-10
+        self.n_inv       = 0
+        self.Nr          = 300
+        self.r_N         = 0.j
 
-        # Where the results will go
+        self.set_params(**kwargs)
+
+    def set_params(self, *args, **kwargs):
+        """Set the parameters for root finding. Parameters are
+        described in the class documentation. Finally calls
+        clear_results().
+        """
+
+        # TODO: Check that values make sense
+        self.a           = kwargs.get('a',            self.a)
+        self.s           = kwargs.get('s',            self.s)
+        self.m           = kwargs.get('m',            self.m)
+        self.A0          = kwargs.get('A_closest_to', self.A0)
+        self.l_max       = kwargs.get('l_max',        self.l_max)
+        self.omega_guess = kwargs.get('omega_guess',  self.omega_guess)
+        self.tol         = kwargs.get('tol',          self.tol)
+        self.n_inv       = kwargs.get('n_inv',        self.n_inv)
+        self.Nr          = kwargs.get('Nr',           self.Nr)
+        self.r_N         = kwargs.get('r_N',          self.r_N)
+
+        self.clear_results()
+
+    def clear_results(self):
+        """ TODO Documentation """
+
         self.opt_res = None
 
         self.omega = None
         self.A     = None
-        self.C     = []
+        self.C     = None
+
 
     def __call__(self, x, tol):
         """Internal function for usage with optimize.root, for an
@@ -102,12 +124,6 @@ class nearby_root_finder(object):
 
         return [np.real(inv_err), np.imag(inv_err)]
 
-    def clear_results(self):
-        """ TODO Documentation """
-        self.omega = None
-        self.A     = None
-        self.C     = None
-    
     def do_solve(self):
         """ TODO Documentation """
 
@@ -126,3 +142,112 @@ class nearby_root_finder(object):
                                                          self.m, self.l_max)
 
         return self.omega
+
+class QNM_seq_root_finder(object):
+
+    def __init__(self, *args, **kwargs):
+        """Object to follow a QNM up a sequence in a, starting from
+        a=0. Values for omega and the separation constant from one
+        value of a are used to seed the root finding for the next
+        value of a, to maintain continuity in a when separation
+        constant order can change. Uses nearby_root_finder to actually
+        perform the root-finding.
+
+        Keyword arguments
+        ==========
+        a_max: float [default: .9]
+          Maximum dimensionless spin of black hole for the sequence,
+          0 <= a_max < 1.
+
+        delta_a: float [default: 0.01]
+          Step size in a for following the sequence from a=0 to a_max
+
+        s: int [default: 2]
+          Spin of field of interest
+
+        m: int [default: 2]
+          Azimuthal number of mode of interest
+
+        l: int [default: 2]
+          The l-number of a sequence starting from the
+          analytically-known value at a=0
+
+        l_max: int [default: 20]
+          Maximum value of l to include in the spherical-spheroidal
+          matrix for finding separation constant and mixing
+          coefficients. Must be sufficiently larger than l of interest
+          that angular spectral method can converge. The number of
+          l's needed for convergence depends on a.
+
+        omega_guess: complex [default: .5-.5j]
+          Initial guess of omega for root-finding
+
+        tol: float [default: 1e-10]
+          Tolerance for root-finding
+
+        n_inv: int [default: 0]
+          Inversion number of radial infinite continued fraction,
+          which selects overtone number of interest
+
+        Nr: int [default: 300]
+          Truncation number of radial infinite continued
+          fraction. Must be sufficiently large for convergence.
+
+        r_N: complex [default: 0.j]
+          Seed value taken for truncation of infinite continued
+          fraction.
+
+        """
+
+        # Read args
+        self.a_max       = kwargs.get('a_max',       0.9)
+        self.delta_a     = kwargs.get('delta_a',     0.01)
+        self.s           = kwargs.get('s',           -2)
+        self.m           = kwargs.get('m',           2)
+        self.l           = kwargs.get('l',           2)
+        self.l_max       = kwargs.get('l_max',       20)
+        self.omega_guess = kwargs.get('omega_guess', .5-.5j)
+        self.tol         = kwargs.get('tol',         1e-10)
+        self.n_inv       = kwargs.get('n_inv',       0)
+        self.Nr          = kwargs.get('Nr',          300)
+        self.r_N         = kwargs.get('r_N',         0.j)
+
+        # Create array of a's, omega's, and A's
+        self.a     = np.arange(0., self.a_max, self.delta_a)
+        self.omega = [None] * len(self.a)
+        self.A     = [None] * len(self.a)
+        self.C     = [None] * len(self.a)
+
+        # We need and instance of root finder
+        self.solver = nearby_root_finder(s=self.s, m=self.m,
+                                         l_max=self.l_max,
+                                         tol=self.tol,
+                                         n_inv=self.n_inv, Nr=self.Nr,
+                                         r_N=self.r_N)
+
+    def do_find_sequence(self):
+
+        # Initializing the sequence, start with guesses
+        A0 = angular.SWSphericalH_A(self.s, self.l, self.m)
+        omega_guess = self.omega_guess
+
+        for i, _a in enumerate(self.a):
+
+
+            self.solver.set_params(a=_a, A_closest_to=A0,
+                                   omega_guess=omega_guess)
+
+            result = self.solver.do_solve()
+
+            if (result is None):
+                raise optimize.nonlin.NoConvergence('Failed to find '
+                                                    'QNM in sequence '
+                                                    'at a={}'.format(_a))
+
+            self.omega[i] = result
+            self.A[i]     = self.solver.A
+            self.C[i]     = self.solver.C
+
+            # Every other time through the loop, use previous result
+            omega_guess = self.omega[i]
+            A0          = self.A[i]
