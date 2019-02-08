@@ -143,6 +143,12 @@ class nearby_root_finder(object):
 
         return self.omega
 
+def eikonal_omega_guess(n, l):
+    """ TODO Document this """
+    gamma0 = 1./(3.*np.sqrt(3.))
+
+    return gamma0*( (l + 0.5) - (n + 0.5)*1.j )
+
 class QNM_seq_root_finder(object):
 
     def __init__(self, *args, **kwargs):
@@ -179,15 +185,15 @@ class QNM_seq_root_finder(object):
           that angular spectral method can converge. The number of
           l's needed for convergence depends on a.
 
-        omega_guess: complex [default: .5-.5j]
+        omega_guess: complex [default: from eikonal_omega_guess]
           Initial guess of omega for root-finding
 
         tol: float [default: 1e-10]
           Tolerance for root-finding
 
-        n_inv: int [default: 0]
-          Inversion number of radial infinite continued fraction,
-          which selects overtone number of interest
+        n: int [default: 0]
+          Overtone number of interest (sets the inversion number for
+          infinite continued fraction in Leaver's method)
 
         Nr: int [default: 300]
           Truncation number of radial infinite continued
@@ -206,9 +212,10 @@ class QNM_seq_root_finder(object):
         self.m           = kwargs.get('m',           2)
         self.l           = kwargs.get('l',           2)
         self.l_max       = kwargs.get('l_max',       20)
-        self.omega_guess = kwargs.get('omega_guess', .5-.5j)
         self.tol         = kwargs.get('tol',         1e-10)
-        self.n_inv       = kwargs.get('n_inv',       0)
+        self.n           = kwargs.get('n',           0)
+        self.omega_guess = kwargs.get('omega_guess',
+                                      eikonal_omega_guess(self.n, self.l))
         self.Nr          = kwargs.get('Nr',          300)
         self.r_N         = kwargs.get('r_N',         0.j)
 
@@ -222,7 +229,7 @@ class QNM_seq_root_finder(object):
         self.solver = nearby_root_finder(s=self.s, m=self.m,
                                          l_max=self.l_max,
                                          tol=self.tol,
-                                         n_inv=self.n_inv, Nr=self.Nr,
+                                         n_inv=self.n, Nr=self.Nr,
                                          r_N=self.r_N)
 
     def do_find_sequence(self):
@@ -251,3 +258,8 @@ class QNM_seq_root_finder(object):
             # Every other time through the loop, use previous result
             omega_guess = self.omega[i]
             A0          = self.A[i]
+
+        print("n={}, l={}, started from guess omega={}, "
+              "found omega={}".format(self.n, self.l,
+                                      self.omega_guess, self.omega[0]))
+
