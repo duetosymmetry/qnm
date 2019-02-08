@@ -89,3 +89,8 @@ def sep_const_closest(A0, s, c, m, l_max):
     As = sep_consts(s, c, m, l_max)
     i_closest = np.argmin(np.abs(As-A0))
     return As[i_closest]
+
+def C_and_sep_const_closest(A0, s, c, m, l_max):
+    As, Cs = np.linalg.eig(M_matrix(s, c, m, l_max))
+    i_closest = np.argmin(np.abs(As-A0))
+    return As[i_closest], Cs[:,i_closest]
