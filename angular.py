@@ -6,6 +6,11 @@ import numpy as np
 
 def calF(s, l, m):
     """ Eq. (52b) """
+
+    if ((0==s) and (0 == l+1)):
+        # This can only happen when solving for the mode labeled by s=0, l=0, m=0
+        return 0.
+
     return (np.sqrt( ((l+1)**2 - m*m) / (2*l+3) / (2*l+1) )
             * np.sqrt( ( (l+1)**2  - s*s)  / (l+1)**2 ))
 
