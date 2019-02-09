@@ -5,6 +5,7 @@ from scipy import optimize
 
 import angular
 import radial
+from Schw_QNM_expans import Dolan_Ottewill_expansion
 
 # TODO some documentation here, better documentation throughout
 
@@ -78,7 +79,6 @@ class nearby_root_finder(object):
         clear_results().
         """
 
-        # TODO: Check that values make sense
         self.a           = kwargs.get('a',            self.a)
         self.s           = kwargs.get('s',            self.s)
         self.m           = kwargs.get('m',            self.m)
@@ -89,6 +89,8 @@ class nearby_root_finder(object):
         self.n_inv       = kwargs.get('n_inv',        self.n_inv)
         self.Nr          = kwargs.get('Nr',           self.Nr)
         self.r_N         = kwargs.get('r_N',          self.r_N)
+
+        # TODO: Check that values make sense
 
         self.clear_results()
 
@@ -143,12 +145,6 @@ class nearby_root_finder(object):
 
         return self.omega
 
-def eikonal_omega_guess(n, l):
-    """ TODO Document this """
-    gamma0 = 1./(3.*np.sqrt(3.))
-
-    return gamma0*( (l + 0.5) - (n + 0.5)*1.j )
-
 class QNM_seq_root_finder(object):
 
     def __init__(self, *args, **kwargs):
@@ -185,7 +181,7 @@ class QNM_seq_root_finder(object):
           that angular spectral method can converge. The number of
           l's needed for convergence depends on a.
 
-        omega_guess: complex [default: from eikonal_omega_guess]
+        omega_guess: complex [default: from Dolan-Ottewill]
           Initial guess of omega for root-finding
 
         tol: float [default: 1e-10]
@@ -215,9 +211,13 @@ class QNM_seq_root_finder(object):
         self.tol         = kwargs.get('tol',         1e-10)
         self.n           = kwargs.get('n',           0)
         self.omega_guess = kwargs.get('omega_guess',
-                                      eikonal_omega_guess(self.n, self.l))
+                                      Dolan_Ottewill_expansion(self.s,
+                                                               self.n,
+                                                               self.l))
         self.Nr          = kwargs.get('Nr',          300)
         self.r_N         = kwargs.get('r_N',         0.j)
+
+        # TODO check that values make sense
 
         # Create array of a's, omega's, and A's
         self.a     = np.arange(0., self.a_max, self.delta_a)
