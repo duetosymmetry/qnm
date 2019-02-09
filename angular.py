@@ -84,9 +84,11 @@ def give_M_matrix_elem_ufunc(s, c, m):
 
     return np.frompyfunc(elem, 2, 1)
 
+def l_min(s, m):
+    return np.max([np.abs(s), np.abs(m)])
+
 def M_matrix(s, c, m, l_max):
-    l_min = np.max([np.abs(s), np.abs(m)])
-    ells = np.arange(l_min, l_max+1)
+    ells = np.arange(l_min(s,m), l_max+1)
 
     uf = give_M_matrix_elem_ufunc(s, c, m)
 

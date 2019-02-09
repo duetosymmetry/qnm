@@ -245,6 +245,10 @@ class QNM_seq_root_finder(object):
         self.r_N         = kwargs.get('r_N',         0.j)
 
         # TODO check that values make sense!!!
+        assert self.l >= angular.l_min(self.s, self.m), ("l={} must be "
+                                                         ">= l_min={}".format(
+                                                             self.l,
+                                                             angular.l_min(self.s, self.m)))
 
         # Create array of a's, omega's, and A's
         self.a     = np.arange(0., self.a_max, self.delta_a)
