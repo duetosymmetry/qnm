@@ -1,5 +1,7 @@
 from __future__ import division, print_function, absolute_import
 
+import logging
+
 import numpy as np
 from scipy import optimize
 
@@ -238,13 +240,16 @@ class QNM_seq_root_finder(object):
                                                                self.n,
                                                                self.l))
         self.Nr          = kwargs.get('Nr',          300)
+        self.Nr_min      = self.Nr
+        self.Nr_max      = 3000    # TODO Get rid of magic number
         self.r_N         = kwargs.get('r_N',         0.j)
 
-        # TODO check that values make sense
+        # TODO check that values make sense!!!
 
         # Create array of a's, omega's, and A's
         self.a     = np.arange(0., self.a_max, self.delta_a)
         self.omega = [None] * len(self.a)
+        self.cf_err= [None] * len(self.a)
         self.A     = [None] * len(self.a)
         self.C     = [None] * len(self.a)
 
@@ -267,22 +272,56 @@ class QNM_seq_root_finder(object):
             self.solver.set_params(a=_a, A_closest_to=A0,
                                    omega_guess=omega_guess)
 
-            result = self.solver.do_solve()
+            # Flag: is the continued fraction expansion converging?
+            cf_conv = False
 
-            if (result is None):
-                raise optimize.nonlin.NoConvergence('Failed to find '
-                                                    'QNM in sequence '
-                                                    'at a={}'.format(_a))
+            while not cf_conv:
 
-            self.omega[i] = result
-            self.A[i]     = self.solver.A
-            self.C[i]     = self.solver.C
+                result = self.solver.do_solve()
 
-            # Every other time through the loop, use previous result
+                if (result is None):
+                    raise optimize.nonlin.NoConvergence('Failed to find '
+                                                        'QNM in sequence '
+                                                        'at a={}'.format(_a))
+
+                # Check if the continued fraction has less error than
+                # the desired tolerance
+                cf_err = self.solver.estimate_cf_err()
+
+                if ((cf_err < self.tol) or (self.Nr >= self.Nr_max)):
+                    # Converged or can't increase
+                    cf_conv = True # Move on to next value of a
+                    self.omega[i] = result
+                    self.A[i]     = self.solver.A
+                    self.C[i]     = self.solver.C
+                    self.cf_err[i]= cf_err
+                    # Can we relax?
+                    if ((cf_err / self.tol < 1e-2) and (self.Nr > self.Nr_min)):
+                        self.Nr = self.Nr - 50
+                        logging.info("Converged for a={}, required {}"
+                                     " func evals".format(_a,
+                                                          self.solver.opt_res.nfev))
+                        logging.info("Going to relax Nr to {}".format(self.Nr))
+                        self.solver.set_params(Nr=self.Nr)
+                else:
+                    # Need to add more terms to cont. frac. approx
+                    # TODO Don't make this a magic number
+                    self.Nr = self.Nr + 100
+                    if (self.Nr >= self.Nr_max):
+                        logging.warning("Nr={} hit Nr_max ".format(self.Nr))
+                    # Should we warn?
+                    # Should we have a max?
+                    logging.info("Increasing Nr to {}".format(self.Nr))
+                    self.solver.set_params(Nr=self.Nr,
+                                           omega_guess=result,
+                                           A_closest_to=self.solver.A)
+                    # Now try again, because cf_conv is still False
+
+
+            # Every time through the loop, use previous result
             omega_guess = self.omega[i]
             A0          = self.A[i]
 
-        print("n={}, l={}, started from guess omega={}, "
-              "found omega={}".format(self.n, self.l,
-                                      self.omega_guess, self.omega[0]))
-
+        logging.info("n={}, l={}, started from guess omega={}, "
+                     "found omega={}".format(self.n, self.l,
+                                             self.omega_guess, self.omega[0]))
