@@ -7,7 +7,7 @@ from scipy import optimize
 
 import angular
 import radial
-from Schw_QNM_expans import Dolan_Ottewill_expansion
+from Schw_QNM_expans import Schw_QNM_estimate
 
 # TODO some documentation here, better documentation throughout
 
@@ -206,7 +206,7 @@ class QNM_seq_root_finder(object):
           that angular spectral method can converge. The number of
           l's needed for convergence depends on a.
 
-        omega_guess: complex [default: from Dolan-Ottewill]
+        omega_guess: complex [default: from Schw_QNM_estimate]
           Initial guess of omega for root-finding
 
         tol: float [default: 1e-10]
@@ -236,9 +236,9 @@ class QNM_seq_root_finder(object):
         self.tol         = kwargs.get('tol',         1e-10)
         self.n           = kwargs.get('n',           0)
         self.omega_guess = kwargs.get('omega_guess',
-                                      Dolan_Ottewill_expansion(self.s,
-                                                               self.n,
-                                                               self.l))
+                                      Schw_QNM_estimate(self.s,
+                                                        self.n,
+                                                        self.l))
         self.Nr          = kwargs.get('Nr',          300)
         self.Nr_min      = self.Nr
         self.Nr_max      = 3000    # TODO Get rid of magic number

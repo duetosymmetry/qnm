@@ -25,3 +25,17 @@ def Dolan_Ottewill_expansion(s, n, l):
     omega = omega / np.sqrt(27)
 
     return omega
+
+def large_overtone_exp(s, n, l):
+    """ TODO documentation """
+
+    k = np.log(3.)/(8. * np.pi)
+    kappa = 0.25 # Surface gravity
+
+    return k - 1.j * kappa * (n + 0.5)
+
+def Schw_QNM_estimate(s, n, l):
+    if (( n > 3 ) and (n >= 2*l)):
+        return large_overtone_exp(s, n, l)
+    else:
+        return Dolan_Ottewill_expansion(s, n, l)

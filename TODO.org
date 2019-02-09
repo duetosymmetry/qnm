@@ -1,6 +1,5 @@
 * Dynamic control of step size in a
 * Dynamic control of # terms in spectral expansion
-* Large n (overtone) limit
 * Initial values for a large number of low modes
 * Validate by comparing against others' calculations
 * Ability to find QNMs at new points, starting guesses from known points
