@@ -284,6 +284,12 @@ class QNM_seq_root_finder(object):
                                                         'QNM in sequence '
                                                         'at a={}'.format(_a))
 
+                # Ensure we start on the "positive frequency"
+                # sequence.  This only works for i==0 (a=0.) because
+                # there the separation constant is real.
+                if ((i == 0) and (np.real(result) < 0)):
+                    result = -np.conjugate(result)
+
                 # Check if the continued fraction has less error than
                 # the desired tolerance
                 cf_err = self.solver.estimate_cf_err()
