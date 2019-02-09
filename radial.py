@@ -50,7 +50,7 @@ def D_coeffs(omega, a, s, m, A):
     return D
 
 def Leaver_Cf_trunc_inversion(omega, a, s, m, A,
-                              n_inv, N=300, r_N=0.):
+                              n_inv, N=300, r_N=1.):
     """ Approximate the n_inv inversion of the infinite continued
     fraction for solving the radial Teukolsky equation, using
     N terms total for the approximation. This uses "bottom up"

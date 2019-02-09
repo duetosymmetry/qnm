@@ -53,7 +53,7 @@ class nearby_root_finder(object):
           Truncation number of radial infinite continued
           fraction. Must be sufficiently large for convergence.
 
-        r_N: complex [default: 0.j]
+        r_N: complex [default: 1.]
           Seed value taken for truncation of infinite continued
           fraction.
 
@@ -69,7 +69,7 @@ class nearby_root_finder(object):
         self.tol         = 1e-10
         self.n_inv       = 0
         self.Nr          = 300
-        self.r_N         = 0.j
+        self.r_N         = 1.
 
         self.set_params(**kwargs)
 
