@@ -60,15 +60,20 @@ def M_matrix_elem(s, c, m, l, lprime):
     # Notice that the M matrix is pentadiagonal,
     # so no need to write the sub- and super-diagonals
     # separately
-    if (lprime == l-2) or (lprime == l+2):
+    if (lprime == l-2):
         return -c*c*calA(s,lprime,m)
-    if (lprime == l-1) or (lprime == l+1):
+    if (lprime == l-1):
         return (-c*c*calD(s,lprime,m)
                 + 2*c*s*calF(s,lprime,m))
     if (lprime == l  ):
         return (SWSphericalH_A(s,lprime,m)
                 - c*c*calB(s,lprime,m)
                 + 2*c*s*calH(s,lprime,m))
+    if (lprime == l+1):
+        return (-c*c*calE(s,lprime,m)
+                + 2*c*s*calG(s,lprime,m))
+    if (lprime == l+2):
+        return -c*c*calC(s,lprime,m)
 
     return 0.
 
