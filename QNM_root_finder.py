@@ -97,6 +97,7 @@ class nearby_root_finder(object):
     def clear_results(self):
         """ TODO Documentation """
 
+        self.solved  = False
         self.opt_res = None
 
         self.omega = None
@@ -137,6 +138,8 @@ class nearby_root_finder(object):
             self.clear_results()
             return None
 
+        self.solved = True
+
         self.omega = self.opt_res.x[0] + 1.j*self.opt_res.x[1]
         c = self.a * self.omega
         self.A, self.C = angular.C_and_sep_const_closest(self.A0,
@@ -144,6 +147,26 @@ class nearby_root_finder(object):
                                                          self.m, self.l_max)
 
         return self.omega
+
+    def estimate_cf_err(self):
+        """ TODO Documentation """
+
+        if not self.solved:
+            raise Exception("Can only approximate continued fraction "
+                            "error after successfully solving")
+
+        err1 = radial.Leaver_Cf_trunc_inversion(self.omega, self.a,
+                                                self.s, self.m, self.A,
+                                                self.n_inv,
+                                                self.Nr, self.r_N)
+        err2 = radial.Leaver_Cf_trunc_inversion(self.omega, self.a,
+                                                self.s, self.m, self.A,
+                                                self.n_inv,
+                                                self.Nr + 1,
+                                                self.r_N)
+        cf_err = np.abs(err1 - err2)
+
+        return cf_err
 
 class QNM_seq_root_finder(object):
 
