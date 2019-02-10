@@ -1,6 +1,6 @@
 * Dynamic control of step size in a
 * Dynamic control of # terms in spectral expansion
-* Initial values for a large number of low modes
+* STARTED Initial values for a large number of low modes
 * Validate by comparing against others' calculations
 * Ability to find QNMs at new points, starting guesses from known points
 * Saving/loading computations to disk

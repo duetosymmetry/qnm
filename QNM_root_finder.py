@@ -19,7 +19,7 @@ class nearby_root_finder(object):
         Leaver and Cook-Zalutskiy approach.
 
         Keyword arguments
-        ==========
+        =================
         a: float [default: 0.]
           Dimensionless spin of black hole, 0 <= a < 1.
 
@@ -102,6 +102,9 @@ class nearby_root_finder(object):
         self.Nr_max      = kwargs.get('Nr_max',       self.Nr_max)
         self.r_N         = kwargs.get('r_N',          self.r_N)
 
+        # Optional pole factors
+        self.poles       = np.array([])
+
         # TODO: Check that values make sense
 
         self.clear_results()
@@ -117,6 +120,8 @@ class nearby_root_finder(object):
         self.C     = None
 
         self.cf_err = None
+
+        self.poles = np.array([])
 
 
     def __call__(self, x, tol):
@@ -139,7 +144,11 @@ class nearby_root_finder(object):
                                                    self.n_inv,
                                                    self.Nr, self.r_N)
 
-        return [np.real(inv_err), np.imag(inv_err)]
+        # Insert optional poles
+        pole_factors   = np.prod(omega - self.poles)
+        supp_err = inv_err / pole_factors
+
+        return [np.real(supp_err), np.imag(supp_err)]
 
     def do_solve(self):
         """ TODO Documentation """
@@ -149,7 +158,9 @@ class nearby_root_finder(object):
                                      self.tol)
 
         if (not self.opt_res.success):
+            tmp_opt_res = self.opt_res
             self.clear_results()
+            self.opt_res = tmp_opt_res
             return None
 
         self.solved = True
@@ -212,6 +223,17 @@ class nearby_root_finder(object):
             tol_increased = True
 
         return not tol_increased
+
+    def set_poles(self, poles=[]):
+        """ Multiply error function by poles in the complex plane.
+
+        Arguments
+        =========
+        poles: array-like, as complex numbers [default: []]
+
+        """
+
+        self.poles = np.array(poles).astype(complex)
 
 class Schw_n_seq_finder(object):
 
@@ -278,9 +300,9 @@ class Schw_n_seq_finder(object):
         self.A = angular.SWSphericalH_A(self.s, self.l, 0)
 
         # Create array of n's and omega's
-        self.n      = np.arange(0, self.n_max+1)
-        self.omega  = [None] * len(self.n)
-        self.cf_err = [None] * len(self.n)
+        self.n      = []
+        self.omega  = np.array([], dtype=complex)
+        self.cf_err = np.array([])
 
         # We need and instance of root finder
         self.solver = nearby_root_finder(s=self.s, m=0,
@@ -288,7 +310,7 @@ class Schw_n_seq_finder(object):
                                          a=0.,
                                          A_closest_to=self.A,
                                          tol=self.tol,
-                                         n_inv=self.n, Nr=self.Nr,
+                                         n_inv=0, Nr=self.Nr,
                                          Nr_max=self.Nr_max,
                                          r_N=self.r_N)
 
@@ -297,22 +319,41 @@ class Schw_n_seq_finder(object):
         # TODO : Do this as while loop instead of a for loop.
         # Keep track of all the roots found so far and keep them
         # sorted by negative imaginary part.
-        # Extend the root finder to suppress known roots.
 
-        for n in self.n:
+        while (len(self.omega) < self.n_max):
 
-            if (n<2):
+            n = len(self.omega)
+
+            self.solver.clear_results()
+            self.solver.set_params(n_inv=n)
+
+            if (n < 2):
                 omega_guess = Dolan_Ottewill_expansion(self.s, n, self.l)
             else:
-                # Linearly extrapolate from the previous two
-                interp = interpolate.interp1d(self.n[n-2:n],
-                                              self.omega[n-2:n],
-                                              kind='linear',
-                                              bounds_error=False,
-                                              fill_value='extrapolate')
-                omega_guess = interp(n)
+                # Linearly extrapolate from the last two
+                om_m_1 = self.omega[-1]
+                om_m_2 = self.omega[-2]
 
-            self.solver.set_params(n_inv=n, omega_guess=omega_guess)
+                om_diff = om_m_1 - om_m_2
+
+                # Linearly interpolate
+                omega_guess = om_m_1 + om_diff
+
+                if (n > 5):
+                    # Check if this difference is greater than the typical spacing
+                    typ_sp = np.mean(np.abs(np.diff(self.omega[:-1])))
+
+                    if (np.abs(om_diff) > 2. * typ_sp):
+                        # It's likely we skipped an overtone.
+                        # Average and go back one
+                        omega_guess = (om_m_1 + om_m_2)/2.
+                        self.solver.set_params(n_inv=n-1)
+                        logging.info("Potentially skipped an overtone "
+                                     "in the series, trying to go back")
+
+            self.solver.set_params(omega_guess=omega_guess)
+            # Try to reject previously-found poles
+            self.solver.set_poles(self.omega)
 
             # Flag: is the continued fraction expansion converging?
             cf_conv = False
@@ -322,9 +363,20 @@ class Schw_n_seq_finder(object):
                 result = self.solver.do_solve()
 
                 if (result is None):
-                    raise optimize.nonlin.NoConvergence('Failed to find '
-                                                        'QNM in sequence '
-                                                        'at n={}'.format(n))
+                    # Potentially try the next inversion number
+                    cur_inv_n = self.solver.n_inv
+                    cur_inv_n = cur_inv_n + 1
+                    self.solver.set_params(n_inv=cur_inv_n)
+
+                    if (np.abs(cur_inv_n - n) > 2):
+                        # Got too far away, give up
+                        raise optimize.nonlin.NoConvergence('Failed to find '
+                                                            'QNM in sequence '
+                                                            'at n={}'.format(n))
+                    else:
+                        logging.info("Trying inversion number {}".format(cur_inv_n))
+                        # Try again
+                        continue
 
                 # Ensure we start on the "positive frequency"
                 # sequence.  This only works for Schwarzscdhild because
@@ -339,9 +391,22 @@ class Schw_n_seq_finder(object):
                 cf_conv = self.solver.auto_adjust_Nr()
 
                 if cf_conv:
-                    # Done with this value of a
-                    self.omega[n]  = result
-                    self.cf_err[n] = self.solver.cf_err
+                    # Done with this value of n
+
+                    logging.info("s={}, l={}, found what I think is "
+                                 "n={}, omega={}".format(self.s,
+                                                         self.l, n, result))
+
+                    self.n.append(n)
+
+                    self.omega  = np.append(self.omega,  result)
+                    self.cf_err = np.append(self.cf_err, self.solver.cf_err)
+
+                    # Make sure we sort properly!
+                    ind_sort = np.argsort(-np.imag(self.omega))
+                    self.omega  = self.omega[ind_sort]
+                    self.cf_err = self.cf_err[ind_sort]
+
                 else:
                     # For the next attempt, try starting where we
                     # ended up
