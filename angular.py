@@ -51,7 +51,23 @@ def calC(s, l, m):
     return calG(s,l,m) * calG(s,l-1,m)
 
 def SWSphericalH_A(s, l, m):
-    """ Eq. (50). Value at c=0. Has no dependence on m. """
+    """ Angular separation constant at a=0.
+
+    Eq. (50). Has no dependence on m. The formula is
+      A_0 = l(l+1) - s(s+1)
+
+    Arguments:
+    ==========
+    s: integer
+      Spin-weight of interest
+
+    l: integer
+      Angular quantum number of interest
+
+    m: integer
+      Magnetic quantum number, ignored
+    """
+
     return l*(l+1) - s*(s+1)
 
 def M_matrix_elem(s, c, m, l, lprime):
