@@ -55,6 +55,12 @@ class nearby_root_finder(object):
           Truncation number of radial infinite continued
           fraction. Must be sufficiently large for convergence.
 
+        Nr_min: int [default: 300]
+          Floor for Nr (for dynamic control of Nr)
+
+        Nr_max: int [default: 3000]
+          Ceiling for Nr (for dynamic control of Nr)
+
         r_N: complex [default: 1.]
           Seed value taken for truncation of infinite continued
           fraction.
@@ -71,6 +77,8 @@ class nearby_root_finder(object):
         self.tol         = 1e-10
         self.n_inv       = 0
         self.Nr          = 300
+        self.Nr_min      = 300
+        self.Nr_max      = 3000
         self.r_N         = 1.
 
         self.set_params(**kwargs)
@@ -90,6 +98,8 @@ class nearby_root_finder(object):
         self.tol         = kwargs.get('tol',          self.tol)
         self.n_inv       = kwargs.get('n_inv',        self.n_inv)
         self.Nr          = kwargs.get('Nr',           self.Nr)
+        self.Nr_min      = kwargs.get('Nr_min',       self.Nr_min)
+        self.Nr_max      = kwargs.get('Nr_max',       self.Nr_max)
         self.r_N         = kwargs.get('r_N',          self.r_N)
 
         # TODO: Check that values make sense
@@ -105,6 +115,8 @@ class nearby_root_finder(object):
         self.omega = None
         self.A     = None
         self.C     = None
+
+        self.cf_err = None
 
 
     def __call__(self, x, tol):
@@ -169,9 +181,37 @@ class nearby_root_finder(object):
                                                 self.n_inv,
                                                 self.Nr + 1,
                                                 self.r_N)
-        cf_err = np.abs(err1 - err2)
+        self.cf_err = np.abs(err1 - err2)
 
-        return cf_err
+        return self.cf_err
+
+    def auto_adjust_Nr(self):
+        """ Try to adjust Nr up or down, depending on whether the
+        error estimate in the continued fraction expansion is
+        above/below tolerance.
+
+        Returns True  if Nr was relaxed or stayed the same (e.g. hit Nr_max).
+        Returns False if Nr was increased.
+        """
+
+        self.estimate_cf_err()
+
+        tol_increased = False
+
+        # TODO magic numbers
+        if ((self.cf_err < 0.01*self.tol) and (self.Nr > self.Nr_min)):
+            # Can relax TODO magic number
+            self.Nr = np.max([self.Nr - 50, self.Nr_min])
+            logging.info("Relaxing Nr to {}".format(self.Nr))
+        elif ((self.cf_err > self.tol) and (self.Nr < self.Nr_max)):
+            # Need to add more terms TODO magic number
+            self.Nr = np.min([self.Nr + 100, self.Nr_max])
+            logging.info("Increasing Nr to {}".format(self.Nr))
+            if (self.Nr == self.Nr_max):
+                logging.warning("Nr={} has hit Nr_max".format(self.Nr))
+            tol_increased = True
+
+        return not tol_increased
 
 class QNM_seq_root_finder(object):
 
@@ -291,48 +331,33 @@ class QNM_seq_root_finder(object):
                                                         'QNM in sequence '
                                                         'at a={}'.format(_a))
 
+                # TODO This probably doesn't belong here
                 # Ensure we start on the "positive frequency"
                 # sequence.  This only works for i==0 (a=0.) because
                 # there the separation constant is real.
                 if ((i == 0) and (np.real(result) < 0)):
                     result = -np.conjugate(result)
 
-                # TODO: Maybe move the Nr control into the solver?
+                # Return value from the auto-adjuster is used to
+                # determine if we should try solving again. When the
+                # return value is False, that means Nr was increased
+                # so we need to try again.
+                cf_conv = self.solver.auto_adjust_Nr()
 
-                # Check if the continued fraction has less error than
-                # the desired tolerance
-                cf_err = self.solver.estimate_cf_err()
-
-                if ((cf_err < self.tol) or (self.Nr >= self.Nr_max)):
-                    # Converged or can't increase
-                    cf_conv = True # Move on to next value of a
-                    self.omega[i] = result
-                    self.A[i]     = self.solver.A
-                    self.C[i]     = self.solver.C
-                    self.cf_err[i]= cf_err
-                    # Can we relax?
-                    if ((cf_err / self.tol < 1e-2) and (self.Nr > self.Nr_min)):
-                        self.Nr = self.Nr - 50
-                        logging.info("Converged for a={}, required {}"
-                                     " func evals".format(_a,
-                                                          self.solver.opt_res.nfev))
-                        logging.info("Going to relax Nr to {}".format(self.Nr))
-                        self.solver.set_params(Nr=self.Nr)
+                if cf_conv:
+                    # Done with this value of a
+                    self.omega[i]  = result
+                    self.A[i]      = self.solver.A
+                    self.C[i]      = self.solver.C
+                    self.cf_err[i] = self.solver.cf_err
                 else:
-                    # Need to add more terms to cont. frac. approx
-                    # TODO Don't make this a magic number
-                    self.Nr = self.Nr + 100
-                    if (self.Nr >= self.Nr_max):
-                        logging.warning("Nr={} hit Nr_max ".format(self.Nr))
-                    # Should we warn?
-                    # Should we have a max?
-                    logging.info("Increasing Nr to {}".format(self.Nr))
-                    self.solver.set_params(Nr=self.Nr,
-                                           omega_guess=result,
+                    # For the next attempt, try starting where we
+                    # ended up
+                    self.solver.set_params(omega_guess=result,
                                            A_closest_to=self.solver.A)
                     # Now try again, because cf_conv is still False
 
-            # Next time through the loop, start with a guess based on
+            # For the next value of a, start with a guess based on
             # the previously-computed values. When we have two or more
             # values, we can do a quadratic fit. Otherwise just start
             # at the same value.
