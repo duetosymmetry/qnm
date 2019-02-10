@@ -3,7 +3,7 @@ from __future__ import division, print_function, absolute_import
 import logging
 
 import numpy as np
-from scipy import optimize
+from scipy import optimize, interpolate
 
 import angular
 import radial
@@ -144,6 +144,9 @@ class nearby_root_finder(object):
 
         self.omega = self.opt_res.x[0] + 1.j*self.opt_res.x[1]
         c = self.a * self.omega
+        # As far as I can tell, scipy.linalg.eig already normalizes
+        # the eigenvector to unit norm, and the coefficient with the
+        # largest norm is real
         self.A, self.C = angular.C_and_sep_const_closest(self.A0,
                                                          self.s, c,
                                                          self.m, self.l_max)
@@ -294,6 +297,8 @@ class QNM_seq_root_finder(object):
                 if ((i == 0) and (np.real(result) < 0)):
                     result = -np.conjugate(result)
 
+                # TODO: Maybe move the Nr control into the solver?
+
                 # Check if the continued fraction has less error than
                 # the desired tolerance
                 cf_err = self.solver.estimate_cf_err()
@@ -327,10 +332,34 @@ class QNM_seq_root_finder(object):
                                            A_closest_to=self.solver.A)
                     # Now try again, because cf_conv is still False
 
+            # Next time through the loop, start with a guess based on
+            # the previously-computed values. When we have two or more
+            # values, we can do a quadratic fit. Otherwise just start
+            # at the same value.
+            if (i < 2):
+                omega_guess = self.omega[i]
+                A0          = self.A[i]
+            elif (i+1 < len(self.a)):
 
-            # Every time through the loop, use previous result
-            omega_guess = self.omega[i]
-            A0          = self.A[i]
+                next_a = self.a[i+1]
+
+                # Build an interpolant and allow extrapolation
+                interp = interpolate.interp1d(self.a[i-2:i+1],
+                                              self.omega[i-2:i+1],
+                                              kind='quadratic',
+                                              bounds_error=False,
+                                              fill_value='extrapolate')
+                omega_guess = interp(next_a)
+
+                # Same thing for the separation constant
+                interp = interpolate.interp1d(self.a[i-2:i+1],
+                                              self.A[i-2:i+1],
+                                              kind='quadratic',
+                                              bounds_error=False,
+                                              fill_value='extrapolate')
+                A0 = interp(next_a)
+
+
 
         logging.info("n={}, l={}, started from guess omega={}, "
                      "found omega={}".format(self.n, self.l,
