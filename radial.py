@@ -1,6 +1,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
+from cont_frac import Lentz
 
 # TODO some documentation here, better documentation throughout
 
@@ -78,5 +79,48 @@ def Leaver_Cf_trunc_inversion(omega, a, s, m, A,
     return (beta[n_inv]
             - gamma[n_inv] * conv1
             - alpha[n_inv] * conv2)
+
+# TODO possible choices for r_N: 0., 1., approximation using (34)-(38)
+
+def Leaver_Cf_inv_Lentz(omega, a, s, m, A, n_inv,
+                        tol=1.e-10, N_min=300, N_max=np.Inf):
+    """ Compute the n_inv inversion of the infinite continued
+    fraction for solving the radial Teukolsky equation, using
+    modified Lentz's method.
+    The value returned is Eq. (44).
+    TODO seriously document this! """
+
+    D = D_coeffs(omega, a, s, m, A)
+
+    # This is only use for the terminating fraction
+    n = np.arange(0, n_inv+1)
+    alpha =     n*n + (D[0] + 1.)*n + D[0]
+    beta  = -2.*n*n + (D[1] + 2.)*n + D[3]
+    gamma =     n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.
+
+    conv1 = 0.
+    for i in range(0, n_inv): # n_inv is not included
+        conv1 = alpha[i] / (beta[i] - gamma[i] * conv1)
+
+    # In defining the below a, b sequences, I have cleared a fraction
+    # compared to the usual way of writing the radial infinite
+    # continued fraction. The point of doing this was that so both
+    # terms, a(n) and b(n), tend to 1 as n goes to infinity. Further,
+    # We can analytically divide through by n in the numerator and
+    # denominator to make the numbers closer to 1.
+    def a(i):
+        n = i + n_inv - 1
+        return -(n + (D[0] + 1.) + D[0]/n)/(n + (D[2] - 3.) + (D[4] - D[2] + 2.)/n)
+
+    def b(i):
+        if (i==0): return 0
+        n = i + n_inv
+        return (-2.*n + (D[1] + 2.) + D[3]/n)/(n + (D[2] - 3.) + (D[4] - D[2] + 2.)/n)
+
+    conv2, cf_err, iters = Lentz(a, b, tol=tol, N_min=N_min, N_max=N_max)
+
+    return (beta[n_inv]
+            - gamma[n_inv] * conv1
+            + gamma[n_inv] * conv2), cf_err, iters
 
 # TODO possible choices for r_N: 0., 1., approximation using (34)-(38)

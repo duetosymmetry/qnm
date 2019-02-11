@@ -33,6 +33,10 @@ def build_Schw_dict(*args, **kwargs):
     tol: float [default: 1e-10]
       Tolerance to pass to Schw_n_seq_finder.
 
+    Return
+    ======
+    TODO Document the format of the dict
+
     """
 
     # TODO: Should we allow any other params to be customizable?
