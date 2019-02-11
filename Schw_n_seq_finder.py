@@ -79,6 +79,7 @@ class Schw_n_seq_finder(object):
         self.n      = []
         self.omega  = np.array([], dtype=complex)
         self.cf_err = np.array([])
+        self.iters  = np.array([])
 
         # We need and instance of root finder
         self.solver = nearby_root_finder(s=self.s, m=0,
@@ -160,11 +161,10 @@ class Schw_n_seq_finder(object):
                 if (np.real(result) < 0):
                     result = -np.conjugate(result)
 
-                # Return value from the auto-adjuster is used to
-                # determine if we should try solving again. When the
-                # return value is False, that means Nr was increased
-                # so we need to try again.
-                cf_conv = self.solver.auto_adjust_Nr()
+                cf_err, iters = self.solver.get_cf_err()
+
+                # ACTUALLY DO SOMETHING WITH THESE NUMBERS
+                cf_conv = True
 
                 if cf_conv:
                     # Done with this value of n
@@ -176,7 +176,8 @@ class Schw_n_seq_finder(object):
                     self.n.append(n)
 
                     self.omega  = np.append(self.omega,  result)
-                    self.cf_err = np.append(self.cf_err, self.solver.cf_err)
+                    self.cf_err = np.append(self.cf_err, cf_err)
+                    self.iters  = np.append(self.cf_err, iters)
 
                     # Make sure we sort properly!
                     ind_sort = np.argsort(-np.imag(self.omega))

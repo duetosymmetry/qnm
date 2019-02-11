@@ -103,6 +103,7 @@ class Kerr_a_seq_finder(object):
         self.a     = np.arange(0., self.a_max, self.delta_a)
         self.omega = [None] * len(self.a)
         self.cf_err= [None] * len(self.a)
+        self.iters = [None] * len(self.a)
         self.A     = [None] * len(self.a)
         self.C     = [None] * len(self.a)
 
@@ -144,18 +145,19 @@ class Kerr_a_seq_finder(object):
                 if ((i == 0) and (np.real(result) < 0)):
                     result = -np.conjugate(result)
 
-                # Return value from the auto-adjuster is used to
-                # determine if we should try solving again. When the
-                # return value is False, that means Nr was increased
-                # so we need to try again.
-                cf_conv = self.solver.auto_adjust_Nr()
+
+                cf_err, iters = self.solver.get_cf_err()
+
+                # ACTUALLY DO SOMETHING WITH THESE NUMBERS
+                cf_conv = True
 
                 if cf_conv:
                     # Done with this value of a
                     self.omega[i]  = result
                     self.A[i]      = self.solver.A
                     self.C[i]      = self.solver.C
-                    self.cf_err[i] = self.solver.cf_err
+                    self.cf_err[i] = cf_err
+                    self.iters[i]  = iters
                 else:
                     # For the next attempt, try starting where we
                     # ended up

@@ -120,6 +120,7 @@ class nearby_root_finder(object):
         self.C     = None
 
         self.cf_err = None
+        self.iters  = None
 
         self.poles = np.array([])
 
@@ -139,10 +140,16 @@ class nearby_root_finder(object):
                                           self.l_max)
 
         # We are trying to find a root of this function:
-        inv_err = radial.Leaver_Cf_trunc_inversion(omega, self.a,
-                                                   self.s, self.m, A,
-                                                   self.n_inv,
-                                                   self.Nr, self.r_N)
+        # inv_err = radial.Leaver_Cf_trunc_inversion(omega, self.a,
+        #                                            self.s, self.m, A,
+        #                                            self.n_inv,
+        #                                            self.Nr, self.r_N)
+
+        inv_err, self.cf_err, self.iters = radial.Leaver_Cf_inv_Lentz(omega, self.a,
+                                                          self.s, self.m, A,
+                                                          self.n_inv, self.tol,
+                                                          self.Nr_min, np.Inf)
+        # logging.info("Lentz terminated with cf_err={}, iters={}".format(self.cf_err, self.iters))
 
         # Insert optional poles
         pole_factors   = np.prod(omega - self.poles)
@@ -176,53 +183,10 @@ class nearby_root_finder(object):
 
         return self.omega
 
-    def estimate_cf_err(self):
+    def get_cf_err(self):
         """ TODO Documentation """
 
-        if not self.solved:
-            raise Exception("Can only approximate continued fraction "
-                            "error after successfully solving")
-
-        err1 = radial.Leaver_Cf_trunc_inversion(self.omega, self.a,
-                                                self.s, self.m, self.A,
-                                                self.n_inv,
-                                                self.Nr, self.r_N)
-        err2 = radial.Leaver_Cf_trunc_inversion(self.omega, self.a,
-                                                self.s, self.m, self.A,
-                                                self.n_inv,
-                                                self.Nr + 1,
-                                                self.r_N)
-        self.cf_err = np.abs(err1 - err2)
-
-        return self.cf_err
-
-    def auto_adjust_Nr(self):
-        """ Try to adjust Nr up or down, depending on whether the
-        error estimate in the continued fraction expansion is
-        above/below tolerance.
-
-        Returns True  if Nr was relaxed or stayed the same (e.g. hit Nr_max).
-        Returns False if Nr was increased.
-        """
-
-        self.estimate_cf_err()
-
-        tol_increased = False
-
-        # TODO magic numbers
-        if ((self.cf_err < 0.01*self.tol) and (self.Nr > self.Nr_min)):
-            # Can relax TODO magic number
-            self.Nr = np.max([self.Nr - 50, self.Nr_min])
-            logging.info("Relaxing Nr to {}".format(self.Nr))
-        elif ((self.cf_err > self.tol) and (self.Nr < self.Nr_max)):
-            # Need to add more terms TODO magic number
-            self.Nr = np.min([self.Nr + 100, self.Nr_max])
-            logging.info("Increasing Nr to {}".format(self.Nr))
-            if (self.Nr == self.Nr_max):
-                logging.warning("Nr={} has hit Nr_max".format(self.Nr))
-            tol_increased = True
-
-        return not tol_increased
+        return self.cf_err, self.iters
 
     def set_poles(self, poles=[]):
         """ Multiply error function by poles in the complex plane.

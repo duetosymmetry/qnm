@@ -83,7 +83,7 @@ def Leaver_Cf_trunc_inversion(omega, a, s, m, A,
 # TODO possible choices for r_N: 0., 1., approximation using (34)-(38)
 
 def Leaver_Cf_inv_Lentz(omega, a, s, m, A, n_inv,
-                        tol=1.e-10, N_min=300, N_max=np.Inf):
+                        tol=1.e-10, N_min=0, N_max=np.Inf):
     """ Compute the n_inv inversion of the infinite continued
     fraction for solving the radial Teukolsky equation, using
     modified Lentz's method.
@@ -110,12 +110,12 @@ def Leaver_Cf_inv_Lentz(omega, a, s, m, A, n_inv,
     # denominator to make the numbers closer to 1.
     def a(i):
         n = i + n_inv - 1
-        return -(n + (D[0] + 1.) + D[0]/n)/(n + (D[2] - 3.) + (D[4] - D[2] + 2.)/n)
+        return -(n*n + (D[0] + 1.)*n + D[0])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
 
     def b(i):
         if (i==0): return 0
         n = i + n_inv
-        return (-2.*n + (D[1] + 2.) + D[3]/n)/(n + (D[2] - 3.) + (D[4] - D[2] + 2.)/n)
+        return (-2.*n*n + (D[1] + 2.)*n + D[3])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
 
     conv2, cf_err, iters = Lentz(a, b, tol=tol, N_min=N_min, N_max=N_max)
 
