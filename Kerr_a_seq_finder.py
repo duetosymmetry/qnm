@@ -7,8 +7,10 @@ from scipy import optimize, interpolate
 
 import angular
 import radial
-from Schw_QNM_expans import Schw_QNM_estimate
 from nearby_root_finder import nearby_root_finder
+
+from Schw_QNM_expans import Schw_QNM_estimate
+from Schw_table import Schw_QNM_dict
 
 # TODO some documentation here, better documentation throughout
 
@@ -48,7 +50,7 @@ class Kerr_a_seq_finder(object):
           that angular spectral method can converge. The number of
           l's needed for convergence depends on a.
 
-        omega_guess: complex [default: from Schw_QNM_estimate]
+        omega_guess: complex [default: from Schw_QNM_dict or Schw_QNM_estimate]
           Initial guess of omega for root-finding
 
         tol: float [default: 1e-10]
@@ -77,10 +79,14 @@ class Kerr_a_seq_finder(object):
         self.l_max       = kwargs.get('l_max',       20)
         self.tol         = kwargs.get('tol',         1e-10)
         self.n           = kwargs.get('n',           0)
-        self.omega_guess = kwargs.get('omega_guess',
-                                      Schw_QNM_estimate(self.s,
-                                                        self.n,
-                                                        self.l))
+
+        if ((self.s, self.l, self.n) in Schw_QNM_dict.keys()):
+            def_om_guess = Schw_QNM_dict[(self.s, self.l, self.n)]
+        else:
+            def_om_guess = Schw_QNM_estimate(self.s, self.n, self.l)
+
+        self.omega_guess = kwargs.get('omega_guess', def_om_guess)
+
         self.Nr          = kwargs.get('Nr',          300)
         self.Nr_min      = self.Nr
         self.Nr_max      = 3000    # TODO Get rid of magic number
