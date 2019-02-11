@@ -80,10 +80,11 @@ class Kerr_a_seq_finder(object):
         self.tol         = kwargs.get('tol',         1e-10)
         self.n           = kwargs.get('n',           0)
 
-        if ((self.s, self.l, self.n) in Schw_QNM_dict.keys()):
-            def_om_guess = Schw_QNM_dict[(self.s, self.l, self.n)]
+        self.Schw_QNM_dict = Schw_QNM_dict().load_dict()
+        if ((self.s, self.l, self.n) in self.Schw_QNM_dict.keys()):
+            def_om_guess = self.Schw_QNM_dict[(self.s, self.l, self.n)]
         else:
-            def_om_guess = Schw_QNM_estimate(self.s, self.n, self.l)
+            def_om_guess = self.Schw_QNM_estimate(self.s, self.n, self.l)
 
         self.omega_guess = kwargs.get('omega_guess', def_om_guess)
 

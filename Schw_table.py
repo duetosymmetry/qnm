@@ -66,21 +66,51 @@ def build_Schw_dict(*args, **kwargs):
 
 ############################################################
 
-Schw_table_pickle_file = './data/Schw_table.pickle'
+class Schw_QNM_dict(object):
 
-try:
-    with open(Schw_table_pickle_file, 'rb') as handle:
-        logging.info("Loading Schw QNM dict from file {}".format(Schw_table_pickle_file))
-        Schw_QNM_dict = pickle.load(handle)
-except:
-    logging.info("Could not load Schw QNM dict from file, computing")
-    Schw_QNM_dict, _ = build_Schw_dict()
-    _the_dir = os.path.dirname(Schw_table_pickle_file)
-    if not os.path.exists(_the_dir):
+    # Borg pattern, the QNM table will be shared among all instances
+    _shared_state = {}
+
+    def __init__(self, init=False):
+        """ TODO Documentation! """
+
+        self.__dict__ = self._shared_state
+
+        if (not hasattr(self, 'Schw_QNM_dict')):
+            # First!
+            self.Schw_QNM_dict = None
+
+        if (init):
+            self.load_dict()
+
+
+    def load_dict(self):
+        """ Load a Schw QNM dict from disk, or compute one if needed.
+        """
+        if (self.Schw_QNM_dict is not None):
+            return self.Schw_QNM_dict
+
+        # TODO magic file name
+        Schw_table_pickle_file = './data/Schw_table.pickle'
+
         try:
-            os.mkdir(_the_dir)
-            with open(Schw_table_pickle_file, 'wb') as handle:
-                logging.info("Writing Schw QNM dict to file {}".format(Schw_table_pickle_file))
-                pickle.dump(Schw_QNM_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            with open(Schw_table_pickle_file, 'rb') as handle:
+                logging.info("Loading Schw QNM dict from file {}".format(Schw_table_pickle_file))
+                self.Schw_QNM_dict = pickle.load(handle)
+
         except:
-            logging.warn("Could not write Schw QNM dict to file {}".format(Schw_table_pickle_file))
+            logging.info("Could not load Schw QNM dict from file, computing")
+            # TODO no parameters allowed?
+            self.Schw_QNM_dict, _ = build_Schw_dict()
+
+            _the_dir = os.path.dirname(Schw_table_pickle_file)
+            if not os.path.exists(_the_dir):
+                try:
+                    os.mkdir(_the_dir)
+                    with open(Schw_table_pickle_file, 'wb') as handle:
+                        logging.info("Writing Schw QNM dict to file {}".format(Schw_table_pickle_file))
+                        pickle.dump(self.Schw_QNM_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                except:
+                    logging.warn("Could not write Schw QNM dict to file {}".format(Schw_table_pickle_file))
+
+        return self.Schw_QNM_dict
