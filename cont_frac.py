@@ -50,4 +50,4 @@ def Lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
         f_old = f_new
 
     # Success or failure can be assessed by the user
-    return f_new, (Delta - 1.), j
+    return f_new, np.abs(Delta - 1.), j-1

@@ -60,13 +60,15 @@ def build_Schw_dict(*args, **kwargs):
                 Schw_seq.do_find_sequence()
             except:
                 logging.warn("Failed at s={}, l={}".format(s, l))
-            for n, (omega, cf_err) in enumerate(zip(Schw_seq.omega,Schw_seq.cf_err)):
-                Schw_dict[(s,l,n)] = np.asscalar(omega)
-                Schw_dict[(-s,l,n)] = np.asscalar(omega)
-                Schw_err_dict[(s,l,n)] = np.asscalar(cf_err)
-                Schw_err_dict[(-s,l,n)] = np.asscalar(cf_err)
+            for n, (omega, cf_err, iters) in enumerate(zip(Schw_seq.omega,
+                                                           Schw_seq.cf_err,
+                                                           Schw_seq.iters)):
+                Schw_dict[(s,l,n)] = (np.asscalar(omega),
+                                      np.asscalar(cf_err),
+                                      int(iters))
+                Schw_dict[(-s,l,n)] = Schw_dict[(s,l,n)]
 
-    return Schw_dict, Schw_err_dict
+    return Schw_dict
 
 ############################################################
 
@@ -105,7 +107,7 @@ class Schw_QNM_dict(object):
         except:
             logging.info("Could not load Schw QNM dict from file, computing")
             # TODO no parameters allowed?
-            self.Schw_QNM_dict, _ = build_Schw_dict()
+            self.Schw_QNM_dict = build_Schw_dict()
 
             _the_dir = os.path.dirname(Schw_table_pickle_file)
             if not os.path.exists(_the_dir):

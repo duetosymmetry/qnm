@@ -63,7 +63,7 @@ class Schw_n_seq_finder(object):
         self.tol         = kwargs.get('tol',         1e-10)
         self.Nr          = kwargs.get('Nr',          300)
         self.Nr_min      = self.Nr
-        self.Nr_max      = 5000    # TODO Get rid of magic number
+        self.Nr_max      = kwargs.get('Nr_max',      6000)
         self.r_N         = kwargs.get('r_N',         0.j)
 
         # TODO check that values make sense!!!
@@ -177,12 +177,13 @@ class Schw_n_seq_finder(object):
 
                     self.omega  = np.append(self.omega,  result)
                     self.cf_err = np.append(self.cf_err, cf_err)
-                    self.iters  = np.append(self.cf_err, iters)
+                    self.iters  = np.append(self.iters, iters)
 
                     # Make sure we sort properly!
                     ind_sort = np.argsort(-np.imag(self.omega))
                     self.omega  = self.omega[ind_sort]
                     self.cf_err = self.cf_err[ind_sort]
+                    self.iters = self.iters[ind_sort]
 
                 else:
                     # For the next attempt, try starting where we

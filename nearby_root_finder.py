@@ -148,7 +148,7 @@ class nearby_root_finder(object):
         inv_err, self.cf_err, self.iters = radial.Leaver_Cf_inv_Lentz(omega, self.a,
                                                           self.s, self.m, A,
                                                           self.n_inv, self.tol,
-                                                          self.Nr_min, np.Inf)
+                                                          self.Nr_min, self.Nr_max)
         # logging.info("Lentz terminated with cf_err={}, iters={}".format(self.cf_err, self.iters))
 
         # Insert optional poles

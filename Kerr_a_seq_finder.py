@@ -82,7 +82,7 @@ class Kerr_a_seq_finder(object):
 
         self.Schw_QNM_dict = Schw_QNM_dict().load_dict()
         if ((self.s, self.l, self.n) in self.Schw_QNM_dict.keys()):
-            def_om_guess = self.Schw_QNM_dict[(self.s, self.l, self.n)]
+            def_om_guess = self.Schw_QNM_dict[(self.s, self.l, self.n)][0]
         else:
             def_om_guess = self.Schw_QNM_estimate(self.s, self.n, self.l)
 
