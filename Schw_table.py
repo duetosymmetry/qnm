@@ -33,9 +33,14 @@ def build_Schw_dict(*args, **kwargs):
     tol: float [default: 1e-10]
       Tolerance to pass to Schw_n_seq_finder.
 
-    Return
-    ======
-    TODO Document the format of the dict
+    =======
+    Returns: dict
+      Same as build_Schw_dict.
+      A dict with tuple keys (s,l,n).
+      The value at d[s,l,n] is a tuple (omega, cf_err, iters)
+      where omega is the frequency omega_{s,l,n}, cf_err is the
+      estimated truncation error for the continued fraction, and
+      iters is the depth of the continued fraction evaluation.
 
     """
 
@@ -90,14 +95,31 @@ class Schw_QNM_dict(object):
             self.load_dict()
 
 
-    def load_dict(self):
+    def load_dict(self, Schw_table_pickle_file='./data/Schw_table.pickle'):
         """ Load a Schw QNM dict from disk, or compute one if needed.
+
+        If a QNM dict has previously been loaded by any instance of
+        the class, that dict will be returned immediately. If no QNM
+        dict has been loaded, attempt to read it from disk. If that
+        fails then a new table will be computed, written to the
+        specified filename, and returned.
+
+        Params
+        ======
+        Schw_table_pickle_file: string [default: ./data/Schw_table.pickle ]
+          Filename for reading (or writing) dict of Schwarzschild QNMs
+
+        ======
+        Returns: dict
+          Same as build_Schw_dict.
+          A dict with tuple keys (s,l,n).
+          The value at d[s,l,n] is a tuple (omega, cf_err, iters)
+          where omega is the frequency omega_{s,l,n}, cf_err is the
+          estimated truncation error for the continued fraction, and
+          iters is the depth of the continued fraction evaluation.
         """
         if (self.Schw_QNM_dict is not None):
             return self.Schw_QNM_dict
-
-        # TODO magic file name
-        Schw_table_pickle_file = './data/Schw_table.pickle'
 
         try:
             with open(Schw_table_pickle_file, 'rb') as handle:
