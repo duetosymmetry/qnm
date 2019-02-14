@@ -57,7 +57,7 @@ class nearby_root_finder(object):
         Nr_min: int [default: 300]
           Floor for Nr (for dynamic control of Nr)
 
-        Nr_max: int [default: 3000]
+        Nr_max: int [default: 4000]
           Ceiling for Nr (for dynamic control of Nr)
 
         r_N: complex [default: 1.]
@@ -77,7 +77,7 @@ class nearby_root_finder(object):
         self.n_inv       = 0
         self.Nr          = 300
         self.Nr_min      = 300
-        self.Nr_max      = 3000
+        self.Nr_max      = 4000
         self.r_N         = 1.
 
         self.set_params(**kwargs)
