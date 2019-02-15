@@ -1,8 +1,0 @@
-* See if Lentz's method was actually worth it in terms of time/accuracy
-* Dynamic control of step size in a
-* Dynamic control of # terms in spectral expansion
-* Validate by comparing against others' calculations
-** DONE a=0 compared several (~10) low overtones against Berti's tables for s=l=0, s=l=1, s=l=2, and s=2 l=3.
-* Ability to find QNMs at new points, starting guesses from known points
-* Saving/loading computations to disk
-** STARTED just for Schw, and only in bulk rectangles of modes
