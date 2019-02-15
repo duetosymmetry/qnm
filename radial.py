@@ -1,7 +1,7 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from cont_frac import Lentz
+from contfrac import lentz
 
 # TODO some documentation here, better documentation throughout
 
@@ -117,10 +117,10 @@ def Leaver_Cf_inv_Lentz(omega, a, s, m, A, n_inv,
         n = i + n_inv
         return (-2.*n*n + (D[1] + 2.)*n + D[3])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
 
-    conv2, cf_err, iters = Lentz(a, b, tol=tol, N_min=N_min, N_max=N_max)
+    conv2, cf_err, n_frac = lentz(a, b, tol=tol, N_min=N_min, N_max=N_max)
 
     return (beta[n_inv]
             - gamma[n_inv] * conv1
-            + gamma[n_inv] * conv2), cf_err, iters
+            + gamma[n_inv] * conv2), cf_err, n_frac
 
 # TODO possible choices for r_N: 0., 1., approximation using (34)-(38)

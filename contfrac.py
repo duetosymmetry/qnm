@@ -4,7 +4,7 @@ import numpy as np
 
 # TODO some documentation here, better documentation throughout
 
-def Lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
+def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     """ Compute a continued fraction via modified Lentz's method.
 
     Parameters
@@ -74,7 +74,7 @@ def Lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     # Success or failure can be assessed by the user
     return f_new, np.abs(Delta - 1.), j-1
 
-def Lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
+def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     """ Compute a continued fraction via modified Lentz's method,
     using generators rather than functions.
 
