@@ -2,7 +2,7 @@ from __future__ import division, print_function, absolute_import
 
 import numpy as np
 
-def Dolan_Ottewill_expansion(s, n, l):
+def dolan_ottewill_expansion(s, n, l):
     """ TODO documentation """
 
     L    = l + 0.5
@@ -38,4 +38,4 @@ def Schw_QNM_estimate(s, n, l):
     if (( n > 3 ) and (n >= 2*l)):
         return large_overtone_exp(s, n, l)
     else:
-        return Dolan_Ottewill_expansion(s, n, l)
+        return dolan_ottewill_expansion(s, n, l)

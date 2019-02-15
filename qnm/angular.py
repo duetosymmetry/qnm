@@ -50,7 +50,7 @@ def calC(s, l, m):
     """ Eq. (53e) """
     return calG(s,l,m) * calG(s,l-1,m)
 
-def SWSphericalH_A(s, l, m):
+def swsphericalh_A(s, l, m):
     """ Angular separation constant at a=0.
 
     Eq. (50). Has no dependence on m. The formula is
@@ -82,7 +82,7 @@ def M_matrix_elem(s, c, m, l, lprime):
         return (-c*c*calD(s,lprime,m)
                 + 2*c*s*calF(s,lprime,m))
     if (lprime == l  ):
-        return (SWSphericalH_A(s,lprime,m)
+        return (swsphericalh_A(s,lprime,m)
                 - c*c*calB(s,lprime,m)
                 + 2*c*s*calH(s,lprime,m))
     if (lprime == l+1):
@@ -95,6 +95,8 @@ def M_matrix_elem(s, c, m, l, lprime):
 
 # I don't know if this is necessary ... can just iterate
 def give_M_matrix_elem_ufunc(s, c, m):
+    """ TODO Document """
+
     def elem(l, lprime):
         return M_matrix_elem(s, c, m, l, lprime)
 
@@ -104,6 +106,8 @@ def l_min(s, m):
     return np.max([np.abs(s), np.abs(m)])
 
 def M_matrix(s, c, m, l_max):
+    """ TODO Document """
+
     ells = np.arange(l_min(s,m), l_max+1)
 
     uf = give_M_matrix_elem_ufunc(s, c, m)
@@ -111,14 +115,20 @@ def M_matrix(s, c, m, l_max):
     return uf.outer(ells,ells).astype(complex)
 
 def sep_consts(s, c, m, l_max):
+    """ TODO Document """
+
     return np.linalg.eigvals(M_matrix(s, c, m, l_max))
 
 def sep_const_closest(A0, s, c, m, l_max):
+    """ TODO Document """
+
     As = sep_consts(s, c, m, l_max)
     i_closest = np.argmin(np.abs(As-A0))
     return As[i_closest]
 
 def C_and_sep_const_closest(A0, s, c, m, l_max):
+    """ TODO Document """
+
     As, Cs = np.linalg.eig(M_matrix(s, c, m, l_max))
     i_closest = np.argmin(np.abs(As-A0))
     return As[i_closest], Cs[:,i_closest]

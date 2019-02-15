@@ -5,8 +5,7 @@ import logging
 import numpy as np
 from scipy import optimize, interpolate
 
-from . import angular
-from . import radial
+from .angular import l_min, swsphericalh_A
 from nearby import NearbyRootFinder
 
 from .schwarzschild.approx import Schw_QNM_estimate
@@ -106,10 +105,10 @@ class Kerr_a_seq_finder(object):
 
         # TODO check that values make sense!!!
         assert self.a_max < 1., ("a_max={} must be < 1.".format(self.a_max))
-        assert self.l >= angular.l_min(self.s, self.m), ("l={} must be "
-                                                         ">= l_min={}".format(
-                                                             self.l,
-                                                             angular.l_min(self.s, self.m)))
+        assert self.l >= l_min(self.s, self.m), ("l={} must be "
+                                                 ">= l_min={}".format(
+                                                     self.l,
+                                                     l_min(self.s, self.m)))
 
         # Create array of a's, omega's, and A's
         self.a     = []
@@ -146,7 +145,7 @@ class Kerr_a_seq_finder(object):
         _a = 0. # TODO Allow to start at other values
 
         # Initializing the sequence, start with guesses
-        A0 = angular.SWSphericalH_A(self.s, self.l, self.m)
+        A0 = swsphericalh_A(self.s, self.l, self.m)
         omega_guess = self.omega_guess
 
         _delta_a = self.delta_a

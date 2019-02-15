@@ -5,9 +5,9 @@ import logging
 import numpy as np
 from scipy import optimize, interpolate
 
-from ..angular import l_min, SWSphericalH_A
+from ..angular import l_min, swsphericalh_A
 from ..nearby import NearbyRootFinder
-from .approx import Dolan_Ottewill_expansion
+from .approx import dolan_ottewill_expansion
 
 # TODO some documentation here, better documentation throughout
 
@@ -16,7 +16,7 @@ class Schw_n_seq_finder(object):
     def __init__(self, *args, **kwargs):
         """Object to follow a sequence of Schwarzschild overtones,
         starting from n=0.  First two overtone seeds come from
-        Dolan_Ottewill_expansion, and afterwards linear
+        approx.dolan_ottewill_expansion, and afterwards linear
         extrapolation on the solutions is used to seed the root
         finding for higher values of n. Uses NearbyRootFinder to
         actually perform the root-finding.
@@ -73,7 +73,7 @@ class Schw_n_seq_finder(object):
                                                 l_min(self.s, 0)))
 
         # We know the Schwarzschild separation constant analytically
-        self.A = SWSphericalH_A(self.s, self.l, 0)
+        self.A = swsphericalh_A(self.s, self.l, 0)
 
         # Create array of n's and omega's
         self.n      = []
@@ -105,7 +105,7 @@ class Schw_n_seq_finder(object):
             self.solver.set_params(n_inv=n)
 
             if (n < 2):
-                omega_guess = Dolan_Ottewill_expansion(self.s, n, self.l)
+                omega_guess = dolan_ottewill_expansion(self.s, n, self.l)
             else:
                 # Linearly extrapolate from the last two
                 om_m_1 = self.omega[-1]
