@@ -6,7 +6,7 @@ import numpy as np
 from scipy import optimize, interpolate
 
 import angular
-from nearby import nearby_root_finder
+from nearby import NearbyRootFinder
 from Schw_QNM_expans import Schw_QNM_estimate, Dolan_Ottewill_expansion
 
 # TODO some documentation here, better documentation throughout
@@ -18,7 +18,7 @@ class Schw_n_seq_finder(object):
         starting from n=0.  First two overtone seeds come from
         Dolan_Ottewill_expansion, and afterwards linear
         extrapolation on the solutions is used to seed the root
-        finding for higher values of n. Uses nearby_root_finder to
+        finding for higher values of n. Uses NearbyRootFinder to
         actually perform the root-finding.
 
         Keyword arguments
@@ -82,14 +82,14 @@ class Schw_n_seq_finder(object):
         self.iters  = np.array([])
 
         # We need and instance of root finder
-        self.solver = nearby_root_finder(s=self.s, m=0,
-                                         l_max=self.l_max,
-                                         a=0.,
-                                         A_closest_to=self.A,
-                                         tol=self.tol,
-                                         n_inv=0, Nr=self.Nr,
-                                         Nr_max=self.Nr_max,
-                                         r_N=self.r_N)
+        self.solver = NearbyRootFinder(s=self.s, m=0,
+                                       l_max=self.l_max,
+                                       a=0.,
+                                       A_closest_to=self.A,
+                                       tol=self.tol,
+                                       n_inv=0, Nr=self.Nr,
+                                       Nr_max=self.Nr_max,
+                                       r_N=self.r_N)
 
     def do_find_sequence(self):
 

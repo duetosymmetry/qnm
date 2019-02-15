@@ -10,7 +10,7 @@ import radial
 
 # TODO some documentation here, better documentation throughout
 
-class nearby_root_finder(object):
+class NearbyRootFinder(object):
 
     def __init__(self, *args, **kwargs):
         """Object to find and store results from simultaneous roots of

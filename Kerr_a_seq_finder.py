@@ -7,7 +7,7 @@ from scipy import optimize, interpolate
 
 import angular
 import radial
-from nearby import nearby_root_finder
+from nearby import NearbyRootFinder
 
 from Schw_QNM_expans import Schw_QNM_estimate
 from Schw_table import Schw_QNM_dict
@@ -22,7 +22,7 @@ class Kerr_a_seq_finder(object):
         a=0. Values for omega and the separation constant from one
         value of a are used to seed the root finding for the next
         value of a, to maintain continuity in a when separation
-        constant order can change. Uses nearby_root_finder to actually
+        constant order can change. Uses NearbyRootFinder to actually
         perform the root-finding.
 
         Keyword arguments
@@ -127,13 +127,13 @@ class Kerr_a_seq_finder(object):
         self._interp_A_i = None
 
         # We need and instance of root finder
-        self.solver = nearby_root_finder(s=self.s, m=self.m,
-                                         l_max=self.l_max,
-                                         tol=self.tol,
-                                         n_inv=self.n, Nr=self.Nr,
-                                         Nr_min=self.Nr_min,
-                                         Nr_max=self.Nr_max,
-                                         r_N=self.r_N)
+        self.solver = NearbyRootFinder(s=self.s, m=self.m,
+                                       l_max=self.l_max,
+                                       tol=self.tol,
+                                       n_inv=self.n, Nr=self.Nr,
+                                       Nr_min=self.Nr_min,
+                                       Nr_max=self.Nr_max,
+                                       r_N=self.r_N)
 
     # Change this to *extending* the sequence so this can be reused
     def do_find_sequence(self):
