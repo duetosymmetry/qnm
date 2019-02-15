@@ -7,7 +7,7 @@ from scipy import optimize, interpolate
 
 import angular
 import radial
-from nearby_root_finder import nearby_root_finder
+from nearby import nearby_root_finder
 
 from Schw_QNM_expans import Schw_QNM_estimate
 from Schw_table import Schw_QNM_dict
