@@ -5,12 +5,12 @@ import logging
 import numpy as np
 from scipy import optimize, interpolate
 
-import angular
-import radial
+from . import angular
+from . import radial
 from nearby import NearbyRootFinder
 
-from Schw_QNM_expans import Schw_QNM_estimate
-from Schw_table import Schw_QNM_dict
+from .schwarzschild.approx import Schw_QNM_estimate
+from .schwarzschild.tabulated import QNMDict
 
 # TODO some documentation here, better documentation throughout
 
@@ -51,7 +51,7 @@ class Kerr_a_seq_finder(object):
           that angular spectral method can converge. The number of
           l's needed for convergence depends on a.
 
-        omega_guess: complex [default: from Schw_QNM_dict or Schw_QNM_estimate]
+        omega_guess: complex [default: from schwarzschild.QNMDict or schwarzschild.approx.Schw_QNM_estimate]
           Initial guess of omega for root-finding
 
         tol: float [default: 1e-10]
@@ -91,11 +91,11 @@ class Kerr_a_seq_finder(object):
         self.n           = kwargs.get('n',           0)
 
         # TODO only call this function if omega_guess is not passed
-        self.Schw_QNM_dict = Schw_QNM_dict().load_dict()
-        if ((self.s, self.l, self.n) in self.Schw_QNM_dict.keys()):
-            def_om_guess = self.Schw_QNM_dict[(self.s, self.l, self.n)][0]
+        self.qnm_dict = QNMDict().load_dict()
+        if ((self.s, self.l, self.n) in self.qnm_dict.keys()):
+            def_om_guess = self.qnm_dict[(self.s, self.l, self.n)][0]
         else:
-            def_om_guess = self.Schw_QNM_estimate(self.s, self.n, self.l)
+            def_om_guess = QNM_estimate(self.s, self.n, self.l)
 
         self.omega_guess = kwargs.get('omega_guess', def_om_guess)
 

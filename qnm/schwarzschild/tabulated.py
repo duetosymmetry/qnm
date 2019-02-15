@@ -6,8 +6,8 @@ import os
 
 import numpy as np
 
-import angular
-from Schw_n_seq_finder import Schw_n_seq_finder
+from ..angular import l_min
+from .overtonesequence import Schw_n_seq_finder
 
 # TODO some documentation here, better documentation throughout
 
@@ -37,10 +37,10 @@ def build_Schw_dict(*args, **kwargs):
     Returns: dict
       Same as build_Schw_dict.
       A dict with tuple keys (s,l,n).
-      The value at d[s,l,n] is a tuple (omega, cf_err, iters)
+      The value at d[s,l,n] is a tuple (omega, cf_err, n_frac)
       where omega is the frequency omega_{s,l,n}, cf_err is the
       estimated truncation error for the continued fraction, and
-      iters is the depth of the continued fraction evaluation.
+      n_frac is the depth of the continued fraction evaluation.
 
     """
 
@@ -55,7 +55,7 @@ def build_Schw_dict(*args, **kwargs):
     Schw_err_dict = {}
 
     for s in s_arr:
-        ls = np.arange(angular.l_min(s,0),l_max)
+        ls = np.arange(l_min(s,0),l_max)
         for l in ls:
             Schw_seq = Schw_n_seq_finder(s=s, l=l,
                                          l_max=l+1, # Angular matrix
@@ -65,37 +65,37 @@ def build_Schw_dict(*args, **kwargs):
                 Schw_seq.do_find_sequence()
             except:
                 logging.warn("Failed at s={}, l={}".format(s, l))
-            for n, (omega, cf_err, iters) in enumerate(zip(Schw_seq.omega,
-                                                           Schw_seq.cf_err,
-                                                           Schw_seq.iters)):
+            for n, (omega, cf_err, n_frac) in enumerate(zip(Schw_seq.omega,
+                                                            Schw_seq.cf_err,
+                                                            Schw_seq.n_frac)):
                 Schw_dict[(s,l,n)] = (np.asscalar(omega),
                                       np.asscalar(cf_err),
-                                      int(iters))
+                                      int(n_frac))
                 Schw_dict[(-s,l,n)] = Schw_dict[(s,l,n)]
 
     return Schw_dict
 
 ############################################################
 
-class Schw_QNM_dict(object):
+class QNMDict(object):
 
     # Borg pattern, the QNM table will be shared among all instances
     _shared_state = {}
 
-    def __init__(self, init=False):
+    def __init__(self, init=False, dict_pickle_file=None):
         """ TODO Documentation! """
 
         self.__dict__ = self._shared_state
 
-        if (not hasattr(self, 'Schw_QNM_dict')):
+        if (not hasattr(self, 'qnm_dict')):
             # First!
-            self.Schw_QNM_dict = None
+            self.qnm_dict = None
 
         if (init):
-            self.load_dict()
+            self.load_dict(dict_pickle_file=dict_pickle_file)
 
 
-    def load_dict(self, Schw_table_pickle_file='./data/Schw_table.pickle'):
+    def load_dict(self, dict_pickle_file=None):
         """ Load a Schw QNM dict from disk, or compute one if needed.
 
         If a QNM dict has previously been loaded by any instance of
@@ -106,39 +106,44 @@ class Schw_QNM_dict(object):
 
         Params
         ======
-        Schw_table_pickle_file: string [default: ./data/Schw_table.pickle ]
+        dict_pickle_file: string [default: <dirname of this file>/data/Schw_dict.pickle]
           Filename for reading (or writing) dict of Schwarzschild QNMs
 
         ======
         Returns: dict
           Same as build_Schw_dict.
           A dict with tuple keys (s,l,n).
-          The value at d[s,l,n] is a tuple (omega, cf_err, iters)
+          The value at d[s,l,n] is a tuple (omega, cf_err, n_frac)
           where omega is the frequency omega_{s,l,n}, cf_err is the
           estimated truncation error for the continued fraction, and
-          iters is the depth of the continued fraction evaluation.
+          n_frac is the depth of the continued fraction evaluation.
         """
-        if (self.Schw_QNM_dict is not None):
-            return self.Schw_QNM_dict
+        if (self.qnm_dict is not None):
+            return self.qnm_dict
+
+        if (dict_pickle_file is None):
+            dict_pickle_file = os.path.abspath(
+                '{}/data/Schw_dict.pickle'.format(
+                    os.path.dirname(os.path.realpath(__file__))))
 
         try:
-            with open(Schw_table_pickle_file, 'rb') as handle:
-                logging.info("Loading Schw QNM dict from file {}".format(Schw_table_pickle_file))
-                self.Schw_QNM_dict = pickle.load(handle)
+            with open(dict_pickle_file, 'rb') as handle:
+                logging.info("Loading Schw QNM dict from file {}".format(dict_pickle_file))
+                self.qnm_dict = pickle.load(handle)
 
         except:
-            logging.info("Could not load Schw QNM dict from file, computing")
+            logging.info("Could not load Schw QNM dict from file {}, computing".format(dict_pickle_file))
             # TODO no parameters allowed?
-            self.Schw_QNM_dict = build_Schw_dict()
+            self.qnm_dict = build_Schw_dict()
 
-            _the_dir = os.path.dirname(Schw_table_pickle_file)
+            _the_dir = os.path.dirname(dict_pickle_file)
             if not os.path.exists(_the_dir):
                 try:
                     os.mkdir(_the_dir)
-                    with open(Schw_table_pickle_file, 'wb') as handle:
-                        logging.info("Writing Schw QNM dict to file {}".format(Schw_table_pickle_file))
-                        pickle.dump(self.Schw_QNM_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                    with open(dict_pickle_file, 'wb') as handle:
+                        logging.info("Writing Schw QNM dict to file {}".format(dict_pickle_file))
+                        pickle.dump(self.qnm_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
                 except:
-                    logging.warn("Could not write Schw QNM dict to file {}".format(Schw_table_pickle_file))
+                    logging.warn("Could not write Schw QNM dict to file {}".format(dict_pickle_file))
 
-        return self.Schw_QNM_dict
+        return self.qnm_dict

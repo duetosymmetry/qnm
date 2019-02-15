@@ -5,9 +5,9 @@ import logging
 import numpy as np
 from scipy import optimize, interpolate
 
-import angular
-from nearby import NearbyRootFinder
-from Schw_QNM_expans import Schw_QNM_estimate, Dolan_Ottewill_expansion
+from ..angular import l_min, SWSphericalH_A
+from ..nearby import NearbyRootFinder
+from .approx import Dolan_Ottewill_expansion
 
 # TODO some documentation here, better documentation throughout
 
@@ -67,19 +67,19 @@ class Schw_n_seq_finder(object):
         self.r_N         = kwargs.get('r_N',         0.j)
 
         # TODO check that values make sense!!!
-        assert self.l >= angular.l_min(self.s, 0), ("l={} must be >= "
-                                                    "l_min={}".format(
-                                                        self.l,
-                                                        angular.l_min(self.s, 0)))
+        assert self.l >= l_min(self.s, 0), ("l={} must be >= "
+                                            "l_min={}".format(
+                                                self.l,
+                                                l_min(self.s, 0)))
 
         # We know the Schwarzschild separation constant analytically
-        self.A = angular.SWSphericalH_A(self.s, self.l, 0)
+        self.A = SWSphericalH_A(self.s, self.l, 0)
 
         # Create array of n's and omega's
         self.n      = []
         self.omega  = np.array([], dtype=complex)
         self.cf_err = np.array([])
-        self.iters  = np.array([])
+        self.n_frac  = np.array([])
 
         # We need and instance of root finder
         self.solver = NearbyRootFinder(s=self.s, m=0,
@@ -161,7 +161,7 @@ class Schw_n_seq_finder(object):
                 if (np.real(result) < 0):
                     result = -np.conjugate(result)
 
-                cf_err, iters = self.solver.get_cf_err()
+                cf_err, n_frac = self.solver.get_cf_err()
 
                 # ACTUALLY DO SOMETHING WITH THESE NUMBERS
                 cf_conv = True
@@ -177,13 +177,13 @@ class Schw_n_seq_finder(object):
 
                     self.omega  = np.append(self.omega,  result)
                     self.cf_err = np.append(self.cf_err, cf_err)
-                    self.iters  = np.append(self.iters, iters)
+                    self.n_frac = np.append(self.n_frac, n_frac)
 
                     # Make sure we sort properly!
                     ind_sort = np.argsort(-np.imag(self.omega))
                     self.omega  = self.omega[ind_sort]
                     self.cf_err = self.cf_err[ind_sort]
-                    self.iters = self.iters[ind_sort]
+                    self.n_frac = self.n_frac[ind_sort]
 
                 else:
                     # For the next attempt, try starting where we
