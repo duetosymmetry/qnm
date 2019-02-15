@@ -13,7 +13,7 @@ from .schwarzschild.tabulated import QNMDict
 
 # TODO some documentation here, better documentation throughout
 
-class Kerr_a_seq_finder(object):
+class KerrSpinSeq(object):
     """ TODO document """
 
     def __init__(self, *args, **kwargs):
