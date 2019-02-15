@@ -11,7 +11,7 @@ from .approx import dolan_ottewill_expansion
 
 # TODO some documentation here, better documentation throughout
 
-class Schw_n_seq_finder(object):
+class SchwOvertoneSeq(object):
 
     def __init__(self, *args, **kwargs):
         """Object to follow a sequence of Schwarzschild overtones,

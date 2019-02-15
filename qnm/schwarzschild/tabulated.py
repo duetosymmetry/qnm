@@ -7,14 +7,14 @@ import os
 import numpy as np
 
 from ..angular import l_min
-from .overtonesequence import Schw_n_seq_finder
+from .overtonesequence import SchwOvertoneSeq
 
 # TODO some documentation here, better documentation throughout
 
 def build_Schw_dict(*args, **kwargs):
     """ Function to build a dict of Schwarzschild QNMs.
 
-    Loops over values of (s,l), using Schw_n_seq_finder to find
+    Loops over values of (s,l), using SchwOvertoneSeq to find
     sequences in n.
 
     TODO Documentation
@@ -31,7 +31,7 @@ def build_Schw_dict(*args, **kwargs):
       Maximum angular harmonic number to run over.
 
     tol: float [default: 1e-10]
-      Tolerance to pass to Schw_n_seq_finder.
+      Tolerance to pass to SchwOvertoneSeq.
 
     =======
     Returns: dict
@@ -57,10 +57,9 @@ def build_Schw_dict(*args, **kwargs):
     for s in s_arr:
         ls = np.arange(l_min(s,0),l_max)
         for l in ls:
-            Schw_seq = Schw_n_seq_finder(s=s, l=l,
-                                         l_max=l+1, # Angular matrix
-                                         # will be diagonal for Schw
-                                         n_max=n_max, tol=tol)
+            Schw_seq = SchwOvertoneSeq(s=s, l=l,
+                                       l_max=l+1, # Angular matrix will be diagonal for Schw
+                                       n_max=n_max, tol=tol)
             try:
                 Schw_seq.do_find_sequence()
             except:

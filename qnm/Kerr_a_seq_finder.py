@@ -6,7 +6,7 @@ import numpy as np
 from scipy import optimize, interpolate
 
 from .angular import l_min, swsphericalh_A
-from nearby import NearbyRootFinder
+from .nearby import NearbyRootFinder
 
 from .schwarzschild.approx import Schw_QNM_estimate
 from .schwarzschild.tabulated import QNMDict

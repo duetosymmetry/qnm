@@ -1,7 +1,8 @@
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
-from contfrac import lentz
+
+from .contfrac import lentz
 
 # TODO some documentation here, better documentation throughout
 
@@ -50,7 +51,7 @@ def D_coeffs(omega, a, s, m, A):
 
     return D
 
-def Leaver_Cf_trunc_inversion(omega, a, s, m, A,
+def leaver_cf_trunc_inversion(omega, a, s, m, A,
                               n_inv, N=300, r_N=1.):
     """ Approximate the n_inv inversion of the infinite continued
     fraction for solving the radial Teukolsky equation, using
@@ -82,7 +83,7 @@ def Leaver_Cf_trunc_inversion(omega, a, s, m, A,
 
 # TODO possible choices for r_N: 0., 1., approximation using (34)-(38)
 
-def Leaver_Cf_inv_Lentz(omega, a, s, m, A, n_inv,
+def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
                         tol=1.e-10, N_min=0, N_max=np.Inf):
     """ Compute the n_inv inversion of the infinite continued
     fraction for solving the radial Teukolsky equation, using

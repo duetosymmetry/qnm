@@ -5,8 +5,8 @@ import logging
 import numpy as np
 from scipy import optimize
 
-import angular
-import radial
+from .angular import sep_const_closest, C_and_sep_const_closest
+from . import radial
 
 # TODO some documentation here, better documentation throughout
 
@@ -120,7 +120,7 @@ class NearbyRootFinder(object):
         self.C     = None
 
         self.cf_err = None
-        self.iters  = None
+        self.n_frac = None
 
         self.poles = np.array([])
 
@@ -136,20 +136,20 @@ class NearbyRootFinder(object):
         # oblateness parameter
         c     = self.a * omega
         # Separation constant at this a*omega
-        A     = angular.sep_const_closest(self.A0, self.s, c, self.m,
-                                          self.l_max)
+        A     = sep_const_closest(self.A0, self.s, c, self.m,
+                                  self.l_max)
 
         # We are trying to find a root of this function:
-        # inv_err = radial.Leaver_Cf_trunc_inversion(omega, self.a,
+        # inv_err = radial.leaver_cf_trunc_inversion(omega, self.a,
         #                                            self.s, self.m, A,
         #                                            self.n_inv,
         #                                            self.Nr, self.r_N)
 
-        inv_err, self.cf_err, self.iters = radial.Leaver_Cf_inv_Lentz(omega, self.a,
+        inv_err, self.cf_err, self.n_frac = radial.leaver_cf_inv_lentz(omega, self.a,
                                                           self.s, self.m, A,
                                                           self.n_inv, self.tol,
                                                           self.Nr_min, self.Nr_max)
-        # logging.info("Lentz terminated with cf_err={}, iters={}".format(self.cf_err, self.iters))
+        # logging.info("Lentz terminated with cf_err={}, n_frac={}".format(self.cf_err, self.n_frac))
 
         # Insert optional poles
         pole_factors   = np.prod(omega - self.poles)
@@ -177,16 +177,16 @@ class NearbyRootFinder(object):
         # As far as I can tell, scipy.linalg.eig already normalizes
         # the eigenvector to unit norm, and the coefficient with the
         # largest norm is real
-        self.A, self.C = angular.C_and_sep_const_closest(self.A0,
-                                                         self.s, c,
-                                                         self.m, self.l_max)
+        self.A, self.C = C_and_sep_const_closest(self.A0,
+                                                 self.s, c,
+                                                 self.m, self.l_max)
 
         return self.omega
 
     def get_cf_err(self):
         """ TODO Documentation """
 
-        return self.cf_err, self.iters
+        return self.cf_err, self.n_frac
 
     def set_poles(self, poles=[]):
         """ Multiply error function by poles in the complex plane.
