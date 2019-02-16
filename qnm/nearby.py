@@ -17,8 +17,8 @@ class NearbyRootFinder(object):
         radial and angular QNM equations, following the
         Leaver and Cook-Zalutskiy approach.
 
-        Keyword arguments
-        =================
+        Parameters
+        ----------
         a: float [default: 0.]
           Dimensionless spin of black hole, 0 <= a < 1.
 
@@ -189,11 +189,11 @@ class NearbyRootFinder(object):
         return self.cf_err, self.n_frac
 
     def set_poles(self, poles=[]):
-        """ Multiply error function by poles in the complex plane.
+        """ Set poles to multiply error function.
 
-        Arguments
-        =========
-        poles: array-like, as complex numbers [default: []]
+        Parameters
+        ----------
+        poles: array_like as complex numbers [default: []]
 
         """
 

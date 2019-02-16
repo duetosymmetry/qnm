@@ -21,8 +21,8 @@ class SchwOvertoneSeq(object):
         finding for higher values of n. Uses NearbyRootFinder to
         actually perform the root-finding.
 
-        Keyword arguments
-        ==========
+        Parameters
+        ----------
         n_max: int [default: 12]
           Maximum overtone number to search for (must be positive)
 
@@ -92,6 +92,15 @@ class SchwOvertoneSeq(object):
                                        r_N=self.r_N)
 
     def do_find_sequence(self):
+        """ TODO Document
+
+        Raises
+        ------
+        optimize.nonlin.NoConvergence
+          If a root can't be found within a few [TODO make param?]
+          attempted inversion numbers.
+
+        """
 
         # TODO : Do this as while loop instead of a for loop.
         # Keep track of all the roots found so far and keep them
@@ -163,7 +172,7 @@ class SchwOvertoneSeq(object):
 
                 cf_err, n_frac = self.solver.get_cf_err()
 
-                # ACTUALLY DO SOMETHING WITH THESE NUMBERS
+                # TODO ACTUALLY DO SOMETHING WITH THESE NUMBERS
                 cf_conv = True
 
                 if cf_conv:

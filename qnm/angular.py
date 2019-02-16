@@ -56,8 +56,8 @@ def swsphericalh_A(s, l, m):
     Eq. (50). Has no dependence on m. The formula is
       A_0 = l(l+1) - s(s+1)
 
-    Arguments:
-    ==========
+    Parameters
+    ----------
     s: integer
       Spin-weight of interest
 
@@ -66,6 +66,11 @@ def swsphericalh_A(s, l, m):
 
     m: integer
       Magnetic quantum number, ignored
+
+    Returns
+    -------
+    float
+      Value of A(a=0) = l(l+1) - s(s+1)
     """
 
     return l*(l+1) - s*(s+1)

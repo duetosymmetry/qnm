@@ -8,7 +8,7 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     """ Compute a continued fraction via modified Lentz's method.
 
     Parameters
-    ==========
+    ----------
     a: callable returning numeric.
     b: callable returning numeric.
 
@@ -25,8 +25,9 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
       Very small number to control convergence of Lentz's method when
       there is cancellation in a denominator.
 
-    =======
-    Returns: (float, float, int)
+    Returns
+    -------
+    (float, float, int)
       The first element of the tuple is the value of the continued
       fraction. The second element is the estimated error. The third
       element is the number of iterations.
@@ -79,7 +80,7 @@ def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     using generators rather than functions.
 
     Parameters
-    ==========
+    ----------
     a: generator yielding numeric.
     b: generator yielding numeric.
 
@@ -96,8 +97,9 @@ def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
       Very small number to control convergence of Lentz's method when
       there is cancellation in a denominator.
 
-    =======
-    Returns: (float, float, int)
+    Returns
+    -------
+    (float, float, int)
       The first element of the tuple is the value of the continued
       fraction. The second element is the estimated error. The third
       element is the number of iterations.

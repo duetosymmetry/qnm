@@ -19,8 +19,8 @@ def build_Schw_dict(*args, **kwargs):
 
     TODO Documentation
 
-    Keyword arguments
-    =================
+    Parameters
+    ----------
     s_arr: [int] [default: [-2, -1, 0]]
       Array of s values to run over.
 
@@ -33,9 +33,9 @@ def build_Schw_dict(*args, **kwargs):
     tol: float [default: 1e-10]
       Tolerance to pass to SchwOvertoneSeq.
 
-    =======
-    Returns: dict
-      Same as build_Schw_dict.
+    Returns
+    -------
+    dict
       A dict with tuple keys (s,l,n).
       The value at d[s,l,n] is a tuple (omega, cf_err, n_frac)
       where omega is the frequency omega_{s,l,n}, cf_err is the
@@ -104,13 +104,14 @@ class QNMDict(object):
         specified filename, and returned.
 
         Params
-        ======
+        ------
         dict_pickle_file: string [default: <dirname of this file>/data/Schw_dict.pickle]
           Filename for reading (or writing) dict of Schwarzschild QNMs
 
-        ======
-        Returns: dict
-          Same as build_Schw_dict.
+        Returns
+        -------
+        dict
+          Same as :meth:`build_Schw_dict`.
           A dict with tuple keys (s,l,n).
           The value at d[s,l,n] is a tuple (omega, cf_err, n_frac)
           where omega is the frequency omega_{s,l,n}, cf_err is the

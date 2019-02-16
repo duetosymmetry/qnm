@@ -24,8 +24,8 @@ class KerrSpinSeq(object):
         constant order can change. Uses NearbyRootFinder to actually
         perform the root-finding.
 
-        Keyword arguments
-        ==========
+        Parameters
+        ----------
         a_max: float [default: .9]
           Maximum dimensionless spin of black hole for the sequence,
           0 <= a_max < 1.
@@ -114,7 +114,7 @@ class KerrSpinSeq(object):
         self.a     = []
         self.omega = []
         self.cf_err= []
-        self.iters = []
+        self.n_frac= []
         self.A     = []
         self.C     = []
 
@@ -175,9 +175,9 @@ class KerrSpinSeq(object):
                     result = -np.conjugate(result)
 
 
-                cf_err, iters = self.solver.get_cf_err()
+                cf_err, n_frac = self.solver.get_cf_err()
 
-                # ACTUALLY DO SOMETHING WITH THESE NUMBERS
+                # TODO ACTUALLY DO SOMETHING WITH THESE NUMBERS
                 cf_conv = True
 
                 if cf_conv:
@@ -187,7 +187,7 @@ class KerrSpinSeq(object):
                     self.A.append(self.solver.A)
                     self.C.append(self.solver.C)
                     self.cf_err.append(cf_err)
-                    self.iters.append(iters)
+                    self.n_frac.append(n_frac)
                 else:
                     # For the next attempt, try starting where we
                     # ended up
@@ -305,6 +305,7 @@ class KerrSpinSeq(object):
     def __call__(self, a):
         """ TODO document """
 
+        # TODO validate input, 0 <= a < 1.
         # TODO if a > a_max then extend
         # TODO take parameter of whether to solve at guess or not
 
@@ -327,7 +328,7 @@ class KerrSpinSeq(object):
                                                 'QNM in sequence '
                                                 'at a={}'.format(a))
 
-        cf_err, iters = self.solver.get_cf_err()
+        cf_err, n_frac = self.solver.get_cf_err()
 
         # Do we want to insert these numbers into the arrays?
 

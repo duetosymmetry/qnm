@@ -65,6 +65,8 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+# LCS ADDED
+docs/_autosummary/
 
 # PyBuilder
 target/
