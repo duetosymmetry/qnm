@@ -1,3 +1,8 @@
+""" Analytic approximations for Schwarzschild QNMs.
+
+TODO Documentations.
+"""
+
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
@@ -26,7 +31,7 @@ def dolan_ottewill_expansion(s, n, l):
 
     return omega
 
-def large_overtone_exp(s, n, l):
+def large_overtone_expansion(s, n, l):
     """ TODO documentation """
 
     k = np.log(3.)/(8. * np.pi)
@@ -35,7 +40,9 @@ def large_overtone_exp(s, n, l):
     return k - 1.j * kappa * (n + 0.5)
 
 def Schw_QNM_estimate(s, n, l):
+    """ Give either :meth:`large_overtone_expansion` or :meth:`dolan_ottewill_expansion` """
+
     if (( n > 3 ) and (n >= 2*l)):
-        return large_overtone_exp(s, n, l)
+        return large_overtone_expansion(s, n, l)
     else:
         return dolan_ottewill_expansion(s, n, l)

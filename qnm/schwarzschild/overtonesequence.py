@@ -1,3 +1,8 @@
+""" Follow a Schwarzschild QNM sequence (s,l) from n=0 upwards.
+
+TODO Documentation.
+"""
+
 from __future__ import division, print_function, absolute_import
 
 import logging
@@ -12,48 +17,48 @@ from .approx import dolan_ottewill_expansion
 # TODO some documentation here, better documentation throughout
 
 class SchwOvertoneSeq(object):
+    """Object to follow a sequence of Schwarzschild overtones,
+    starting from n=0.  First two overtone seeds come from
+    approx.dolan_ottewill_expansion, and afterwards linear
+    extrapolation on the solutions is used to seed the root
+    finding for higher values of n. Uses NearbyRootFinder to
+    actually perform the root-finding.
+
+    Parameters
+    ----------
+    n_max: int [default: 12]
+      Maximum overtone number to search for (must be positive)
+
+    s: int [default: 2]
+      Spin of field of interest
+
+    [The m argument is omitted because this is just for Schwarzschild]
+
+    l: int [default: 2]
+      The l-number of a sequence starting from the
+      analytically-known value at a=0
+
+    l_max: int [default: 20]
+      Maximum value of l to include in the spherical-spheroidal
+      matrix for finding separation constant and mixing
+      coefficients. Must be sufficiently larger than l of interest
+      that angular spectral method can converge. The number of
+      l's needed for convergence depends on a.
+
+    tol: float [default: 1e-10]
+      Tolerance for root-finding
+
+    Nr: int [default: 300]
+      Truncation number of radial infinite continued
+      fraction. Must be sufficiently large for convergence.
+
+    r_N: complex [default: 0.j]
+      Seed value taken for truncation of infinite continued
+      fraction.
+
+    """
 
     def __init__(self, *args, **kwargs):
-        """Object to follow a sequence of Schwarzschild overtones,
-        starting from n=0.  First two overtone seeds come from
-        approx.dolan_ottewill_expansion, and afterwards linear
-        extrapolation on the solutions is used to seed the root
-        finding for higher values of n. Uses NearbyRootFinder to
-        actually perform the root-finding.
-
-        Parameters
-        ----------
-        n_max: int [default: 12]
-          Maximum overtone number to search for (must be positive)
-
-        s: int [default: 2]
-          Spin of field of interest
-
-        [The m argument is omitted because this is just for Schwarzschild]
-
-        l: int [default: 2]
-          The l-number of a sequence starting from the
-          analytically-known value at a=0
-
-        l_max: int [default: 20]
-          Maximum value of l to include in the spherical-spheroidal
-          matrix for finding separation constant and mixing
-          coefficients. Must be sufficiently larger than l of interest
-          that angular spectral method can converge. The number of
-          l's needed for convergence depends on a.
-
-        tol: float [default: 1e-10]
-          Tolerance for root-finding
-
-        Nr: int [default: 300]
-          Truncation number of radial infinite continued
-          fraction. Must be sufficiently large for convergence.
-
-        r_N: complex [default: 0.j]
-          Seed value taken for truncation of infinite continued
-          fraction.
-
-        """
 
         # Read args
         self.n_max       = kwargs.get('n_max',       12)

@@ -1,3 +1,8 @@
+""" Solve the angular Teukolsky equation via spectral decomposition.
+
+TODO Documentation.
+"""
+
 from __future__ import division, print_function, absolute_import
 
 import numpy as np
@@ -108,6 +113,8 @@ def give_M_matrix_elem_ufunc(s, c, m):
     return np.frompyfunc(elem, 2, 1)
 
 def l_min(s, m):
+    """ TODO Documentation """
+
     return np.max([np.abs(s), np.abs(m)])
 
 def M_matrix(s, c, m, l_max):

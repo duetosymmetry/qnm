@@ -1,3 +1,8 @@
+""" Computing, loading, and storing tabulated Schwarzschild QNMs.
+
+TODO Documentation.
+"""
+
 from __future__ import division, print_function, absolute_import
 
 import logging
@@ -77,12 +82,12 @@ def build_Schw_dict(*args, **kwargs):
 ############################################################
 
 class QNMDict(object):
+    """ TODO Documentation! """
 
     # Borg pattern, the QNM table will be shared among all instances
     _shared_state = {}
 
     def __init__(self, init=False, dict_pickle_file=None):
-        """ TODO Documentation! """
 
         self.__dict__ = self._shared_state
 

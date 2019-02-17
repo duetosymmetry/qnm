@@ -1,3 +1,8 @@
+""" Find a nearby root of the coupled radial/angular Teukolsky equations.
+
+TODO Documentation.
+"""
+
 from __future__ import division, print_function, absolute_import
 
 import logging
@@ -11,60 +16,60 @@ from . import radial
 # TODO some documentation here, better documentation throughout
 
 class NearbyRootFinder(object):
+    """Object to find and store results from simultaneous roots of
+    radial and angular QNM equations, following the
+    Leaver and Cook-Zalutskiy approach.
+
+    Parameters
+    ----------
+    a: float [default: 0.]
+      Dimensionless spin of black hole, 0 <= a < 1.
+
+    s: int [default: 2]
+      Spin of field of interest
+
+    m: int [default: 2]
+      Azimuthal number of mode of interest
+
+    A_closest_to: complex [default: 4.+0.j]
+      Complex value close to desired separation constant. This is
+      intended for tracking the l-number of a sequence starting
+      from the analytically-known value at a=0
+
+    l_max: int [default: 20]
+      Maximum value of l to include in the spherical-spheroidal
+      matrix for finding separation constant and mixing
+      coefficients. Must be sufficiently larger than l of interest
+      that angular spectral method can converge. The number of
+      l's needed for convergence depends on a.
+
+    omega_guess: complex [default: .5-.5j]
+      Initial guess of omega for root-finding
+
+    tol: float [default: 1e-10]
+      Tolerance for root-finding
+
+    n_inv: int [default: 0]
+      Inversion number of radial infinite continued fraction,
+      which selects overtone number of interest
+
+    Nr: int [default: 300]
+      Truncation number of radial infinite continued
+      fraction. Must be sufficiently large for convergence.
+
+    Nr_min: int [default: 300]
+      Floor for Nr (for dynamic control of Nr)
+
+    Nr_max: int [default: 4000]
+      Ceiling for Nr (for dynamic control of Nr)
+
+    r_N: complex [default: 1.]
+      Seed value taken for truncation of infinite continued
+      fraction.
+
+    """
 
     def __init__(self, *args, **kwargs):
-        """Object to find and store results from simultaneous roots of
-        radial and angular QNM equations, following the
-        Leaver and Cook-Zalutskiy approach.
-
-        Parameters
-        ----------
-        a: float [default: 0.]
-          Dimensionless spin of black hole, 0 <= a < 1.
-
-        s: int [default: 2]
-          Spin of field of interest
-
-        m: int [default: 2]
-          Azimuthal number of mode of interest
-
-        A_closest_to: complex [default: 4.+0.j]
-          Complex value close to desired separation constant. This is
-          intended for tracking the l-number of a sequence starting
-          from the analytically-known value at a=0
-
-        l_max: int [default: 20]
-          Maximum value of l to include in the spherical-spheroidal
-          matrix for finding separation constant and mixing
-          coefficients. Must be sufficiently larger than l of interest
-          that angular spectral method can converge. The number of
-          l's needed for convergence depends on a.
-
-        omega_guess: complex [default: .5-.5j]
-          Initial guess of omega for root-finding
-
-        tol: float [default: 1e-10]
-          Tolerance for root-finding
-
-        n_inv: int [default: 0]
-          Inversion number of radial infinite continued fraction,
-          which selects overtone number of interest
-
-        Nr: int [default: 300]
-          Truncation number of radial infinite continued
-          fraction. Must be sufficiently large for convergence.
-
-        Nr_min: int [default: 300]
-          Floor for Nr (for dynamic control of Nr)
-
-        Nr_max: int [default: 4000]
-          Ceiling for Nr (for dynamic control of Nr)
-
-        r_N: complex [default: 1.]
-          Seed value taken for truncation of infinite continued
-          fraction.
-
-        """
 
         # Set defaults before using values in kwargs
         self.a           = 0.

@@ -1,3 +1,9 @@
+""" Follow a QNM labeled by (s,l,m,n) as spin varies from a=0 upwards.
+
+TODO Documentation.
+"""
+
+
 from __future__ import division, print_function, absolute_import
 
 import logging
@@ -14,67 +20,66 @@ from .schwarzschild.tabulated import QNMDict
 # TODO some documentation here, better documentation throughout
 
 class KerrSpinSeq(object):
-    """ TODO document """
+    """Object to follow a QNM up a sequence in a, starting from
+    a=0. Values for omega and the separation constant from one
+    value of a are used to seed the root finding for the next
+    value of a, to maintain continuity in a when separation
+    constant order can change. Uses NearbyRootFinder to actually
+    perform the root-finding.
+
+    Parameters
+    ----------
+    a_max: float [default: .9]
+      Maximum dimensionless spin of black hole for the sequence,
+      0 <= a_max < 1.
+
+    delta_a: float [default: 0.005]
+      Step size in a for following the sequence from a=0 to a_max
+
+    s: int [default: 2]
+      Spin of field of interest
+
+    m: int [default: 2]
+      Azimuthal number of mode of interest
+
+    l: int [default: 2]
+      The l-number of a sequence starting from the
+      analytically-known value at a=0
+
+    l_max: int [default: 20]
+      Maximum value of l to include in the spherical-spheroidal
+      matrix for finding separation constant and mixing
+      coefficients. Must be sufficiently larger than l of interest
+      that angular spectral method can converge. The number of
+      l's needed for convergence depends on a.
+
+    omega_guess: complex [default: from schwarzschild.QNMDict or schwarzschild.approx.Schw_QNM_estimate]
+      Initial guess of omega for root-finding
+
+    tol: float [default: 1e-10]
+      Tolerance for root-finding
+
+    n: int [default: 0]
+      Overtone number of interest (sets the inversion number for
+      infinite continued fraction in Leaver's method)
+
+    Nr: int [default: 300]
+      Truncation number of radial infinite continued
+      fraction. Must be sufficiently large for convergence.
+
+    Nr_min: int [default: Nr]
+      Minimum number of terms for evaluating continued fraction.
+
+    Nr_max: int [default: 4000]
+      Maximum number of terms for evaluating continued fraction.
+
+    r_N: complex [default: 0.j]
+      Seed value taken for truncation of infinite continued
+      fraction. UNUSED, REMOVE
+
+    """
 
     def __init__(self, *args, **kwargs):
-        """Object to follow a QNM up a sequence in a, starting from
-        a=0. Values for omega and the separation constant from one
-        value of a are used to seed the root finding for the next
-        value of a, to maintain continuity in a when separation
-        constant order can change. Uses NearbyRootFinder to actually
-        perform the root-finding.
-
-        Parameters
-        ----------
-        a_max: float [default: .9]
-          Maximum dimensionless spin of black hole for the sequence,
-          0 <= a_max < 1.
-
-        delta_a: float [default: 0.005]
-          Step size in a for following the sequence from a=0 to a_max
-
-        s: int [default: 2]
-          Spin of field of interest
-
-        m: int [default: 2]
-          Azimuthal number of mode of interest
-
-        l: int [default: 2]
-          The l-number of a sequence starting from the
-          analytically-known value at a=0
-
-        l_max: int [default: 20]
-          Maximum value of l to include in the spherical-spheroidal
-          matrix for finding separation constant and mixing
-          coefficients. Must be sufficiently larger than l of interest
-          that angular spectral method can converge. The number of
-          l's needed for convergence depends on a.
-
-        omega_guess: complex [default: from schwarzschild.QNMDict or schwarzschild.approx.Schw_QNM_estimate]
-          Initial guess of omega for root-finding
-
-        tol: float [default: 1e-10]
-          Tolerance for root-finding
-
-        n: int [default: 0]
-          Overtone number of interest (sets the inversion number for
-          infinite continued fraction in Leaver's method)
-
-        Nr: int [default: 300]
-          Truncation number of radial infinite continued
-          fraction. Must be sufficiently large for convergence.
-
-        Nr_min: int [default: Nr]
-          Minimum number of terms for evaluating continued fraction.
-
-        Nr_max: int [default: 4000]
-          Maximum number of terms for evaluating continued fraction.
-
-        r_N: complex [default: 0.j]
-          Seed value taken for truncation of infinite continued
-          fraction. UNUSED, REMOVE
-
-        """
 
         # Read args
         self.a_max       = kwargs.get('a_max',       0.9)

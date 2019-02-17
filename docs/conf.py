@@ -62,7 +62,7 @@ if sphinx.version_info < (1, 8):
 else:
     autodoc_default_options = {'members': None,
                                'undoc-members': None,
-                               'special-members': '__init__, __call__'}
+                               'special-members': '__call__'}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
