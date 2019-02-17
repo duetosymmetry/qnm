@@ -17,20 +17,20 @@ import sys
 
 import sphinx
 
-sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('../qnm'))
 
 # -- Project information -----------------------------------------------------
 
-import qnm
+import _version as qnm_version
 
 project = 'qnm'
 copyright = '2019, Leo C. Stein'
 author = 'Leo C. Stein'
 
 # The short X.Y version
-version = ''
+version = qnm_version.__version__
 # The full version, including alpha/beta/rc tags
-release = ''
+release = version
 
 
 # -- General configuration ---------------------------------------------------
