@@ -9,7 +9,10 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-from .qnm._version import __version__
+import sys
+sys.path.append("qnm")
+
+from _version import __version__
 
 setuptools.setup(
     name="qnm",
@@ -22,7 +25,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/duetosymmetry/qnm/",
     packages=setuptools.find_packages(),
-    package_data={}, # TODO
+    package_data={'qnm':['schwarzschild/data/*']}, # TODO
     include_package_data=True,
     install_requires=[
         'numpy',
