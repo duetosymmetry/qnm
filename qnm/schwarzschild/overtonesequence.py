@@ -38,13 +38,6 @@ class SchwOvertoneSeq(object):
       The l-number of a sequence starting from the
       analytically-known value at a=0
 
-    l_max: int [default: 20]
-      Maximum value of l to include in the spherical-spheroidal
-      matrix for finding separation constant and mixing
-      coefficients. Must be sufficiently larger than l of interest
-      that angular spectral method can converge. The number of
-      l's needed for convergence depends on a.
-
     tol: float [default: 1e-10]
       Tolerance for root-finding
 
@@ -64,7 +57,6 @@ class SchwOvertoneSeq(object):
         self.n_max       = kwargs.get('n_max',       12)
         self.s           = kwargs.get('s',           -2)
         self.l           = kwargs.get('l',           2)
-        self.l_max       = kwargs.get('l_max',       20)
         self.tol         = kwargs.get('tol',         1e-10)
         self.Nr          = kwargs.get('Nr',          300)
         self.Nr_min      = self.Nr
@@ -88,7 +80,7 @@ class SchwOvertoneSeq(object):
 
         # We need and instance of root finder
         self.solver = NearbyRootFinder(s=self.s, m=0,
-                                       l_max=self.l_max,
+                                       l_max=self.l + 1,
                                        a=0.,
                                        A_closest_to=self.A,
                                        tol=self.tol,
@@ -96,8 +88,19 @@ class SchwOvertoneSeq(object):
                                        Nr_max=self.Nr_max,
                                        r_N=self.r_N)
 
-    def do_find_sequence(self):
-        """ TODO Document
+    def find_sequence(self):
+        """ Alias for :meth:`extend()` """
+
+        self.extend()
+
+    def extend(self, n_max=None):
+        """ Extend the current overtone sequence to a greater n_max.
+
+        Parameters
+        ----------
+        n_max: int, optional [default: None]
+          If is None, use the value of self.n_max .
+          If given, set self.n_max to this new value and proceed.
 
         Raises
         ------
@@ -107,11 +110,10 @@ class SchwOvertoneSeq(object):
 
         """
 
-        # TODO : Do this as while loop instead of a for loop.
-        # Keep track of all the roots found so far and keep them
-        # sorted by negative imaginary part.
+        if (n_max is not None):
+            self.n_max = n_max
 
-        while (len(self.omega) < self.n_max):
+        while (len(self.omega) <= self.n_max):
 
             n = len(self.omega)
 

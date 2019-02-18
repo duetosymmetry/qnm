@@ -30,10 +30,10 @@ def build_Schw_dict(*args, **kwargs):
       Array of s values to run over.
 
     n_max: int [default: 20]
-      Maximum overtone number to run over.
+      Maximum overtone number to run over (inclusive).
 
     l_max: int [default: 20]
-      Maximum angular harmonic number to run over.
+      Maximum angular harmonic number to run over (inclusive).
 
     tol: float [default: 1e-10]
       Tolerance to pass to SchwOvertoneSeq.
@@ -60,13 +60,12 @@ def build_Schw_dict(*args, **kwargs):
     Schw_err_dict = {}
 
     for s in s_arr:
-        ls = np.arange(l_min(s,0),l_max)
+        ls = np.arange(l_min(s,0),l_max+1)
         for l in ls:
             Schw_seq = SchwOvertoneSeq(s=s, l=l,
-                                       l_max=l+1, # Angular matrix will be diagonal for Schw
                                        n_max=n_max, tol=tol)
             try:
-                Schw_seq.do_find_sequence()
+                Schw_seq.find_sequence()
             except:
                 logging.warn("Failed at s={}, l={}".format(s, l))
             for n, (omega, cf_err, n_frac) in enumerate(zip(Schw_seq.omega,
@@ -145,10 +144,14 @@ class QNMDict(object):
             if not os.path.exists(_the_dir):
                 try:
                     os.mkdir(_the_dir)
-                    with open(dict_pickle_file, 'wb') as handle:
-                        logging.info("Writing Schw QNM dict to file {}".format(dict_pickle_file))
-                        pickle.dump(self.qnm_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
                 except:
-                    logging.warn("Could not write Schw QNM dict to file {}".format(dict_pickle_file))
+                    logging.warn("Could not create dir {} to store Schw QNM dict".format(_the_dir))
+
+            try:
+                with open(dict_pickle_file, 'wb') as handle:
+                    logging.info("Writing Schw QNM dict to file {}".format(dict_pickle_file))
+                    pickle.dump(self.qnm_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            except:
+                logging.warn("Could not write Schw QNM dict to file {}".format(dict_pickle_file))
 
         return self.qnm_dict
