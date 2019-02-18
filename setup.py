@@ -20,7 +20,7 @@ setuptools.setup(
     author="Leo C. Stein",
     author_email="leo.stein@gmail.com",
     description="Calculate quasinormal modes of Kerr black holes.",
-    keywords='black-holes',
+    keywords='black holes quasinormal modes physics scientific computing numerical methods',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/duetosymmetry/qnm/",
