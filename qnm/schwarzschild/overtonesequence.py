@@ -1,6 +1,8 @@
 """ Follow a Schwarzschild QNM sequence (s,l) from n=0 upwards.
 
-TODO Documentation.
+The class :class:`SchwOvertoneSeq` makes it possible to find
+successive overtones (n's) of a QNM labeled by (s,l), in Schwarzschild
+(a=0). See its documentation for more details.
 """
 
 from __future__ import division, print_function, absolute_import
@@ -21,8 +23,32 @@ class SchwOvertoneSeq(object):
     starting from n=0.  First two overtone seeds come from
     approx.dolan_ottewill_expansion, and afterwards linear
     extrapolation on the solutions is used to seed the root
-    finding for higher values of n. Uses NearbyRootFinder to
-    actually perform the root-finding.
+    finding for higher values of n. Uses
+    :class:`qnm.nearby.NearbyRootFinder` to actually perform the
+    root-finding.
+
+    Attributes
+    ----------
+    A: float
+      Value of the angular separation constant.
+
+    n: array of int
+      Overtone numbers.
+
+    omega: np.array of complex
+      The QNM frequencies along the overtone sequence, element i is
+      overtone i.
+
+    cf_err: np.array of float
+      Estimate of continued fraction truncation error in solving for
+      QNM frequency.
+
+    n_frac: np.array of int
+      Truncation number of continued fraction.
+
+    solver: NearbyRootFinder
+      Instance of :class:`qnm.nearby.NearbyRootFinder` that is used to
+      find the QNMs.
 
     Parameters
     ----------
@@ -48,6 +74,22 @@ class SchwOvertoneSeq(object):
     r_N: complex [default: 0.j]
       Seed value taken for truncation of infinite continued
       fraction.
+
+    Examples
+    --------
+    Suppose you want the n=5 overtone for (s=-1, l=3):
+
+    >>> from qnm.schwarzschild.overtonesequence import SchwOvertoneSeq
+    >>> seq = SchwOvertoneSeq(s=-1, l=3, n_max=5)
+    >>> seq.find_sequence()
+    >>> print(seq.omega[5])
+    (0.503901745408196-1.1703558890487784j)
+
+    Later, you want to go out to n=8:
+
+    >>> seq.extend(n_max=8)
+    >>> print(seq.omega[8])
+    (0.422790929389591-1.9136575597714867j)
 
     """
 
