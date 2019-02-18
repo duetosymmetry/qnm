@@ -30,6 +30,7 @@ setuptools.setup(
     install_requires=[
         'numpy',
         'scipy',
+        'numba',
     ],
     classifiers=[
         "Intended Audience :: Science/Research",
