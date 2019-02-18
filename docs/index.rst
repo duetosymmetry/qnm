@@ -7,7 +7,7 @@ TODO point people in the right direction here
    :maxdepth: 2
    :caption: Contents:
 
-   README
+   README.md
    api
 
 Indices and tables
