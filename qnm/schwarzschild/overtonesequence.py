@@ -53,19 +53,19 @@ class SchwOvertoneSeq(object):
     Parameters
     ----------
     n_max: int [default: 12]
-      Maximum overtone number to search for (must be positive)
+      Maximum overtone number to search for (must be positive).
 
     s: int [default: 2]
-      Spin of field of interest
+      Spin weight of field of interest.
 
-    [The m argument is omitted because this is just for Schwarzschild]
+    [The m parameter is omitted because this is just for Schwarzschild.]
 
     l: int [default: 2]
-      The l-number of a sequence starting from the
-      analytically-known value at a=0
+      The multipole number of a sequence starting from the
+      analytically-known value at a=0 .
 
     tol: float [default: 1e-10]
-      Tolerance for root-finding
+      Tolerance for root-finding.
 
     Nr: int [default: 300]
       Truncation number of radial infinite continued
@@ -163,7 +163,7 @@ class SchwOvertoneSeq(object):
             self.solver.set_params(n_inv=n)
 
             if (n < 2):
-                omega_guess = dolan_ottewill_expansion(self.s, n, self.l)
+                omega_guess = dolan_ottewill_expansion(self.s, self.l, n)
             else:
                 # Linearly extrapolate from the last two
                 om_m_1 = self.omega[-1]

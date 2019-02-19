@@ -99,7 +99,7 @@ class KerrSpinSeq(object):
         if ((self.s, self.l, self.n) in self.qnm_dict.keys()):
             def_om_guess = self.qnm_dict[(self.s, self.l, self.n)][0]
         else:
-            def_om_guess = QNM_estimate(self.s, self.n, self.l)
+            def_om_guess = QNM_estimate(self.s, self.l, self.n)
 
         self.omega_guess = kwargs.get('omega_guess', def_om_guess)
 

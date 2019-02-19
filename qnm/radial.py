@@ -26,7 +26,7 @@ def sing_pt_char_exps(omega, a, s, m):
     choice of one of two possible characteristic exponents at the
     inner horizon doesn't affect the minimal solution in Leaver's
     method, so we just pick one. Thus our choices are, in the
-    nomenclature of [1]_, (\zeta_+, \xi_-, \eta_+).
+    nomenclature of [1]_, :math:`(\zeta_+, \xi_-, \eta_+)`.
 
     Parameters
     ----------
@@ -46,7 +46,7 @@ def sing_pt_char_exps(omega, a, s, m):
     Returns
     -------
     (complex, complex, complex)
-      (\zeta_+, \xi_-, \eta_+)
+      :math:`(\zeta_+, \xi_-, \eta_+)`
 
     References
     ----------
