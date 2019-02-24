@@ -207,7 +207,7 @@ def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
                             tol=1.e-10, N_min=0, N_max=np.Inf):
     """ Legacy function. Same as :meth:`leaver_cf_inv_lentz` except
     calling :meth:`qnm.contfrac.lentz` with temporary functions that
-    are defined inline inside this function. Numba does not speed up
+    are defined inside this function. Numba does not speed up
     this type of code. However it remains here for testing purposes.
     See documentation for :meth:`leaver_cf_inv_lentz` for parameters
     and return value.
@@ -344,6 +344,12 @@ def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
 
     # TODO should tiny be a parameter?
     tiny = 1.e-30
+
+    # This is starting with b_0 = 0 for the infinite continued
+    # fraction. I could have started with other values (e.g. b_i
+    # evaluated with i=0) but then I would have had to subtract that
+    # same quantity away from the final result. I don't know if this
+    # affects convergence.
     f_old = tiny
 
     C_old = f_old

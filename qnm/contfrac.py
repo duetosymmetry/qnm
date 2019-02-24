@@ -12,6 +12,8 @@ import numpy as np
 def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     """ Compute a continued fraction via modified Lentz's method.
 
+    This implementation is by the book [1]_.
+
     Parameters
     ----------
     a: callable returning numeric.
@@ -36,6 +38,13 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
       The first element of the tuple is the value of the continued
       fraction. The second element is the estimated error. The third
       element is the number of iterations.
+
+    References
+    ----------
+    .. [1] WH Press, SA Teukolsky, WT Vetterling, BP Flannery,
+       "Numerical Recipes," 3rd Ed., Cambridge University Press 2007,
+       ISBN 0521880688, 9780521880688 .
+
     """
 
     f_old = b(0)
@@ -84,6 +93,8 @@ def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     """ Compute a continued fraction via modified Lentz's method,
     using generators rather than functions.
 
+    This implementation is by the book [1]_.
+
     Parameters
     ----------
     a: generator yielding numeric.
@@ -108,6 +119,12 @@ def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
       The first element of the tuple is the value of the continued
       fraction. The second element is the estimated error. The third
       element is the number of iterations.
+
+    References
+    ----------
+    .. [1] WH Press, SA Teukolsky, WT Vetterling, BP Flannery,
+       "Numerical Recipes," 3rd Ed., Cambridge University Press 2007,
+       ISBN 0521880688, 9780521880688 .
 
     """
 
