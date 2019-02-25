@@ -107,8 +107,8 @@ class QNMDict(object):
         fails then a new table will be computed, written to the
         specified filename, and returned.
 
-        Params
-        ------
+        Parameters
+        ----------
         dict_pickle_file: string [default: <dirname of this file>/data/Schw_dict.pickle]
           Filename for reading (or writing) dict of Schwarzschild QNMs
 
@@ -159,7 +159,35 @@ class QNMDict(object):
 ############################################################
 
 class QNMDict2(object):
-    """ TODO Documentation! """
+    """ Object for getting/holding/(pre-)computing Schwarzschild QNMs.
+
+    This class uses the "borg" pattern, so the table of precomputed
+    values will be shared amongst all instances of the class.  A set
+    of precomputed QNMs can be loaded/stored from a pickle file with
+    :meth:`load_dict()` and :meth:`write_dict()`.  The main interface
+    is via the special :meth:`__call__()` method which is invoked via
+    `object(s,l,n)`.  If the QNM labeled by (s,l,n) has already been
+    computed, it will be returned.  Otherwise we try to compute it and
+    then return it.
+
+    Attributes
+    ----------
+    seq_dict: dict
+      Keys are tuples (s,l) which label an overtone sequence of QNMs.
+      Values are instances of
+      :class:`qnm.schwarzschild.overtonesequence.SchwOvertoneSeq`.
+
+    Parameters
+    ----------
+    init: bool, optional [default: False]
+      Whether or not to call :meth:`load_dict()` when initializing
+      this instance.
+
+    dict_pickle_file: string, optional [default: None]
+      Path to pickle file that holds precomputed QNMs. If the value is
+      None, get the default from :meth:`default_pickle_file()`.
+
+    """
 
     # Borg pattern, the QNM table will be shared among all instances
     _shared_state = {}
@@ -177,7 +205,14 @@ class QNMDict2(object):
 
 
     def default_pickle_file(self):
-        """Give the default path of the QNM dict pickle file, <dirname of this file>/data/Schw_dict.pickle."""
+        """Give the default path of the QNM dict pickle file, `<dirname of this file>/data/Schw_dict.pickle`.
+
+        Returns
+        -------
+        string
+          `<dirname of this file>/data/Schw_dict.pickle`
+
+        """
 
         return os.path.abspath(
             '{}/data/Schw_dict.pickle'.format(
@@ -186,20 +221,21 @@ class QNMDict2(object):
     def load_dict(self, dict_pickle_file=None):
         """ Load a Schw QNM dict from disk.
 
-        Params
-        ------
-        dict_pickle_file: string [default: from default_pickle_file()]
+        Parameters
+        ----------
+        dict_pickle_file: string [default: from default_pickle_file]
           Filename for reading (or writing) dict of Schwarzschild QNMs
 
-        Returns
-        -------
-        None
         """
 
         if (dict_pickle_file is None):
             dict_pickle_file = self.default_pickle_file()
 
         try:
+            with open(dict_pickle_file, 'rb') as handle:
+                logging.info("Loading Schw QNM dict from file {}".format(dict_pickle_file))
+                self.seq_dict = pickle.load(handle)
+        except UnicodeDecodeError as e:
             with open(dict_pickle_file, 'rb') as handle:
                 logging.info("Loading Schw QNM dict from file {}".format(dict_pickle_file))
                 self.seq_dict = pickle.load(handle, encoding='latin1')
@@ -211,16 +247,10 @@ class QNMDict2(object):
     def write_dict(self, dict_pickle_file=None):
         """Write the current state of the QNM dict to disk.
 
-        TODO
-
-        Params
-        ------
+        Parameters
+        ----------
         dict_pickle_file: string [default: from default_pickle_file()]
           Filename for reading (or writing) dict of Schwarzschild QNMs
-
-        Returns
-        -------
-        None
         """
 
         if (dict_pickle_file is None):
