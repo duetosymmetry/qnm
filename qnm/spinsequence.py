@@ -53,7 +53,7 @@ class KerrSpinSeq(object):
       that angular spectral method can converge. The number of
       l's needed for convergence depends on a.
 
-    omega_guess: complex [default: from schwarzschild.QNMDict or schwarzschild.approx.Schw_QNM_estimate]
+    omega_guess: complex [default: from schwarzschild.QNMDict]
       Initial guess of omega for root-finding
 
     tol: float [default: 1e-10]
@@ -94,14 +94,11 @@ class KerrSpinSeq(object):
         self.tol         = kwargs.get('tol',         1e-10)
         self.n           = kwargs.get('n',           0)
 
-        # TODO only call this function if omega_guess is not passed
-        self.qnm_dict = QNMDict().load_dict()
-        if ((self.s, self.l, self.n) in self.qnm_dict.keys()):
-            def_om_guess = self.qnm_dict[(self.s, self.l, self.n)][0]
+        if ('omega_guess' in kwargs.keys()):
+            self.omega_guess = kwargs.get('omega_guess')
         else:
-            def_om_guess = QNM_estimate(self.s, self.l, self.n)
-
-        self.omega_guess = kwargs.get('omega_guess', def_om_guess)
+            qnm_dict = QNMDict()
+            self.omega_guess = qnm_dict(self.s, self.l, self.n)[0]
 
         self.Nr          = kwargs.get('Nr',          300)
         self.Nr_min      = self.Nr
