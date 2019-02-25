@@ -6,7 +6,7 @@ python:
     - method: pip
       path: .
       extra_requirements:
-        - sphinx==1.8.4
+        - docs
     - requirements: docs/requirements.txt
     - requirements: requirements.txt
   system_packages: true
