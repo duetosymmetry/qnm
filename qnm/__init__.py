@@ -34,3 +34,5 @@ from . import contfrac
 from . import nearby
 
 from . import spinsequence
+
+from . import cached

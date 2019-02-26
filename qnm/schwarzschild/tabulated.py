@@ -181,7 +181,7 @@ class QNMDict(object):
         _the_dir = os.path.dirname(dict_pickle_file)
         if not os.path.exists(_the_dir):
             try:
-                os.mkdir(_the_dir)
+                os.makedirs(_the_dir)
             except:
                 logging.warn("Could not create dir {} to store Schw QNM dict".format(_the_dir))
 
