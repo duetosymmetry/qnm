@@ -78,8 +78,13 @@ if sphinx.version_info < (1, 8):
     source_parsers = {
         '.md': CommonMarkParser,
     }
-
-source_suffix = ['.rst', '.md']
+    source_suffix = ['.rst', '.md']
+else:
+    source_suffix = {
+        '.rst': 'restructuredtext',
+        '.txt': 'markdown',
+        '.md': 'markdown',
+    }
 
 # The master toctree document.
 master_doc = 'index'
