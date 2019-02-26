@@ -7,6 +7,7 @@ Package API
 
    qnm
    qnm.angular
+   qnm.cached
    qnm.contfrac
    qnm.nearby
    qnm.radial
