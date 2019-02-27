@@ -29,7 +29,7 @@ class KerrSpinSeq(object):
 
     Parameters
     ----------
-    a_max: float [default: .9]
+    a_max: float [default: .99]
       Maximum dimensionless spin of black hole for the sequence,
       0 <= a_max < 1.
 
@@ -82,7 +82,7 @@ class KerrSpinSeq(object):
     def __init__(self, *args, **kwargs):
 
         # Read args
-        self.a_max       = kwargs.get('a_max',       0.9)
+        self.a_max       = kwargs.get('a_max',       0.99)
         # TODO Maybe change this to delta_a0
         self.delta_a     = kwargs.get('delta_a',     0.005)
         self.delta_a_min = 1.e-5 # TODO get rid of magic number
