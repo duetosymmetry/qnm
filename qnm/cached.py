@@ -171,7 +171,7 @@ class KerrSeqCache(object):
         # Reset these attributes
         # TODO Is this the right thing to do? Maybe not?
         self.compute_if_not_found = compute_if_not_found
-        self.compute_pars = compute_pars.copy if compute_pars is not None else {}
+        self.compute_pars = dict(compute_pars) if compute_pars is not None else {}
 
         # Don't reset this one
         if (not hasattr(self, 'schw_dict')):
@@ -250,7 +250,10 @@ class KerrSeqCache(object):
             return loaded_mode
 
         if (compute_if_not_found):
-            the_pars = compute_pars.copy()
+            logging.info("mode not in cache, or on disk, trying to "
+                         "compute s={}, l={}, m={}, n={}"
+                         .format(s, l, m, n))
+            the_pars = dict(compute_pars) # Make a copy
             the_pars.update({ 's': s, 'l': l, 'm': m, 'n': n })
             computed = KerrSpinSeq(**the_pars)
             computed.do_find_sequence()
@@ -258,3 +261,76 @@ class KerrSeqCache(object):
             return computed
 
         return None
+
+    def write_all(self):
+        """Write all of the modes in the cache to disk.
+
+        TODO: Take an overwrite argument which will force overwrite or
+        not.
+
+        """
+
+        for _, seq in self.seq_dict.iteritems():
+            write_mode(seq)
+
+############################################################
+def build_package_default_cache(ksc):
+    """Compute the standard list of modes that this package
+    promises to have in its cache.
+
+    This method is intended to be used for building the modes from
+    scratch in a predictable way.  If modes are available on disk then
+    there will be no computation, simply loading all the default modes.
+
+    Arguments
+    ---------
+    ksc: KerrSeqCache
+      The cache that will hold the modes we are about to compute.
+
+    Returns
+    -------
+    KerrSeqCache
+      The updated cache.
+    """
+
+    QNMDict(init=True)
+
+    a_max   = .9995
+    tol     = 1e-10
+    delta_a = 2.5e-3
+    Nr_max  = 6000
+
+    ksc.compute_pars.update({'a_max': a_max, 'tol': tol,
+                             'delta_a': delta_a, 'Nr_max': Nr_max})
+
+    reruns = []
+
+    ns=np.arange(0,7)
+    ss = [-2, -1]
+    for s in ss:
+        ls=np.arange(np.abs(s),8)
+        for l in ls:
+            ms=np.arange(-l,l+1)
+            for m in ms:
+                for n in ns:
+                    try:
+                        ksc(s, l, m, n)
+                    except:
+                        reruns.append((s,l,m,n))
+
+    # Tweak the params a little bit for the reruns
+    re2runs = []
+    ksc.compute_pars.update({'delta_a': 1.9e-3})
+    for s, l, m, n in reruns:
+        try:
+            ksc(s, l, m, n)
+        except:
+            re2runs.append((s, l, m, n))
+
+    # Experimentally determined we only need one more case of reruns
+    ksc.compute_pars.update({'a_max': .9992, 'delta_a': 1.8e-3})
+
+    for s, l, m, n in re2runs:
+        ksc(s, l, m, n)
+
+    return ksc
