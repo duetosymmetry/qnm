@@ -63,29 +63,50 @@ def swsphericalh_A(s, l, m):
 
     Parameters
     ----------
-    s: integer
+    s: int
       Spin-weight of interest
 
-    l: integer
+    l: int
       Angular quantum number of interest
 
-    m: integer
+    m: int
       Magnetic quantum number, ignored
 
     Returns
     -------
-    float
+    int
       Value of A(a=0) = l(l+1) - s(s+1)
     """
 
     return l*(l+1) - s*(s+1)
 
 def M_matrix_elem(s, c, m, l, lprime):
-    """ Eq. (55) """
+    """ The (l, lprime) matrix element from the spherical-spheroidal
+    decomposition matrix from Eq. (55).
 
-    # Notice that the M matrix is pentadiagonal,
-    # so no need to write the sub- and super-diagonals
-    # separately
+    Parameters
+    ----------
+    s: int
+      Spin-weight of interest
+
+    c: complex
+      Oblateness of the spheroidal harmonic
+
+    m: int
+      Magnetic quantum number
+
+    l: int
+      Angular quantum number of interest
+
+    lprime: int
+      Primed quantum number of interest
+
+    Returns
+    -------
+    complex
+      Matrix element M_{l, lprime}
+    """
+
     if (lprime == l-2):
         return -c*c*calA(s,lprime,m)
     if (lprime == l-1):
@@ -105,7 +126,25 @@ def M_matrix_elem(s, c, m, l, lprime):
 
 # I don't know if this is necessary ... can just iterate
 def give_M_matrix_elem_ufunc(s, c, m):
-    """ TODO Document """
+    """Gives ufunc that implements matrix elements of the
+    spherical-spheroidal decomposition matrix.
+
+    Parameters
+    ----------
+    s: int
+      Spin-weight of interest
+
+    c: complex
+      Oblateness of the spheroidal harmonic
+
+    m: int
+      Magnetic quantum number
+
+    Returns
+    -------
+    ufunc
+      Implements elements of M matrix
+    """
 
     def elem(l, lprime):
         return M_matrix_elem(s, c, m, l, lprime)
@@ -113,12 +152,48 @@ def give_M_matrix_elem_ufunc(s, c, m):
     return np.frompyfunc(elem, 2, 1)
 
 def l_min(s, m):
-    """ TODO Documentation """
+    """ Minimum allowed value of l for a given s, m.
+
+    The formula is l_min = max(|m|,|s|).
+
+    Parameters
+    ----------
+    s: int
+      Spin-weight of interest
+
+    m: int
+      Magnetic quantum number
+
+    Returns
+    -------
+    int
+      l_min
+    """
 
     return np.max([np.abs(s), np.abs(m)])
 
 def M_matrix(s, c, m, l_max):
-    """ TODO Document """
+    """Spherical-spheroidal decomposition matrix truncated at l_max.
+
+    Parameters
+    ----------
+    s: int
+      Spin-weight of interest
+
+    c: complex
+      Oblateness of the spheroidal harmonic
+
+    m: int
+      Magnetic quantum number
+
+    l_max: int
+      Maximum angular quantum number
+
+    Returns
+    -------
+    complex ndarray
+      Decomposition matrix
+    """
 
     ells = np.arange(l_min(s,m), l_max+1)
 
@@ -127,19 +202,89 @@ def M_matrix(s, c, m, l_max):
     return uf.outer(ells,ells).astype(complex)
 
 def sep_consts(s, c, m, l_max):
-    """ TODO Document """
+    """Finds eigenvalues of decomposition matrix, i.e. the separation
+    constants, As.
+
+    Parameters
+    ----------
+    s: int
+      Spin-weight of interest
+
+    c: complex
+      Oblateness of spheroidal harmonic
+
+    m: int
+      Magnetic quantum number
+
+    l_max: int
+      Maximum angular quantum number
+
+    Returns
+    -------
+    complex ndarray
+      Eigenvalues of spherical-spheroidal decomposition matrix
+    """
 
     return np.linalg.eigvals(M_matrix(s, c, m, l_max))
 
 def sep_const_closest(A0, s, c, m, l_max):
-    """ TODO Document """
+    """Gives the separation constant that is closest to A0.
+
+    Parameters
+    ----------
+    A0: complex
+      Value close to the desired separation constant.
+
+    s: int
+      Spin-weight of interest
+
+    c: complex
+      Oblateness of spheroidal harmonic
+
+    m: int
+      Magnetic quantum number
+
+    l_max: int
+      Maximum angular quantum number
+
+    Returns
+    -------
+    complex
+      Separation constant that is the closest to A0.
+    """
 
     As = sep_consts(s, c, m, l_max)
     i_closest = np.argmin(np.abs(As-A0))
     return As[i_closest]
 
 def C_and_sep_const_closest(A0, s, c, m, l_max):
-    """ TODO Document """
+    """Get a single eigenvalue and eigenvector of decomposition
+    matrix, where the eigenvalue is closest to some guess A0.
+
+    Parameters
+    ----------
+    A0: complex
+      Value close to the desired separation constant.
+
+    s: int
+      Spin-weight of interest
+
+    c: complex
+      Oblateness of spheroidal harmonic
+
+    m: int
+      Magnetic quantum number
+
+    l_max: int
+      Maximum angular quantum number
+
+    Returns
+    -------
+    complex, complex ndarray
+      The first element of the tuple is the eigenvalue that is closest
+      in value to A0. The second element of the tuple is the
+      corresponding eigenvector.
+    """
 
     As, Cs = np.linalg.eig(M_matrix(s, c, m, l_max))
     i_closest = np.argmin(np.abs(As-A0))
