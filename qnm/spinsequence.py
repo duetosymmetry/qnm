@@ -36,6 +36,12 @@ class KerrSpinSeq(object):
     delta_a: float [default: 0.005]
       Step size in a for following the sequence from a=0 to a_max
 
+    delta_a_min: float [default: 1.e-5]
+      Minimum step size in a.
+
+    delta_a_max: float [default: 4.e-3]
+      Maximum step size in a.
+
     s: int [default: 2]
       Spin of field of interest
 
@@ -85,8 +91,8 @@ class KerrSpinSeq(object):
         self.a_max       = kwargs.get('a_max',       0.99)
         # TODO Maybe change this to delta_a0
         self.delta_a     = kwargs.get('delta_a',     0.005)
-        self.delta_a_min = 1.e-5 # TODO get rid of magic number
-        self.delta_a_max = 4.e-3 # TODO get rid of magic number
+        self.delta_a_min = kwargs.get('delta_a_min', 1.e-5)
+        self.delta_a_max = kwargs.get('delta_a_max', 4.e-3)
         self.s           = kwargs.get('s',           -2)
         self.m           = kwargs.get('m',           2)
         self.l           = kwargs.get('l',           2)
