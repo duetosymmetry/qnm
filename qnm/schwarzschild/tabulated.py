@@ -233,7 +233,6 @@ class QNMDict(object):
         """
 
         # TODO Check values of (s,l)
-        s = -np.abs(s)
 
         if ((s,l) not in self.seq_dict.keys()):
             self.seq_dict[(s,l)] = SchwOvertoneSeq(s=s, l=l, n_max=n)
