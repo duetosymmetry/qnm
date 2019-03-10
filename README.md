@@ -37,11 +37,40 @@ All of these can be installed through pip or conda.
 
 ## Usage
 
+The highest-level interface is via `qnm.cached.KerrSeqCache`, which
+load cached *spin sequences* from disk. A spin sequence is just a mode
+labeled by (s,l,m,n), with the spin a ranging from a=0 to some
+maximum, e.g. 0.9995. A large number of low-lying spin sequences have
+been precomputed and are available online. The first time you use the
+package, download the precomputed sequences:
+
 ```python
-import qnm
+>>> import qnm
+
+>>> qnm.download_data()
+Trying to fetch https://duetosymmetry.com/files/qnm/data.tar.bz2
+Trying to decompress file /<something>/qnm/data.tar.bz2
+Data directory /<something>/qnm/data contains 860 pickle files
 ```
 
-TODO
+Then, use `qnm.cached.KerrSeqCache` to load a
+`qnm.spinsequence.KerrSpinSeq` of interest. If the mode is not
+available, it will try to compute it (see detailed documentation for
+how to control that calculation).
+
+```python
+>>> ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once
+>>> mode_seq = ksc(s=-2,l=2,m=2,n=0)
+>>> omega, A, C = mode_seq(a=0.68)
+>>> print(omega)
+(0.5239751042900845-0.08151262363119974j)
+```
+
+Calling a spin sequence with `mode_seq(a)` will return the complex
+quasinormal mode frequency omega, the complex angular separation
+constant A, and a vector C of coefficients for decomposing the
+associated spin-weighted spheroidal harmonics as a sum of
+spin-weighted spherical harmonics.
 
 ## Documentation
 
