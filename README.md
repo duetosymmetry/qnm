@@ -35,6 +35,11 @@ All of these can be installed through pip or conda.
 * [scipy](https://www.scipy.org/install.html)
 * [numba](http://numba.pydata.org/numba-doc/latest/user/installing.html)
 
+## Documentation
+
+Automatically-generated API documentation is available on [Read the Docs: qnm](https://qnm.readthedocs.io/).
+
+
 ## Usage
 
 The highest-level interface is via `qnm.cached.KerrSeqCache`, which
@@ -47,7 +52,7 @@ package, download the precomputed sequences:
 ```python
 >>> import qnm
 
->>> qnm.download_data()
+>>> qnm.download_data() # Only need to do this once
 Trying to fetch https://duetosymmetry.com/files/qnm/data.tar.bz2
 Trying to decompress file /<something>/qnm/data.tar.bz2
 Data directory /<something>/qnm/data contains 860 pickle files
@@ -71,10 +76,6 @@ quasinormal mode frequency omega, the complex angular separation
 constant A, and a vector C of coefficients for decomposing the
 associated spin-weighted spheroidal harmonics as a sum of
 spin-weighted spherical harmonics.
-
-## Documentation
-
-Automatically-generated documentation is available on [Read the Docs: qnm](https://qnm.readthedocs.io/).
 
 ## Credits
 The code is developed and maintained by [Leo C. Stein](https://duetosymmetry.com).
