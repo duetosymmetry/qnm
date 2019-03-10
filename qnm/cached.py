@@ -9,6 +9,12 @@ from __future__ import division, print_function, absolute_import
 import logging
 import pickle
 import os
+try:
+    from urllib.request import urlretrieve # py 3
+except ImportError:
+    from urllib import  urlretrieve # py 2
+import tarfile
+import glob
 
 import numpy as np
 
@@ -134,7 +140,8 @@ def load_cached_mode(s, l, m, n):
             logging.info("Loading Kerr QNM sequence from file {}".format(pickle_path))
             spin_seq = pickle.load(handle, encoding='latin1')
     except:
-        logging.error("Could not load Kerr QNM sequence from file {}".format(pickle_path))
+        logging.error("Could not load Kerr QNM sequence from file {}. "
+                      "Do you need to run qnm.download_data()?".format(pickle_path))
 
     return spin_seq
 
@@ -282,8 +289,8 @@ def build_package_default_cache(ksc):
     scratch in a predictable way.  If modes are available on disk then
     there will be no computation, simply loading all the default modes.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     ksc: KerrSeqCache
       The cache that will hold the modes we are about to compute.
 
@@ -334,3 +341,38 @@ def build_package_default_cache(ksc):
         ksc(s, l, m, n)
 
     return ksc
+
+############################################################
+def download_data(overwrite=False):
+    """Fetch and decompress tarball of precomputed spin sequence from
+    the web.
+
+    Parameters
+    ----------
+    overwrite: bool, optional [default: False]
+      If there is already a tarball on disk, this flag controls
+      whether or not it is overwritten.
+
+    """
+
+    data_url = 'https://duetosymmetry.com/files/qnm/data.tar.bz2'
+    filename = data_url.split('/')[-1]
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    dest     = base_dir + '/' + filename
+
+    if (os.path.exists(dest) and (overwrite is False)):
+        print("Destination path {} already exists, use overwrite=True "
+              "to force an overwrite.".format(dest))
+        return
+
+    print("Trying to fetch {}".format(data_url))
+    urlretrieve(data_url, filename=dest)
+
+    print("Trying to decompress file {}".format(dest))
+    with tarfile.open(dest, "r:bz2") as tar:
+        tar.extractall(base_dir)
+
+    data_dir = base_dir + '/data'
+    pickle_files = glob.glob(data_dir + '/*.pickle')
+    print("Data directory {} contains {} pickle files"
+          .format(data_dir, len(pickle_files)))

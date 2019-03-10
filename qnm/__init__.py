@@ -36,3 +36,4 @@ from . import nearby
 from . import spinsequence
 
 from . import cached
+from .cached import download_data

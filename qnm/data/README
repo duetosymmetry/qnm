@@ -1,0 +1,7 @@
+# data directory
+
+This directory contains precomputed spin sequences. Data gets
+downloaded to this directory using qnm.download_data() .
+
+DO NOT commit the files in this directory or upload them to PyPI. This
+README file is here just as a placeholder.
