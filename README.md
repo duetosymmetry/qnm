@@ -5,9 +5,20 @@
 
 
 # Welcome to qnm
-Python implementation of Cook-Zalutskiy spectral approach to computing Kerr QNM frequencies.
+Python implementation of Cook-Zalutskiy spectral approach to computing
+Kerr quasinormal frequencies (QNMs).
 
-TODO basic info
+With this python package, you can compute the QNMs labeled by
+different (s,l,m,n), at a desired dimensionless spin parameter 0≤a<1.
+The angular sector is treated as a spectral decomposition of
+spin-weighted *spheroidal* harmonics into spin-weighted spherical
+harmonics.  Therefore the spherical-spheroidal decomposition
+coefficients come for free when solving for ω and A.
+
+We have precomputed a large number of low-lying modes (s=-2 and s=-1,
+all l<8, all n<7). These can be automatically installed with a single
+function call, and interpolated for good initial guesses for
+root-finding at some value of a.
 
 ## Installation
 
@@ -95,10 +106,10 @@ for ind in mode_list:
 
 plt.figure(figsize=(16,8))
 
-plt.subplot(1, 2, 1)   
+plt.subplot(1, 2, 1)
 for mode, seq in modes.iteritems():
     plt.plot(np.real(seq.omega),np.imag(seq.omega))
-    
+
 
 modestr = "{},{},{},n".format(s,l,m)
 plt.xlabel(r'$\textrm{Re}[\omega_{' + modestr + r'}]$', fontsize=16)
@@ -106,10 +117,10 @@ plt.ylabel(r'$\textrm{Im}[\omega_{' + modestr + r'}]$', fontsize=16)
 plt.gca().tick_params(labelsize=16)
 plt.gca().invert_yaxis()
 
-plt.subplot(1, 2, 2)   
+plt.subplot(1, 2, 2)
 for mode, seq in modes.iteritems():
     plt.plot(np.real(seq.A),np.imag(seq.A))
-    
+
 plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
 plt.ylabel(r'$\textrm{Im}[A_{' + modestr + r'}]$', fontsize=16)
 plt.gca().tick_params(labelsize=16)
@@ -129,10 +140,10 @@ for ind in mode_list:
 
 plt.figure(figsize=(16,8))
 
-plt.subplot(1, 2, 1)   
+plt.subplot(1, 2, 1)
 for mode, seq in modes.iteritems():
     plt.plot(np.real(seq.omega),np.imag(seq.omega))
-    
+
 
 modestr = "{},{},m,0".format(s,l)
 plt.xlabel(r'$\textrm{Re}[\omega_{' + modestr + r'}]$', fontsize=16)
@@ -140,10 +151,10 @@ plt.ylabel(r'$\textrm{Im}[\omega_{' + modestr + r'}]$', fontsize=16)
 plt.gca().tick_params(labelsize=16)
 plt.gca().invert_yaxis()
 
-plt.subplot(1, 2, 2)   
+plt.subplot(1, 2, 2)
 for mode, seq in modes.iteritems():
     plt.plot(np.real(seq.A),np.imag(seq.A))
-    
+
 plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
 plt.ylabel(r'$\textrm{Im}[A_{' + modestr + r'}]$', fontsize=16)
 plt.gca().tick_params(labelsize=16)

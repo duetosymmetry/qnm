@@ -1,6 +1,24 @@
-""" Calculate quasinormal modes of Kerr black holes.
+"""Calculate quasinormal modes of Kerr black holes.
 
-TODO Documentation """
+The highest-level interface is via :class:`qnm.cached.KerrSeqCache`,
+which will fetch instances of
+:class:`qnm.spinsequence.KerrSpinSeq`. This is most clearly
+demonstrated with an example.
+
+TODO More documentation
+
+Examples
+--------
+
+>>> import qnm
+>>> # qnm.download_data() # Only need to do this once
+>>> ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once per session
+>>> mode_seq = ksc(s=-2,l=2,m=2,n=0)
+>>> omega, A, C = mode_seq(a=0.68)
+>>> print(omega)
+(0.5239751042900845-0.08151262363119974j)
+
+"""
 
 from __future__ import print_function, division, absolute_import
 

@@ -1,7 +1,7 @@
 qnm's documentation: index
 ==========================
 
-TODO point people in the right direction here
+For a quick start, take a look at the `usage section <README.html#usage>`_ of the Welcome node.
 
 .. toctree::
    :maxdepth: 2

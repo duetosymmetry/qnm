@@ -1,6 +1,15 @@
 """ Caching interface to Kerr QNMs
 
-TODO Documentation.
+This is a high-level interface to the package.  An instance of
+:class:`KerrSeqCache` will return instances of
+:class:`qnm.spinsequence.KerrSpinSeq` from memory or disk. If a spin
+sequence is neither in memory nor on disk then it will be computed and
+returned.
+
+Use :meth:`download_data` to fetch a collection of precomputed spin
+sequences from the web.
+
+TODO More documentation.
 
 """
 
