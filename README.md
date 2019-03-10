@@ -43,19 +43,19 @@ Automatically-generated API documentation is available on [Read the Docs: qnm](h
 ## Usage
 
 The highest-level interface is via `qnm.cached.KerrSeqCache`, which
-load cached *spin sequences* from disk. A spin sequence is just a mode
+loads cached *spin sequences* from disk. A spin sequence is just a mode
 labeled by (s,l,m,n), with the spin a ranging from a=0 to some
 maximum, e.g. 0.9995. A large number of low-lying spin sequences have
 been precomputed and are available online. The first time you use the
 package, download the precomputed sequences:
 
 ```python
->>> import qnm
+import qnm
 
->>> qnm.download_data() # Only need to do this once
-Trying to fetch https://duetosymmetry.com/files/qnm/data.tar.bz2
-Trying to decompress file /<something>/qnm/data.tar.bz2
-Data directory /<something>/qnm/data contains 860 pickle files
+qnm.download_data() # Only need to do this once
+# Trying to fetch https://duetosymmetry.com/files/qnm/data.tar.bz2
+# Trying to decompress file /<something>/qnm/data.tar.bz2
+# Data directory /<something>/qnm/data contains 860 pickle files
 ```
 
 Then, use `qnm.cached.KerrSeqCache` to load a
@@ -64,11 +64,11 @@ available, it will try to compute it (see detailed documentation for
 how to control that calculation).
 
 ```python
->>> ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once
->>> mode_seq = ksc(s=-2,l=2,m=2,n=0)
->>> omega, A, C = mode_seq(a=0.68)
->>> print(omega)
-(0.5239751042900845-0.08151262363119974j)
+ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once
+mode_seq = ksc(s=-2,l=2,m=2,n=0)
+omega, A, C = mode_seq(a=0.68)
+print(omega)
+# (0.5239751042900845-0.08151262363119974j)
 ```
 
 Calling a spin sequence with `mode_seq(a)` will return the complex
@@ -76,6 +76,85 @@ quasinormal mode frequency omega, the complex angular separation
 constant A, and a vector C of coefficients for decomposing the
 associated spin-weighted spheroidal harmonics as a sum of
 spin-weighted spherical harmonics.
+
+Visual inspections of modes are very useful to check if the solver is
+behaving well. This is easily accomplished with matplotlib. Here are
+some simple examples:
+
+```python
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+mpl.rc('text', usetex = True)
+
+s, l, m = (-2, 2, 2)
+mode_list = [(s, l, m, n) for n in np.arange(0,7)]
+modes = {}
+for ind in mode_list:
+    modes[ind] = ksc(*ind)
+
+plt.figure(figsize=(16,8))
+
+plt.subplot(1, 2, 1)   
+for mode, seq in modes.iteritems():
+    plt.plot(np.real(seq.omega),np.imag(seq.omega))
+    
+
+modestr = "{},{},{},n".format(s,l,m)
+plt.xlabel(r'$\textrm{Re}[\omega_{' + modestr + r'}]$', fontsize=16)
+plt.ylabel(r'$\textrm{Im}[\omega_{' + modestr + r'}]$', fontsize=16)
+plt.gca().tick_params(labelsize=16)
+plt.gca().invert_yaxis()
+
+plt.subplot(1, 2, 2)   
+for mode, seq in modes.iteritems():
+    plt.plot(np.real(seq.A),np.imag(seq.A))
+    
+plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
+plt.ylabel(r'$\textrm{Im}[A_{' + modestr + r'}]$', fontsize=16)
+plt.gca().tick_params(labelsize=16)
+
+plt.show()
+```
+
+Which results in the following figure:
+
+![example_22n plot](notebooks/example_22n.png)
+
+```python
+s, l, n = (-2, 2, 0)
+mode_list = [(s, l, m, n) for m in np.arange(-l,l+1)]
+for ind in mode_list:
+    modes[ind] = ksc(*ind)
+
+plt.figure(figsize=(16,8))
+
+plt.subplot(1, 2, 1)   
+for mode, seq in modes.iteritems():
+    plt.plot(np.real(seq.omega),np.imag(seq.omega))
+    
+
+modestr = "{},{},m,0".format(s,l)
+plt.xlabel(r'$\textrm{Re}[\omega_{' + modestr + r'}]$', fontsize=16)
+plt.ylabel(r'$\textrm{Im}[\omega_{' + modestr + r'}]$', fontsize=16)
+plt.gca().tick_params(labelsize=16)
+plt.gca().invert_yaxis()
+
+plt.subplot(1, 2, 2)   
+for mode, seq in modes.iteritems():
+    plt.plot(np.real(seq.A),np.imag(seq.A))
+    
+plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
+plt.ylabel(r'$\textrm{Im}[A_{' + modestr + r'}]$', fontsize=16)
+plt.gca().tick_params(labelsize=16)
+
+plt.show()
+```
+
+Which results in the following figure:
+
+![example_2m0 plot](notebooks/example_2m0.png)
+
 
 ## Credits
 The code is developed and maintained by [Leo C. Stein](https://duetosymmetry.com).
