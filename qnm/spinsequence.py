@@ -283,7 +283,10 @@ class KerrSpinSeq(object):
         self.build_interps()
 
     def build_interps(self):
-        """ TODO document """
+        """Build interpolating functions for omega(a) and A(a).
+
+        This is automatically called at the end of :meth:`do_find_sequence`.
+        """
 
         # TODO do we want to allow extrapolation?
 
@@ -311,7 +314,26 @@ class KerrSpinSeq(object):
             k=k, ext=0)
 
     def __call__(self, a):
-        """ TODO document """
+        """Solve for omega, A, and C[] at a given spin a.
+
+        This uses the interpolants, based on the solved sequence, for
+        initial guesses of omega(a) and A(a).
+
+        Parameters
+        ----------
+        a: float
+          Value of spin, 0 <= a < 1.
+
+        Returns
+        -------
+        complex, complex, complex ndarray
+          The first element of the tuple is omega. The second element
+          of the tuple is A. The third element of the tuple is the
+          array of complex spherical-spheroidal decomposition
+          coefficients.
+        """
+
+        # TODO Make sure that interpolants have been built
 
         # TODO validate input, 0 <= a < 1.
         # TODO if a > a_max then extend
