@@ -22,6 +22,7 @@ try:
     from urllib.request import urlretrieve # py 3
 except ImportError:
     from urllib import  urlretrieve # py 2
+from tqdm import tqdm
 import tarfile
 import glob
 
@@ -352,6 +353,25 @@ def build_package_default_cache(ksc):
     return ksc
 
 ############################################################
+# This is taken verbatim from the tqdm examples, see
+# https://pypi.org/project/tqdm/#hooks-and-callbacks
+
+class TqdmUpTo(tqdm):
+    """Provides `update_to(n)` which uses `tqdm.update(delta_n)`."""
+    def update_to(self, b=1, bsize=1, tsize=None):
+        """
+        b  : int, optional
+            Number of blocks transferred so far [default: 1].
+        bsize  : int, optional
+            Size of each block (in tqdm units) [default: 1].
+        tsize  : int, optional
+            Total size (in tqdm units). If [default: None] remains unchanged.
+        """
+        if tsize is not None:
+            self.total = tsize
+        self.update(b * bsize - self.n)  # will also set self.n = b * bsize
+
+############################################################
 def download_data(overwrite=False):
     """Fetch and decompress tarball of precomputed spin sequence from
     the web.
@@ -375,7 +395,9 @@ def download_data(overwrite=False):
         return
 
     print("Trying to fetch {}".format(data_url))
-    urlretrieve(data_url, filename=dest)
+    with TqdmUpTo(unit='B', unit_scale=True, miniters=1,
+                  desc=filename) as t:
+        urlretrieve(data_url, filename=dest, reporthook=t.update_to)
 
     print("Trying to decompress file {}".format(dest))
     with tarfile.open(dest, "r:bz2") as tar:

@@ -31,6 +31,7 @@ setuptools.setup(
         'numpy',
         'scipy',
         'numba',
+        'tqdm',
     ],
     classifiers=[
         "Intended Audience :: Science/Research",
