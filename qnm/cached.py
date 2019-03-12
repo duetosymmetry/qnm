@@ -286,7 +286,7 @@ class KerrSeqCache(object):
 
         """
 
-        for _, seq in self.seq_dict.iteritems():
+        for _, seq in self.seq_dict.items():
             write_mode(seq)
 
 ############################################################
