@@ -107,7 +107,7 @@ for ind in mode_list:
 plt.figure(figsize=(16,8))
 
 plt.subplot(1, 2, 1)
-for mode, seq in modes.iteritems():
+for mode, seq in modes.items():
     plt.plot(np.real(seq.omega),np.imag(seq.omega))
 
 
@@ -118,7 +118,7 @@ plt.gca().tick_params(labelsize=16)
 plt.gca().invert_yaxis()
 
 plt.subplot(1, 2, 2)
-for mode, seq in modes.iteritems():
+for mode, seq in modes.items():
     plt.plot(np.real(seq.A),np.imag(seq.A))
 
 plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
@@ -141,7 +141,7 @@ for ind in mode_list:
 plt.figure(figsize=(16,8))
 
 plt.subplot(1, 2, 1)
-for mode, seq in modes.iteritems():
+for mode, seq in modes.items():
     plt.plot(np.real(seq.omega),np.imag(seq.omega))
 
 
@@ -152,7 +152,7 @@ plt.gca().tick_params(labelsize=16)
 plt.gca().invert_yaxis()
 
 plt.subplot(1, 2, 2)
-for mode, seq in modes.iteritems():
+for mode, seq in modes.items():
     plt.plot(np.real(seq.A),np.imag(seq.A))
 
 plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
