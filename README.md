@@ -45,6 +45,7 @@ All of these can be installed through pip or conda.
 * [numpy](https://docs.scipy.org/doc/numpy/user/install.html)
 * [scipy](https://www.scipy.org/install.html)
 * [numba](http://numba.pydata.org/numba-doc/latest/user/installing.html)
+* [tqdm](https://tqdm.github.io) (just for `qnm.download_data()` progress)
 
 ## Documentation
 
