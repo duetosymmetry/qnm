@@ -136,6 +136,7 @@ Which results in the following figure:
 ```python
 s, l, n = (-2, 2, 0)
 mode_list = [(s, l, m, n) for m in np.arange(-l,l+1)]
+modes = {}
 for ind in mode_list:
     modes[ind] = ksc(*ind)
 
