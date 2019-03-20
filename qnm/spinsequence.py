@@ -156,52 +156,36 @@ class KerrSpinSeq(object):
         A0 = swsphericalh_A(self.s, self.l, self.m)
         omega_guess = self.omega_guess
 
-        _delta_a = self.delta_a
-
         while _a <= self.a_max:
 
             self.solver.set_params(a=_a, A_closest_to=A0,
                                    omega_guess=omega_guess)
 
-            # Flag: is the continued fraction expansion converging?
-            cf_conv = False
+            result = self.solver.do_solve()
 
-            while not cf_conv:
+            if (result is None):
+                raise optimize.nonlin.NoConvergence('Failed to find '
+                                                    'QNM in sequence '
+                                                    'at a={}'.format(_a))
 
-                result = self.solver.do_solve()
+            # TODO This probably doesn't belong here
+            # Ensure we start on the "positive frequency"
+            # sequence.  This only works for i==0 (a=0.) because
+            # there the separation constant is real.
+            if ((i == 0) and (np.real(result) < 0)):
+                result = -np.conjugate(result)
 
-                if (result is None):
-                    raise optimize.nonlin.NoConvergence('Failed to find '
-                                                        'QNM in sequence '
-                                                        'at a={}'.format(_a))
+            # TODO Behavior based on these numbers? Should we continue
+            # even if cf_err is larger than the desired error tol?
+            cf_err, n_frac = self.solver.get_cf_err()
 
-                # TODO This probably doesn't belong here
-                # Ensure we start on the "positive frequency"
-                # sequence.  This only works for i==0 (a=0.) because
-                # there the separation constant is real.
-                if ((i == 0) and (np.real(result) < 0)):
-                    result = -np.conjugate(result)
-
-
-                cf_err, n_frac = self.solver.get_cf_err()
-
-                # TODO ACTUALLY DO SOMETHING WITH THESE NUMBERS
-                cf_conv = True
-
-                if cf_conv:
-                    # Done with this value of a
-                    self.a.append(_a)
-                    self.omega.append(result)
-                    self.A.append(self.solver.A)
-                    self.C.append(self.solver.C)
-                    self.cf_err.append(cf_err)
-                    self.n_frac.append(n_frac)
-                else:
-                    # For the next attempt, try starting where we
-                    # ended up
-                    self.solver.set_params(omega_guess=result,
-                                           A_closest_to=self.solver.A)
-                    # Now try again, because cf_conv is still False
+            # Done with this value of a
+            self.a.append(_a)
+            self.omega.append(result)
+            self.A.append(self.solver.A)
+            self.C.append(self.solver.C)
+            self.cf_err.append(cf_err)
+            self.n_frac.append(n_frac)
 
             # We always try to get the a_max value. If that's the
             # value we just did, break out of the loop by hand
