@@ -180,7 +180,7 @@ and orthonormal, and are used much more commonly.  Therefore you
 typically want to express a spheroidal (on the left hand side) in
 terms of sphericals (on the right hand side),
 
-![equation](https://latex.codecogs.com/gif.latex?%7B%7D_s%20Y_%7B%5Cell%20m%7D%28%5Ctheta%2C%20%5Cphi%3B%20a%5Comega%29%20%3D%20%7B%5Csum_%7B%5Cell%27%3D%5Cell_%7B%5Cmin%7D%20%28s%2Cm%29%7D%5E%7B%5Cell_%5Cmax%7D%7D%20C_%7B%5Cell%27%20%5Cell%20m%7D%28a%5Comega%29%5C%20%7B%7D_s%20Y_%7B%5Cell%20m%7D%28%5Ctheta%2C%20%5Cphi%29%20%5C%2C.)
+![equation](https://latex.codecogs.com/gif.latex?%7B%7D_s%20Y_%7B%5Cell%20m%7D%28%5Ctheta%2C%20%5Cphi%3B%20a%5Comega%29%20%3D%20%7B%5Csum_%7B%5Cell%27%3D%5Cell_%7B%5Cmin%7D%20%28s%2Cm%29%7D%5E%7B%5Cell_%5Cmax%7D%7D%20C_%7B%5Cell%27%20%5Cell%20m%7D%28a%5Comega%29%5C%20%7B%7D_s%20Y_%7B%5Cell%27%20m%7D%28%5Ctheta%2C%20%5Cphi%29%20%5C%2C.)
 
 Here ℓmin=max(|m|,|s|) and ℓmax can be chosen at run time.  The C
 coefficients are returned as a complex ndarray, with the zeroth
