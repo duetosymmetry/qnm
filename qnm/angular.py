@@ -9,7 +9,7 @@ import numpy as np
 
 # TODO some documentation here, better documentation throughout
 
-def calF(s, l, m):
+def _calF(s, l, m):
     """ Eq. (52b) """
 
     if ((0==s) and (0 == l+1)):
@@ -19,41 +19,41 @@ def calF(s, l, m):
     return (np.sqrt( ((l+1)**2 - m*m) / (2*l+3) / (2*l+1) )
             * np.sqrt( ( (l+1)**2  - s*s)  / (l+1)**2 ))
 
-def calG(s, l, m):
+def _calG(s, l, m):
     """ Eq. (52c) """
     if (0 == l):
         return 0.
 
     return np.sqrt( ( l*l - m*m ) / (4*l*l - 1)) * np.sqrt(1 - s*s/l/l)
 
-def calH(s, l, m):
+def _calH(s, l, m):
     """ Eq. (52d) """
     if (0 == l) or (0 == s):
         return 0.
 
     return - m*s/l/(l+1)
 
-def calA(s, l, m):
+def _calA(s, l, m):
     """ Eq. (53a) """
-    return calF(s,l,m) * calF(s,l+1,m)
+    return _calF(s,l,m) * _calF(s,l+1,m)
 
-def calD(s, l, m):
+def _calD(s, l, m):
     """ Eq. (53b) """
-    return calF(s,l,m) * (calH(s,l+1,m)  + calH(s,l,m))
+    return _calF(s,l,m) * (_calH(s,l+1,m)  + _calH(s,l,m))
 
-def calB(s, l, m):
+def _calB(s, l, m):
     """ Eq. (53c) """
-    return (calF(s,l,m) * calG(s,l+1,m)
-            + calG(s,l,m) * calF(s,l-1,m)
-            + calH(s,l,m)**2)
+    return (_calF(s,l,m) * _calG(s,l+1,m)
+            + _calG(s,l,m) * _calF(s,l-1,m)
+            + _calH(s,l,m)**2)
 
-def calE(s, l, m):
+def _calE(s, l, m):
     """ Eq. (53d) """
-    return calG(s,l,m) * (calH(s,l-1,m) + calH(s,l,m))
+    return _calG(s,l,m) * (_calH(s,l-1,m) + _calH(s,l,m))
 
-def calC(s, l, m):
+def _calC(s, l, m):
     """ Eq. (53e) """
-    return calG(s,l,m) * calG(s,l-1,m)
+    return _calG(s,l,m) * _calG(s,l-1,m)
 
 def swsphericalh_A(s, l, m):
     """ Angular separation constant at a=0.
@@ -108,19 +108,19 @@ def M_matrix_elem(s, c, m, l, lprime):
     """
 
     if (lprime == l-2):
-        return -c*c*calA(s,lprime,m)
+        return -c*c*_calA(s,lprime,m)
     if (lprime == l-1):
-        return (-c*c*calD(s,lprime,m)
-                + 2*c*s*calF(s,lprime,m))
+        return (-c*c*_calD(s,lprime,m)
+                + 2*c*s*_calF(s,lprime,m))
     if (lprime == l  ):
         return (swsphericalh_A(s,lprime,m)
-                - c*c*calB(s,lprime,m)
-                + 2*c*s*calH(s,lprime,m))
+                - c*c*_calB(s,lprime,m)
+                + 2*c*s*_calH(s,lprime,m))
     if (lprime == l+1):
-        return (-c*c*calE(s,lprime,m)
-                + 2*c*s*calG(s,lprime,m))
+        return (-c*c*_calE(s,lprime,m)
+                + 2*c*s*_calG(s,lprime,m))
     if (lprime == l+2):
-        return -c*c*calC(s,lprime,m)
+        return -c*c*_calC(s,lprime,m)
 
     return 0.
 
