@@ -11,7 +11,8 @@ C coefficients in the equation
 
 Here ℓmin=max(|m|,|s|) (see :meth:`l_min`), and ℓmax can be chosen at
 run time. The C coefficients are returned as a complex ndarray, with
-the zeroth element corresponding to ℓmin.
+the zeroth element corresponding to ℓmin.  You can get the associated
+ℓ values by calling :meth:`ells`.
 
 TODO More documentation.
 """
@@ -185,6 +186,31 @@ def l_min(s, m):
 
     return np.max([np.abs(s), np.abs(m)])
 
+def ells(s, m, l_max):
+    """Vector of ℓ values in C vector and M matrix.
+
+    The format of the C vector and M matrix is that the 0th element
+    corresponds to l_min(s,m) (see :meth:`l_min`).
+
+    Parameters
+    ----------
+    s: int
+      Spin-weight of interest
+
+    m: int
+      Magnetic quantum number
+
+    l_max: int
+      Maximum angular quantum number
+
+    Returns
+    -------
+    int ndarray
+      Vector of ℓ values, starting from l_min
+    """
+
+    return np.arange(l_min(s,m), l_max+1)
+
 def M_matrix(s, c, m, l_max):
     """Spherical-spheroidal decomposition matrix truncated at l_max.
 
@@ -208,11 +234,11 @@ def M_matrix(s, c, m, l_max):
       Decomposition matrix
     """
 
-    ells = np.arange(l_min(s,m), l_max+1)
+    _ells = ells(s, m, l_max)
 
     uf = give_M_matrix_elem_ufunc(s, c, m)
 
-    return uf.outer(ells,ells).astype(complex)
+    return uf.outer(_ells,_ells).astype(complex)
 
 def sep_consts(s, c, m, l_max):
     """Finds eigenvalues of decomposition matrix, i.e. the separation

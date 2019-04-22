@@ -327,7 +327,10 @@ class KerrSpinSeq(object):
           The first element of the tuple is omega. The second element
           of the tuple is A. The third element of the tuple is the
           array of complex spherical-spheroidal decomposition
-          coefficients.
+          coefficients. For documentation on the format of the
+          spherical-spheroidal decomposition coefficient array, see
+          :mod:`qnm.angular` or
+          :func:`qnm.angular.C_and_sep_const_closest`.
         """
 
         # TODO Make sure that interpolants have been built
