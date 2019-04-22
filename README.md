@@ -6,8 +6,9 @@
 
 
 # Welcome to qnm
-Python implementation of Cook-Zalutskiy spectral approach to computing
-Kerr quasinormal frequencies (QNMs).
+Python implementation of the [Cook-Zalutskiy spectral
+approach](https://arxiv.org/abs/1410.7698) to computing Kerr
+quasinormal frequencies (QNMs).
 
 With this python package, you can compute the QNMs labeled by
 different (s,l,m,n), at a desired dimensionless spin parameter 0≤a<1.
