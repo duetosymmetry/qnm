@@ -1,6 +1,19 @@
 """ Solve the angular Teukolsky equation via spectral decomposition.
 
-TODO Documentation.
+For a given complex QNM frequency ω, the separation constant and
+spherical-spheroidal decomposition are found as an eigenvalue and
+eigenvector of an (infinite) matrix problem.  The interface to solving
+this problem is :meth:`C_and_sep_const_closest`, which returns a
+certain eigenvalue A and eigenvector C.  The eigenvector contains the
+C coefficients in the equation
+
+.. math:: {}_s Y_{\ell m}(\\theta, \phi; a\omega) = {\sum_{\ell'=\ell_{\min} (s,m)}^{\ell_\max}} C_{\ell' \ell m}(a\omega)\ {}_s Y_{\ell' m}(\\theta, \phi) \,.
+
+Here ℓmin=max(|m|,|s|) (see :meth:`l_min`), and ℓmax can be chosen at
+run time. The C coefficients are returned as a complex ndarray, with
+the zeroth element corresponding to ℓmin.
+
+TODO More documentation.
 """
 
 from __future__ import division, print_function, absolute_import
@@ -283,7 +296,8 @@ def C_and_sep_const_closest(A0, s, c, m, l_max):
     complex, complex ndarray
       The first element of the tuple is the eigenvalue that is closest
       in value to A0. The second element of the tuple is the
-      corresponding eigenvector.
+      corresponding eigenvector.  The 0th element of this ndarray
+      corresponds to :meth:`l_min`.
     """
 
     As, Cs = np.linalg.eig(M_matrix(s, c, m, l_max))
