@@ -9,7 +9,7 @@ C coefficients in the equation
 
 .. math:: {}_s Y_{\ell m}(\\theta, \phi; a\omega) = {\sum_{\ell'=\ell_{\min} (s,m)}^{\ell_\max}} C_{\ell' \ell m}(a\omega)\ {}_s Y_{\ell' m}(\\theta, \phi) \,.
 
-Here ℓmin=max(|m|,|s|) (see :meth:`l_min`), and ℓmax can be chosen at
+Here ℓmin=max(\|m\|,\|s\|) (see :meth:`l_min`), and ℓmax can be chosen at
 run time. The C coefficients are returned as a complex ndarray, with
 the zeroth element corresponding to ℓmin.  You can get the associated
 ℓ values by calling :meth:`ells`.
@@ -168,7 +168,7 @@ def give_M_matrix_elem_ufunc(s, c, m):
 def l_min(s, m):
     """ Minimum allowed value of l for a given s, m.
 
-    The formula is l_min = max(|m|,|s|).
+    The formula is l_min = max(\|m\|,\|s\|).
 
     Parameters
     ----------
