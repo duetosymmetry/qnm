@@ -13,8 +13,9 @@ With this python package, you can compute the QNMs labeled by
 different (s,l,m,n), at a desired dimensionless spin parameter 0≤a<1.
 The angular sector is treated as a spectral decomposition of
 spin-weighted *spheroidal* harmonics into spin-weighted spherical
-harmonics.  Therefore the spherical-spheroidal decomposition
-coefficients come for free when solving for ω and A.
+harmonics.  Therefore you get the spherical-spheroidal decomposition
+coefficients for free when solving for ω and A ([see below for
+details](#spherical-spheroidal-decomposition)).
 
 We have precomputed a large number of low-lying modes (s=-2 and s=-1,
 all l<8, all n<7). These can be automatically installed with a single
@@ -88,7 +89,8 @@ Calling a spin sequence with `mode_seq(a)` will return the complex
 quasinormal mode frequency omega, the complex angular separation
 constant A, and a vector C of coefficients for decomposing the
 associated spin-weighted spheroidal harmonics as a sum of
-spin-weighted spherical harmonics.
+spin-weighted spherical harmonics ([see below for
+details](#spherical-spheroidal-decomposition)).
 
 Visual inspections of modes are very useful to check if the solver is
 behaving well. This is easily accomplished with matplotlib. Here are
@@ -169,6 +171,20 @@ Which results in the following figure:
 
 ![example_2m0 plot](notebooks/example_2m0.png)
 
+## Spherical-spheroidal decomposition
+
+The angular dependence of QNMs are naturally spin-weighted *spheroidal*
+harmonics.  The spheroidals are not actually a complete orthogonal
+basis set.  Meanwhile spin-weighted *spherical* harmonics are complete
+and orthonormal, and are used much more commonly.  Therefore you
+typically want to express a spheroidal (on the left hand side) in
+terms of sphericals (on the right hand side),
+
+![equation](https://latex.codecogs.com/gif.latex?%7B%7D_s%20Y_%7B%5Cell%20m%7D%28%5Ctheta%2C%20%5Cphi%3B%20a%5Comega%29%20%3D%20%7B%5Csum_%7B%5Cell%27%3D%5Cell_%7B%5Cmin%7D%20%28s%2Cm%29%7D%5E%7B%5Cell_%5Cmax%7D%7D%20C_%7B%5Cell%27%20%5Cell%20m%7D%28a%5Comega%29%5C%20%7B%7D_s%20Y_%7B%5Cell%20m%7D%28%5Ctheta%2C%20%5Cphi%29%20%5C%2C.)
+
+Here ℓmin=max(|m|,|s|) and ℓmax can be chosen at run time.  The C
+coefficients are returned as a complex ndarray, with the zeroth
+element corresponding to ℓmin.
 
 ## Credits
 The code is developed and maintained by [Leo C. Stein](https://duetosymmetry.com).
