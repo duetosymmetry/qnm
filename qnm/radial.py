@@ -10,14 +10,14 @@ TODO Documentation.
 
 from __future__ import division, print_function, absolute_import
 
-import numba
+from numba import njit
 import numpy as np
 
 from .contfrac import lentz
 
 # TODO some documentation here, better documentation throughout
 
-@numba.jit(nopython=True)
+@njit
 def sing_pt_char_exps(omega, a, s, m):
     r""" Compute the three characteristic exponents of the singular points
     of the radial Teukolsky equation.
@@ -68,7 +68,7 @@ def sing_pt_char_exps(omega, a, s, m):
 
     return zeta, xi, eta
 
-@numba.jit(nopython=True)
+@njit
 def D_coeffs(omega, a, s, m, A):
     """ The D_0 through D_4 coefficients that enter into the radial
     infinite continued fraction, Eqs. (31) of [1]_ .
@@ -262,7 +262,7 @@ def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
             + gamma[n_inv] * conv2), cf_err, n_frac
 
 
-@numba.jit(nopython=True)
+@njit
 def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
                                tol=1.e-10, N_min=0, N_max=np.Inf):
     """ Compute the n_inv inversion of the infinite continued
