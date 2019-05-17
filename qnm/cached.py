@@ -158,22 +158,43 @@ def load_cached_mode(s, l, m, n):
 ############################################################
 
 class KerrSeqCache(object):
-    """ TODO
+    """High-level caching interface for getting precomputed spin sequences.
 
-    Attributes
-    ----------
-    TODO
+    An instance of :class:`KerrSeqCache` will return instances of
+    :class:`qnm.spinsequence.KerrSpinSeq` from memory or disk. If a
+    spin sequence is neither in memory nor on disk then it will be
+    computed and returned.
+
+    Use :meth:`download_data` to fetch a collection of precomputed
+    spin sequences from the web.
 
     Parameters
     ----------
     init_schw: bool, optional [default: False]
-      TODO
+      Value of init flag to pass to
+      :class:`qnm.schwarzschild.tabulated.QNMDict`. You should set this to
+      True the first time in a session that you create a QNMDict
+      (most likely via this class).
 
     compute_if_not_found: bool, optional [default: True]
-      TODO
+      If a mode sequence is not found on disk, this flag controls
+      whether to try to compute the sequence from scratch.
 
     compute_pars: dict, optional [default: None]
-      TODO
+      A dict of parameters to pass to
+      :class:`qnm.spinsequence.KerrSpinSeq` if computing a mode
+      sequence from scratch.
+
+    Examples
+    --------
+
+    >>> import qnm
+    >>> # qnm.download_data() # Only need to do this once
+    >>> ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once per session
+    >>> mode_seq = ksc(s=-2,l=2,m=2,n=0)
+    >>> omega, A, C = mode_seq(a=0.68)
+    >>> print(omega)
+    (0.5239751042900845-0.08151262363119974j)
 
     """
 
