@@ -59,8 +59,9 @@ def mode_pickle_path(s, l, m, n):
 
      """
 
-    assert l >= l_min(s, m), ("l={} must be >= l_min={}"
-                              .format(l, l_min(s, m)))
+    if not (l >= l_min(s, m)):
+        raise ValueError("l={} must be >= l_min={}"
+                         .format(l, l_min(s, m)))
 
 
     s_sign = '-' if (s<0) else ''
@@ -266,10 +267,12 @@ class KerrSeqCache(object):
 
         """
 
-        assert l >= l_min(s, m), ("l={} must be >= l_min={}"
-                                  .format(l, l_min(s, m)))
+        if not (l >= l_min(s, m)):
+            raise ValueError("l={} must be >= l_min={}"
+                             .format(l, l_min(s, m)))
 
-        assert n >= 0, ("n={} must be non-negative".format(n))
+        if not (n >= 0):
+            raise ValueError("n={} must be non-negative".format(n))
 
         if compute_if_not_found is None:
             compute_if_not_found = self.compute_if_not_found

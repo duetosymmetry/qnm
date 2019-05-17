@@ -106,10 +106,9 @@ class SchwOvertoneSeq(object):
         self.r_N         = kwargs.get('r_N',         0.j)
 
         # TODO check that values make sense!!!
-        assert self.l >= l_min(self.s, 0), ("l={} must be >= "
-                                            "l_min={}".format(
-                                                self.l,
-                                                l_min(self.s, 0)))
+        if not (self.l >= l_min(self.s, 0)):
+            raise ValueError("l={} must be >= l_min={}"
+                             .format(self.l, l_min(self.s, 0)))
 
         # We know the Schwarzschild separation constant analytically
         self.A = swsphericalh_A(self.s, self.l, 0)

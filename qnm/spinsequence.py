@@ -112,11 +112,11 @@ class KerrSpinSeq(object):
         self.r_N         = kwargs.get('r_N',         0.j)
 
         # TODO check that values make sense!!!
-        assert self.a_max < 1., ("a_max={} must be < 1.".format(self.a_max))
-        assert self.l >= l_min(self.s, self.m), ("l={} must be "
-                                                 ">= l_min={}".format(
-                                                     self.l,
-                                                     l_min(self.s, self.m)))
+        if not (self.a_max < 1.):
+            raise ValueError("a_max={} must be < 1.".format(self.a_max))
+        if not (self.l >= l_min(self.s, self.m)):
+            raise ValueError("l={} must be >= l_min={}".format(
+                self.l, l_min(self.s, self.m)))
 
         # Create array of a's, omega's, and A's
         self.a     = []
@@ -338,12 +338,10 @@ class KerrSpinSeq(object):
           :func:`qnm.angular.C_and_sep_const_closest`.
         """
 
-        # TODO Make sure that interpolants have been built
-
-        # TODO validate input, 0 <= a < 1.
-        # TODO if a > a_max then extend
         # TODO take parameter of whether to solve at guess or not
-
+        if not ((isinstance(a, float) or isinstance(a, int))
+                and (a >= 0.) and (a < 1.)):
+            raise ValueError("a={} is not a float in the range [0,1)".format(a))
 
         # If this was a previously computed value, just return the
         # earlier results
@@ -351,6 +349,8 @@ class KerrSpinSeq(object):
             a_ind = self.a.index(a)
 
             return self.omega[a_ind], self.A[a_ind], self.C[a_ind]
+
+        # TODO Make sure that interpolants have been built
 
         o_r = self._interp_o_r(a)
         o_i = self._interp_o_i(a)
