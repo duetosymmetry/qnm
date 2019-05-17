@@ -310,7 +310,7 @@ class KerrSpinSeq(object):
             s=0, # No smoothing!
             k=k, ext=0)
 
-    def __call__(self, a):
+    def __call__(self, a, store=False):
         """Solve for omega, A, and C[] at a given spin a.
 
         This uses the interpolants, based on the solved sequence, for
@@ -320,6 +320,11 @@ class KerrSpinSeq(object):
         ----------
         a: float
           Value of spin, 0 <= a < 1.
+
+        store: bool, optional [default: False]
+          Whether or not to save newly solved data in sequence.
+          Warning, this can produce a slowdown if a lot of data
+          needs to be moved.
 
         Returns
         -------
@@ -338,6 +343,14 @@ class KerrSpinSeq(object):
         # TODO validate input, 0 <= a < 1.
         # TODO if a > a_max then extend
         # TODO take parameter of whether to solve at guess or not
+
+
+        # If this was a previously computed value, just return the
+        # earlier results
+        if (a in self.a):
+            a_ind = self.a.index(a)
+
+            return self.omega[a_ind], self.A[a_ind], self.C[a_ind]
 
         o_r = self._interp_o_r(a)
         o_i = self._interp_o_i(a)
@@ -360,6 +373,22 @@ class KerrSpinSeq(object):
 
         cf_err, n_frac = self.solver.get_cf_err()
 
-        # Do we want to insert these numbers into the arrays?
+        # If we got here, then this new value of a was not already in
+        # the list
+        if store:
+            # Where do we want to insert? Before the first point with
+            # a larger spin
+            try:
+                insert_ind = next(i for i, _a in
+                                  enumerate( self.a ) if _a > a)
+            except StopIteration:
+                insert_ind = len(self.a)
+
+            self.a.insert(insert_ind, a)
+            self.omega.insert(insert_ind, result)
+            self.A.insert(insert_ind, self.solver.A)
+            self.C.insert(insert_ind, self.solver.C)
+            self.cf_err.insert(insert_ind, cf_err)
+            self.n_frac.insert(insert_ind, n_frac)
 
         return result, self.solver.A, self.solver.C
