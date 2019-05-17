@@ -392,3 +392,23 @@ class KerrSpinSeq(object):
             self.n_frac.insert(insert_ind, n_frac)
 
         return result, self.solver.A, self.solver.C
+
+    def __repr__(self):
+    # "The goal of __str__ is to be readable; the goal of __repr__ is to be unambiguous." --- stackoverflow
+        from textwrap import dedent
+
+        rep = """<{} with s={}, l={}, m={}, n={},
+             l_max={},
+             tol={},
+             Nr={}, Nr_min={}, Nr_max={},
+             with values at
+             a=[{}, ... <{}> ..., {}]>"""
+        rep = rep.format(type(self).__name__,
+                         str(self.s), str(self.l),
+                         str(self.m), str(self.n),
+                         str(self.l_max),
+                         str(self.tol),
+                         str(self.Nr), str(self.Nr_min), str(self.Nr_max),
+                         str(self.a[0]), str(len(self.a)-2), str(self.a[-1]))
+
+        return dedent(rep)
