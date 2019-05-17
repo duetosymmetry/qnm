@@ -19,10 +19,12 @@ TODO More documentation.
 
 from __future__ import division, print_function, absolute_import
 
+from numba import njit
 import numpy as np
 
 # TODO some documentation here, better documentation throughout
 
+@njit(cache=True)
 def _calF(s, l, m):
     """ Eq. (52b) """
 
@@ -33,6 +35,7 @@ def _calF(s, l, m):
     return (np.sqrt( ((l+1)**2 - m*m) / (2*l+3) / (2*l+1) )
             * np.sqrt( ( (l+1)**2  - s*s)  / (l+1)**2 ))
 
+@njit(cache=True)
 def _calG(s, l, m):
     """ Eq. (52c) """
     if (0 == l):
@@ -40,6 +43,7 @@ def _calG(s, l, m):
 
     return np.sqrt( ( l*l - m*m ) / (4*l*l - 1)) * np.sqrt(1 - s*s/l/l)
 
+@njit(cache=True)
 def _calH(s, l, m):
     """ Eq. (52d) """
     if (0 == l) or (0 == s):
@@ -47,28 +51,34 @@ def _calH(s, l, m):
 
     return - m*s/l/(l+1)
 
+@njit(cache=True)
 def _calA(s, l, m):
     """ Eq. (53a) """
     return _calF(s,l,m) * _calF(s,l+1,m)
 
+@njit(cache=True)
 def _calD(s, l, m):
     """ Eq. (53b) """
     return _calF(s,l,m) * (_calH(s,l+1,m)  + _calH(s,l,m))
 
+@njit(cache=True)
 def _calB(s, l, m):
     """ Eq. (53c) """
     return (_calF(s,l,m) * _calG(s,l+1,m)
             + _calG(s,l,m) * _calF(s,l-1,m)
             + _calH(s,l,m)**2)
 
+@njit(cache=True)
 def _calE(s, l, m):
     """ Eq. (53d) """
     return _calG(s,l,m) * (_calH(s,l-1,m) + _calH(s,l,m))
 
+@njit(cache=True)
 def _calC(s, l, m):
     """ Eq. (53e) """
     return _calG(s,l,m) * _calG(s,l-1,m)
 
+@njit(cache=True)
 def swsphericalh_A(s, l, m):
     """ Angular separation constant at a=0.
 
@@ -94,6 +104,7 @@ def swsphericalh_A(s, l, m):
 
     return l*(l+1) - s*(s+1)
 
+@njit(cache=True)
 def M_matrix_elem(s, c, m, l, lprime):
     """ The (l, lprime) matrix element from the spherical-spheroidal
     decomposition matrix from Eq. (55).
@@ -138,10 +149,10 @@ def M_matrix_elem(s, c, m, l, lprime):
 
     return 0.
 
-# I don't know if this is necessary ... can just iterate
 def give_M_matrix_elem_ufunc(s, c, m):
     """Gives ufunc that implements matrix elements of the
-    spherical-spheroidal decomposition matrix.
+    spherical-spheroidal decomposition matrix. This function is used
+    by :meth:`M_matrix_old` and can be considered legacy.
 
     Parameters
     ----------
@@ -165,6 +176,7 @@ def give_M_matrix_elem_ufunc(s, c, m):
 
     return np.frompyfunc(elem, 2, 1)
 
+@njit(cache=True)
 def l_min(s, m):
     """ Minimum allowed value of l for a given s, m.
 
@@ -184,8 +196,9 @@ def l_min(s, m):
       l_min
     """
 
-    return np.max([np.abs(s), np.abs(m)])
+    return max(abs(s), abs(m))
 
+@njit(cache=True)
 def ells(s, m, l_max):
     """Vector of ℓ values in C vector and M matrix.
 
@@ -211,6 +224,21 @@ def ells(s, m, l_max):
 
     return np.arange(l_min(s,m), l_max+1)
 
+def M_matrix_old(s, c, m, l_max):
+    """Legacy function. Same as :meth:`M_matrix` except trying to be cute
+    with ufunc's, requiring scope capture with temp func inside
+    :meth:`give_M_matrix_elem_ufunc`, which meant that numba could not
+    speed up this method. Remains here for testing purposes. See
+    documentation for :meth:`M_matrix` parameters and return value.
+    """
+
+    _ells = ells(s, m, l_max)
+
+    uf = give_M_matrix_elem_ufunc(s, c, m)
+
+    return uf.outer(_ells,_ells).astype(complex)
+
+@njit(cache=True)
 def M_matrix(s, c, m, l_max):
     """Spherical-spheroidal decomposition matrix truncated at l_max.
 
@@ -236,9 +264,13 @@ def M_matrix(s, c, m, l_max):
 
     _ells = ells(s, m, l_max)
 
-    uf = give_M_matrix_elem_ufunc(s, c, m)
+    M = np.empty((len(_ells),len(_ells)), dtype=np.complex128)
 
-    return uf.outer(_ells,_ells).astype(complex)
+    for i in range(len(_ells)):
+        for j in range(len(_ells)):
+            M[i,j] = M_matrix_elem(s, c, m, _ells[i], _ells[j])
+
+    return M
 
 def sep_consts(s, c, m, l_max):
     """Finds eigenvalues of decomposition matrix, i.e. the separation

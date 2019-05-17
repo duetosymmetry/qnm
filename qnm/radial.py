@@ -17,7 +17,7 @@ from .contfrac import lentz
 
 # TODO some documentation here, better documentation throughout
 
-@njit
+@njit(cache=True)
 def sing_pt_char_exps(omega, a, s, m):
     r""" Compute the three characteristic exponents of the singular points
     of the radial Teukolsky equation.
@@ -68,7 +68,7 @@ def sing_pt_char_exps(omega, a, s, m):
 
     return zeta, xi, eta
 
-@njit
+@njit(cache=True)
 def D_coeffs(omega, a, s, m, A):
     """ The D_0 through D_4 coefficients that enter into the radial
     infinite continued fraction, Eqs. (31) of [1]_ .
@@ -262,7 +262,7 @@ def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
             + gamma[n_inv] * conv2), cf_err, n_frac
 
 
-@njit
+@njit(cache=True)
 def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
                                tol=1.e-10, N_min=0, N_max=np.Inf):
     """ Compute the n_inv inversion of the infinite continued
