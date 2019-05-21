@@ -15,6 +15,10 @@ the zeroth element corresponding to ℓmin.  You can get the associated
 ℓ values by calling :meth:`ells`.
 
 TODO More documentation.
+
+.. Note that numba's decorators confuse autodoc. Therefore you must
+   update docs/_autosummary/qnm.angular.rst if you add any functions
+   that are decorated by numba.
 """
 
 from __future__ import division, print_function, absolute_import
@@ -150,9 +154,9 @@ def M_matrix_elem(s, c, m, l, lprime):
     return 0.
 
 def give_M_matrix_elem_ufunc(s, c, m):
-    """Gives ufunc that implements matrix elements of the
-    spherical-spheroidal decomposition matrix. This function is used
-    by :meth:`M_matrix_old` and can be considered legacy.
+    """Legacy function. Gives ufunc that implements matrix elements of
+    the spherical-spheroidal decomposition matrix. This function is
+    used by :meth:`M_matrix_old`.
 
     Parameters
     ----------
