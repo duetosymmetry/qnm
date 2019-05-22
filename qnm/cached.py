@@ -151,8 +151,10 @@ def load_cached_mode(s, l, m, n):
             logging.info("Loading Kerr QNM sequence from file {}".format(pickle_path))
             spin_seq = pickle.load(handle, encoding='latin1')
     except:
-        logging.error("Could not load Kerr QNM sequence from file {}. "
-                      "Do you need to run qnm.download_data()?".format(pickle_path))
+        if not hasattr(load_cached_mode, "have_warned"):
+            logging.error("Could not load Kerr QNM sequence from file {}. "
+                          "Do you need to run qnm.download_data()?".format(pickle_path))
+            load_cached_mode.have_warned = True
 
     return spin_seq
 
