@@ -1,0 +1,4 @@
+docs/* linguist-documentation
+
+# I don't want the notebooks included in the language stats
+notebooks/* linguist-vendored
