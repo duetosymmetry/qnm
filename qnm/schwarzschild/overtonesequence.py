@@ -175,7 +175,8 @@ class SchwOvertoneSeq(object):
 
                 if (n > 5):
                     # Check if this difference is greater than the typical spacing
-                    typ_sp = np.mean(np.abs(np.diff(self.omega[:-1])))
+                    # of the last few points
+                    typ_sp = np.mean(np.abs(np.diff(self.omega[-6:-1])))
 
                     if (np.abs(om_diff) > 2. * typ_sp):
                         # It's likely we skipped an overtone.
