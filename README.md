@@ -73,14 +73,13 @@ qnm.download_data() # Only need to do this once
 # Data directory /<something>/qnm/data contains 860 pickle files
 ```
 
-Then, use `qnm.cached.KerrSeqCache` to load a
+Then, use `qnm.modes_cache` to load a
 `qnm.spinsequence.KerrSpinSeq` of interest. If the mode is not
 available, it will try to compute it (see detailed documentation for
 how to control that calculation).
 
 ```python
-ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once
-mode_seq = ksc(s=-2,l=2,m=2,n=0)
+grav_220 = qnm.modes_cache(s=-2,l=2,m=2,n=0)
 omega, A, C = mode_seq(a=0.68)
 print(omega)
 # (0.5239751042900845-0.08151262363119974j)
@@ -107,7 +106,7 @@ s, l, m = (-2, 2, 2)
 mode_list = [(s, l, m, n) for n in np.arange(0,7)]
 modes = {}
 for ind in mode_list:
-    modes[ind] = ksc(*ind)
+    modes[ind] = qnm.modes_cache(*ind)
 
 plt.figure(figsize=(16,8))
 
@@ -142,7 +141,7 @@ s, l, n = (-2, 2, 0)
 mode_list = [(s, l, m, n) for m in np.arange(-l,l+1)]
 modes = {}
 for ind in mode_list:
-    modes[ind] = ksc(*ind)
+    modes[ind] = qnm.modes_cache(*ind)
 
 plt.figure(figsize=(16,8))
 

@@ -25,7 +25,7 @@ class NearbyRootFinder(object):
     a: float [default: 0.]
       Dimensionless spin of black hole, 0 <= a < 1.
 
-    s: int [default: 2]
+    s: int [default: -2]
       Spin of field of interest
 
     m: int [default: 2]

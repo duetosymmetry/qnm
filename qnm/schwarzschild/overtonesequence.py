@@ -83,13 +83,13 @@ class SchwOvertoneSeq(object):
     >>> seq = SchwOvertoneSeq(s=-1, l=3, n_max=5)
     >>> seq.find_sequence()
     >>> print(seq.omega[5])
-    (0.5039017454081958-1.1703558890487786j)
+    (0.503901745408196-1.1703558890487784j)
 
     Later, you want to go out to n=8:
 
     >>> seq.extend(n_max=8)
     >>> print(seq.omega[8])
-    (0.4227909293895908-1.9136575597714864j)
+    (0.422790929389591-1.9136575597714867j)
 
     """
 

@@ -12,11 +12,10 @@ Examples
 
 >>> import qnm
 >>> # qnm.download_data() # Only need to do this once
->>> ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once per session
->>> mode_seq = ksc(s=-2,l=2,m=2,n=0)
->>> omega, A, C = mode_seq(a=0.68)
+>>> grav_220 = qnm.modes_cache(s=-2,l=2,m=2,n=0)
+>>> omega, A, C = grav_220(a=0.68)
 >>> print(omega)
-(0.5239751042900845-0.08151262363119974j)
+(0.5239751042900845-0.08151262363119986j)
 
 """
 
@@ -55,3 +54,22 @@ from . import spinsequence
 
 from . import cached
 from .cached import download_data
+
+############################################################
+## Package initialization
+
+# Singleton for cache
+modes_cache = cached.KerrSeqCache(init_schw=True)
+
+# Ensure common versions of jitted functions are compiled
+def _ensure_jitted():
+    finder = nearby.NearbyRootFinder(a=0.3, s=-2, m=2, A_closest_to=3.6+0.1j,
+                                     l_max=20, omega_guess=0.4-0.09j,
+                                     tol=1e-10, n_inv=0, Nr_max=4000)
+    finder.do_solve()
+    finder.set_params(Nr_max=float("inf"))
+    finder.do_solve()
+    
+    return
+
+_ensure_jitted()

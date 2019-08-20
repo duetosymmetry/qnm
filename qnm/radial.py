@@ -217,7 +217,7 @@ def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
 
     >>> from qnm.radial import leaver_cf_inv_lentz_old, leaver_cf_inv_lentz
     >>> print(leaver_cf_inv_lentz_old(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0))
-    ((-3.5662773770495546-1.5388710793384461j), 9.702542314939062e-11, 76)
+    ((-3.5662773770495972-1.538871079338485j), 9.702532283649582e-11, 76)
 
     Compare the two versions of the function:
 
@@ -317,7 +317,7 @@ def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
 
     >>> from qnm.radial import leaver_cf_inv_lentz
     >>> print(leaver_cf_inv_lentz(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0))
-    ((-3.5662773770495546-1.5388710793384461j), 9.702542314939062e-11, 76)
+    ((-3.5662773770495972-1.538871079338485j), 9.702532283649582e-11, 76)
 
     References
     ----------

@@ -1,7 +1,8 @@
 """ Caching interface to Kerr QNMs
 
-This is a high-level interface to the package.  An instance of
-:class:`KerrSeqCache` will return instances of
+This is a high-level interface to the package.
+The global cache `qnm.modes_cache` (an instance of
+:class:`KerrSeqCache`) will return instances of
 :class:`qnm.spinsequence.KerrSpinSeq` from memory or disk. If a spin
 sequence is neither in memory nor on disk then it will be computed and
 returned.
@@ -193,11 +194,10 @@ class KerrSeqCache(object):
 
     >>> import qnm
     >>> # qnm.download_data() # Only need to do this once
-    >>> ksc = qnm.cached.KerrSeqCache(init_schw=True) # Only need init_schw once per session
-    >>> mode_seq = ksc(s=-2,l=2,m=2,n=0)
-    >>> omega, A, C = mode_seq(a=0.68)
+    >>> grav_220 = qnm.modes_cache(s=-2,l=2,m=2,n=0)
+    >>> omega, A, C = grav_220(a=0.68)
     >>> print(omega)
-    (0.5239751042900845-0.08151262363119974j)
+    (0.5239751042900845-0.08151262363119986j)
 
     """
 
