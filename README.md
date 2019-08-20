@@ -80,12 +80,12 @@ how to control that calculation).
 
 ```python
 grav_220 = qnm.modes_cache(s=-2,l=2,m=2,n=0)
-omega, A, C = mode_seq(a=0.68)
+omega, A, C = grav_220(a=0.68)
 print(omega)
 # (0.5239751042900845-0.08151262363119974j)
 ```
 
-Calling a spin sequence with `mode_seq(a)` will return the complex
+Calling a spin sequence `seq` with `seq(a)` will return the complex
 quasinormal mode frequency omega, the complex angular separation
 constant A, and a vector C of coefficients for decomposing the
 associated spin-weighted spheroidal harmonics as a sum of
@@ -185,6 +185,12 @@ terms of sphericals (on the right hand side),
 Here ℓmin=max(|m|,|s|) and ℓmax can be chosen at run time.  The C
 coefficients are returned as a complex ndarray, with the zeroth
 element corresponding to ℓmin.
+To avoid indexing errors, you can get the ndarray of ℓ values by
+calling `qnm.angular.ells`, e.g.
+
+```
+ells = qnm.angular.ells(s=-2, m=2, l_max=grav_220.l_max)
+```
 
 ## Credits
 The code is developed and maintained by [Leo C. Stein](https://duetosymmetry.com).
