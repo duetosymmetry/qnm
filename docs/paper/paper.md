@@ -143,7 +143,7 @@ more general BH solutions (e.g. solving for QNMs of Kerr-Newman or
 Kerr-de Sitter).
 
 Development of ``qnm`` is hosted on
-[GitHub](https://github.com/duetosymmetry/qnm) and distrubted through
+[GitHub](https://github.com/duetosymmetry/qnm) and distributed through
 [PyPI](https://pypi.org/project/qnm/); it can be installed with the
 single command ``pip install qnm``.  Documentation is automatically
 built on [Read the Docs](https://qnm.readthedocs.io/), and can be
