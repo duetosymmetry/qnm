@@ -7,6 +7,7 @@
 \usepackage{calc}
 \usepackage{tikz}
 \usepackage{hyperref}
+\usepackage{microtype}
 \hypersetup{colorlinks,breaklinks,
             urlcolor=[rgb]{0.0, 0.5, 1.0},
             linkcolor=[rgb]{0.0, 0.5, 1.0}}
