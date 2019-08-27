@@ -63,8 +63,8 @@
 
 
 % --- Page layout -------------------------------------------------------------
-\usepackage[top=3.5cm, bottom=3cm, right=1.5cm, left=1.0cm,
-            headheight=2.2cm, reversemp, includemp, marginparwidth=4.5cm]{geometry}
+\usepackage[top=3.2cm, bottom=3cm, right=1.5cm, left=1.0cm,
+            headheight=1.9cm, reversemp, includemp, marginparwidth=3.9cm]{geometry}
 
 % --- Default font ------------------------------------------------------------
 % \renewcommand\familydefault{\sfdefault}
