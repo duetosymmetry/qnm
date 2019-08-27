@@ -1,6 +1,7 @@
 [![github](https://img.shields.io/badge/GitHub-qnm-blue.svg)](https://github.com/duetosymmetry/qnm)
 [![PyPI version](https://badge.fury.io/py/qnm.svg)](https://badge.fury.io/py/qnm)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2593978.svg)](https://zenodo.org/record/2593978)
+[![JOSS status](https://joss.theoj.org/papers/85532a74baaa67a24518de1365f1bcf5/status.svg)](https://joss.theoj.org/papers/85532a74baaa67a24518de1365f1bcf5)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/duetosymmetry/qnm/blob/master/LICENSE)
 [![Documentation Status](https://readthedocs.org/projects/qnm/badge/?version=latest)](https://qnm.readthedocs.io/en/latest/?badge=latest)
 
