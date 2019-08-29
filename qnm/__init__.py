@@ -45,6 +45,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+__bibtex__ = r"""@article{Stein:2019mop,
+      author         = "Stein, Leo C.",
+      title          = "{qnm: A Python package for calculating Kerr quasinormal
+                        modes, separation constants, and spherical-spheroidal
+                        mixing coefficients}",
+      year           = "2019",
+      eprint         = "1908.10377",
+      archivePrefix  = "arXiv",
+      primaryClass   = "gr-qc",
+      SLACcitation   = "%%CITATION = ARXIV:1908.10377;%%"
+}"""
+
 from . import radial
 from . import angular
 from . import contfrac

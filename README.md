@@ -7,9 +7,12 @@
 
 
 # Welcome to qnm
-Python implementation of the [Cook-Zalutskiy spectral
-approach](https://arxiv.org/abs/1410.7698) to computing Kerr
-quasinormal frequencies (QNMs).
+`qnm` is an open-source Python package for computing the Kerr
+quasinormal mode frequencies, angular separation constants, and
+spherical-spheroidal mixing coefficients. The `qnm` package includes a
+Leaver solver with the [Cook-Zalutskiy spectral
+approach](https://arxiv.org/abs/1410.7698) to the angular sector, and
+a caching mechanism to avoid repeating calculations.
 
 With this python package, you can compute the QNMs labeled by
 different (s,l,m,n), at a desired dimensionless spin parameter 0≤a<1.
@@ -19,7 +22,7 @@ harmonics.  Therefore you get the spherical-spheroidal decomposition
 coefficients for free when solving for ω and A ([see below for
 details](#spherical-spheroidal-decomposition)).
 
-We have precomputed a large number of low-lying modes (s=-2 and s=-1,
+We have precomputed a large cache of low-lying modes (s=-2 and s=-1,
 all l<8, all n<7). These can be automatically installed with a single
 function call, and interpolated for good initial guesses for
 root-finding at some value of a.
@@ -181,7 +184,7 @@ and orthonormal, and are used much more commonly.  Therefore you
 typically want to express a spheroidal (on the left hand side) in
 terms of sphericals (on the right hand side),
 
-![equation](https://latex.codecogs.com/gif.latex?%7B%7D_s%20Y_%7B%5Cell%20m%7D%28%5Ctheta%2C%20%5Cphi%3B%20a%5Comega%29%20%3D%20%7B%5Csum_%7B%5Cell%27%3D%5Cell_%7B%5Cmin%7D%20%28s%2Cm%29%7D%5E%7B%5Cell_%5Cmax%7D%7D%20C_%7B%5Cell%27%20%5Cell%20m%7D%28a%5Comega%29%5C%20%7B%7D_s%20Y_%7B%5Cell%27%20m%7D%28%5Ctheta%2C%20%5Cphi%29%20%5C%2C.)
+![equation $${}_s Y_{\\ell m}(\\theta, \\phi; a\\omega) = {\\sum_{\\ell'=\\ell_{\\min} (s,m)}^{\\ell_\\max}} C_{\\ell' \\ell m}(a\\omega)\\ {}_s Y_{\\ell' m}(\\theta, \\phi) \\,.$$](https://latex.codecogs.com/gif.latex?%7B%7D_s%20Y_%7B%5Cell%20m%7D%28%5Ctheta%2C%20%5Cphi%3B%20a%5Comega%29%20%3D%20%7B%5Csum_%7B%5Cell%27%3D%5Cell_%7B%5Cmin%7D%20%28s%2Cm%29%7D%5E%7B%5Cell_%5Cmax%7D%7D%20C_%7B%5Cell%27%20%5Cell%20m%7D%28a%5Comega%29%5C%20%7B%7D_s%20Y_%7B%5Cell%27%20m%7D%28%5Ctheta%2C%20%5Cphi%29%20%5C%2C.)
 
 Here ℓmin=max(|m|,|s|) and ℓmax can be chosen at run time.  The C
 coefficients are returned as a complex ndarray, with the zeroth
@@ -191,6 +194,24 @@ calling `qnm.angular.ells`, e.g.
 
 ```
 ells = qnm.angular.ells(s=-2, m=2, l_max=grav_220.l_max)
+```
+
+## How to cite
+If this package contributes to a project that leads to a publication,
+please acknowledge this by citing the `qnm` article in JOSS.  The
+following BibTeX entry is available in the `qnm.__bibtex__` string:
+```
+@article{Stein:2019mop,
+      author         = "Stein, Leo C.",
+      title          = "{qnm: A Python package for calculating Kerr quasinormal
+                        modes, separation constants, and spherical-spheroidal
+                        mixing coefficients}",
+      year           = "2019",
+      eprint         = "1908.10377",
+      archivePrefix  = "arXiv",
+      primaryClass   = "gr-qc",
+      SLACcitation   = "%%CITATION = ARXIV:1908.10377;%%"
+}
 ```
 
 ## Credits
