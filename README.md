@@ -98,80 +98,46 @@ details](#spherical-spheroidal-decomposition)).
 
 Visual inspections of modes are very useful to check if the solver is
 behaving well. This is easily accomplished with matplotlib. Here are
-some simple examples:
+some partial examples (for the full examples, see the file
+`notebooks/examples.ipynb` in the source repo):
 
 ```python
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-mpl.rc('text', usetex = True)
 
 s, l, m = (-2, 2, 2)
 mode_list = [(s, l, m, n) for n in np.arange(0,7)]
-modes = {}
-for ind in mode_list:
-    modes[ind] = qnm.modes_cache(*ind)
-
-plt.figure(figsize=(16,8))
+modes = { ind : qnm.modes_cache(*ind) for ind in mode_list }
 
 plt.subplot(1, 2, 1)
 for mode, seq in modes.items():
     plt.plot(np.real(seq.omega),np.imag(seq.omega))
 
-
-modestr = "{},{},{},n".format(s,l,m)
-plt.xlabel(r'$\textrm{Re}[\omega_{' + modestr + r'}]$', fontsize=16)
-plt.ylabel(r'$\textrm{Im}[\omega_{' + modestr + r'}]$', fontsize=16)
-plt.gca().tick_params(labelsize=16)
-plt.gca().invert_yaxis()
-
 plt.subplot(1, 2, 2)
 for mode, seq in modes.items():
     plt.plot(np.real(seq.A),np.imag(seq.A))
-
-plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
-plt.ylabel(r'$\textrm{Im}[A_{' + modestr + r'}]$', fontsize=16)
-plt.gca().tick_params(labelsize=16)
-
-plt.show()
 ```
 
-Which results in the following figure:
+Which results in the following figure (modulo formatting):
 
 ![example_22n plot](notebooks/example_22n.png)
 
 ```python
 s, l, n = (-2, 2, 0)
 mode_list = [(s, l, m, n) for m in np.arange(-l,l+1)]
-modes = {}
-for ind in mode_list:
-    modes[ind] = qnm.modes_cache(*ind)
-
-plt.figure(figsize=(16,8))
+modes = { ind : qnm.modes_cache(*ind) for ind in mode_list }
 
 plt.subplot(1, 2, 1)
 for mode, seq in modes.items():
     plt.plot(np.real(seq.omega),np.imag(seq.omega))
 
-
-modestr = "{},{},m,0".format(s,l)
-plt.xlabel(r'$\textrm{Re}[\omega_{' + modestr + r'}]$', fontsize=16)
-plt.ylabel(r'$\textrm{Im}[\omega_{' + modestr + r'}]$', fontsize=16)
-plt.gca().tick_params(labelsize=16)
-plt.gca().invert_yaxis()
-
 plt.subplot(1, 2, 2)
 for mode, seq in modes.items():
     plt.plot(np.real(seq.A),np.imag(seq.A))
-
-plt.xlabel(r'$\textrm{Re}[A_{' + modestr + r'}]$', fontsize=16)
-plt.ylabel(r'$\textrm{Im}[A_{' + modestr + r'}]$', fontsize=16)
-plt.gca().tick_params(labelsize=16)
-
-plt.show()
 ```
 
-Which results in the following figure:
+Which results in the following figure (modulo formatting):
 
 ![example_2m0 plot](notebooks/example_2m0.png)
 
