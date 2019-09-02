@@ -162,6 +162,14 @@ calling `qnm.angular.ells`, e.g.
 ells = qnm.angular.ells(s=-2, m=2, l_max=grav_220.l_max)
 ```
 
+## Contributing
+Contributions are welcome! There are at least two ways to contribute to this codebase:
+
+1. If you find a bug or want to suggest an enhancement, use the [issue tracker](https://github.com/duetosymmetry/qnm/issues) on GitHub. It's a good idea to look through past issues, too, to see if anybody has run into the same problem or made the same suggestion before.
+2. If you will write or edit the python code, we use the [fork and pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) model.
+
+You are also allowed to make use of this code for other purposes, as detailed in the [MIT license](LICENSE). For any type of contribution, please follow the [code of conduct](CODE_OF_CONDUCT.md).
+
 ## How to cite
 If this package contributes to a project that leads to a publication,
 please acknowledge this by citing the `qnm` article in JOSS.  The
