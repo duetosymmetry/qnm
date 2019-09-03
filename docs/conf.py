@@ -128,6 +128,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'paper']
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
 
+## Extra files to copy
+html_extra_path = ['LICENSE']
+
 
 # -- Options for HTML output -------------------------------------------------
 
