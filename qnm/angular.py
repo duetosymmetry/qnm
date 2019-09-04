@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Solve the angular Teukolsky equation via spectral decomposition.
 
 For a given complex QNM frequency ω, the separation constant and
