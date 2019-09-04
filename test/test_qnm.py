@@ -22,6 +22,7 @@ class TestQnm(object):
         assert omega == (0.5239751042900845 - 0.08151262363119974j)
 
     def test_example2(self):
+        """ Check consistency between old and new Leaver solvers """
         from qnm.radial import leaver_cf_inv_lentz_old, leaver_cf_inv_lentz
         old = leaver_cf_inv_lentz_old(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0)
         new = leaver_cf_inv_lentz(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0)
