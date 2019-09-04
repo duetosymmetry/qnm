@@ -1,4 +1,8 @@
 language: python
+cache:
+  pip: true
+  # directories:
+  # - dir1
 sudo: required
 dist: xenial
 branches:
