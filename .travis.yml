@@ -2,7 +2,7 @@ language: python
 cache:
   pip: true
   # directories:
-  # - dir1
+  #   - $TRAVIS_BUILD_DIR/test/data/
 sudo: required
 dist: xenial
 branches:
