@@ -13,6 +13,17 @@ class TestQnm(object):
         """
         qnm.download_data()
 
+    def test_cache_file_operations(self):
+        """Test file operations and downloading the on-disk cache.
+        """
+
+        print("Downloading with overwrite=True")
+        qnm.cached.download_data(overwrite=True)
+        print("Clearing disk cache but not tarball")
+        qnm.cached._clear_disk_cache(delete_tarball=False)
+        print("Decompressing tarball")
+        qnm.cached._decompress_data()
+
     def test_example(self):
         """
         An example of a test

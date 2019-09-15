@@ -396,7 +396,7 @@ class _TqdmUpTo(tqdm):
 
 ############################################################
 def download_data(overwrite=False):
-    """Fetch and decompress tarball of precomputed spin sequence from
+    """Fetch and decompress tarball of precomputed spin sequences from
     the web.
 
     Parameters
@@ -422,11 +422,45 @@ def download_data(overwrite=False):
                    desc=filename) as t:
         urlretrieve(data_url, filename=dest, reporthook=t.update_to)
 
-    print("Trying to decompress file {}".format(dest))
-    with tarfile.open(dest, "r:bz2") as tar:
-        tar.extractall(base_dir)
+    _decompress_data(dest, base_dir)
 
-    data_dir = base_dir + '/data'
+############################################################
+def _decompress_data(tarball=None, dest_dir=None):
+    """Decompress tarball of precomputed spin sequences."""
+
+    if dest_dir is None:
+        dest_dir = os.path.dirname(os.path.realpath(__file__))
+    if tarball is None:
+        tarball = dest_dir + '/data.tar.bz2'
+
+    print("Trying to decompress file {}".format(tarball))
+    with tarfile.open(tarball, "r:bz2") as tar:
+        tar.extractall(dest_dir)
+
+    data_dir = dest_dir + '/data'
     pickle_files = glob.glob(data_dir + '/*.pickle')
     print("Data directory {} contains {} pickle files"
           .format(data_dir, len(pickle_files)))
+
+############################################################
+def _clear_disk_cache(base_dir=None, delete_tarball=False):
+    """Delete disk cache of precomputed spin sequences."""
+
+    if base_dir is None:
+        base_dir = os.path.dirname(os.path.realpath(__file__))
+
+    data_dir = base_dir + '/data'
+    pickle_files = glob.glob(data_dir + '/*.pickle')
+
+    for pickle_file in pickle_files:
+        try:
+            os.remove(pickle_file)
+        except OSError:
+            print('Could not remove file "{}"'.format(pickle_file))
+
+    if delete_tarball:
+        tarball_path = base_dir + '/data.tar.bz2'
+        try:
+            os.remove(tarball_path)
+        except:
+            print('Could not remove file "{}"'.format(tarball_path))
