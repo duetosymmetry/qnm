@@ -1,6 +1,4 @@
 """ Computing, loading, and storing tabulated Schwarzschild QNMs.
-
-TODO Documentation.
 """
 
 from __future__ import division, print_function, absolute_import

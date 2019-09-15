@@ -45,7 +45,9 @@ python setup.py install
 ```
 
 If you do not have root permissions, replace the last step with
-`python setup.py install --user`
+`python setup.py install --user`.  Instead of using `setup.py`
+manually, you can also replace the last step with `pip install .` or
+`pip install --user .`.
 
 ## Dependencies
 All of these can be installed through pip or conda.

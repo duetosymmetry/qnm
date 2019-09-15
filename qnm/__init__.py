@@ -5,8 +5,6 @@ which will fetch instances of
 :class:`qnm.spinsequence.KerrSpinSeq`. This is most clearly
 demonstrated with an example.
 
-TODO More documentation
-
 Examples
 --------
 
@@ -16,6 +14,15 @@ Examples
 >>> omega, A, C = grav_220(a=0.68)
 >>> print(omega)
 (0.5239751042900845-0.08151262363119986j)
+
+**Members**
+
+.. autosummary::
+
+   qnm.download_data
+   qnm.modes_cache
+
+.. autofunction:: download_data
 
 """
 
@@ -72,6 +79,10 @@ from .cached import download_data
 
 # Singleton for cache
 modes_cache = cached.KerrSeqCache(init_schw=True)
+"""Interface to the cache of QNMs.  This is a singleton instance of
+:class:`qnm.cached.KerrSeqCache`.  It can be called like a function
+`qnm.modes_cache(s,l,m,n)` to get a specific mode, the result being an
+instance of :class:`qnm.spinsequence.KerrSpinSeq`."""
 
 # Ensure common versions of jitted functions are compiled
 def _ensure_jitted():

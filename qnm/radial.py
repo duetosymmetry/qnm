@@ -1,11 +1,4 @@
 """ Solve the radial Teukolsky equation via Leaver's method.
-
-TODO Documentation.
-
-.. Note that numba's decorators confuse autodoc. Therefore you must
-   update docs/_autosummary/qnm.radial.rst if you add any functions
-   that are decorated by numba.
-
 """
 
 from __future__ import division, print_function, absolute_import
@@ -264,8 +257,8 @@ def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
 
 @njit(cache=True)
 def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
-                               tol=1.e-10, N_min=0, N_max=np.Inf):
-    """ Compute the n_inv inversion of the infinite continued
+                        tol=1.e-10, N_min=0, N_max=np.Inf):
+    """Compute the n_inv inversion of the infinite continued
     fraction for solving the radial Teukolsky equation, using
     modified Lentz's method.
     The value returned is Eq. (44) of [1]_.

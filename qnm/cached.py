@@ -1,7 +1,7 @@
-""" Caching interface to Kerr QNMs
+"""Caching interface to Kerr QNMs
 
 This is a high-level interface to the package.
-The global cache `qnm.modes_cache` (an instance of
+The global cache :obj:`qnm.modes_cache` (an instance of
 :class:`KerrSeqCache`) will return instances of
 :class:`qnm.spinsequence.KerrSpinSeq` from memory or disk. If a spin
 sequence is neither in memory nor on disk then it will be computed and
@@ -9,9 +9,6 @@ returned.
 
 Use :meth:`download_data` to fetch a collection of precomputed spin
 sequences from the web.
-
-TODO More documentation.
-
 """
 
 from __future__ import division, print_function, absolute_import
@@ -382,7 +379,7 @@ def build_package_default_cache(ksc):
 # This is taken verbatim from the tqdm examples, see
 # https://pypi.org/project/tqdm/#hooks-and-callbacks
 
-class TqdmUpTo(tqdm):
+class _TqdmUpTo(tqdm):
     """Provides `update_to(n)` which uses `tqdm.update(delta_n)`."""
     def update_to(self, b=1, bsize=1, tsize=None):
         """
@@ -421,8 +418,8 @@ def download_data(overwrite=False):
         return
 
     print("Trying to fetch {}".format(data_url))
-    with TqdmUpTo(unit='B', unit_scale=True, miniters=1,
-                  desc=filename) as t:
+    with _TqdmUpTo(unit='B', unit_scale=True, miniters=1,
+                   desc=filename) as t:
         urlretrieve(data_url, filename=dest, reporthook=t.update_to)
 
     print("Trying to decompress file {}".format(dest))

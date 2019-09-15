@@ -65,7 +65,7 @@ class NearbyRootFinder(object):
 
     r_N: complex [default: 1.]
       Seed value taken for truncation of infinite continued
-      fraction.
+      fraction. UNUSED, REMOVE
 
     """
 
@@ -90,7 +90,7 @@ class NearbyRootFinder(object):
     def set_params(self, *args, **kwargs):
         """Set the parameters for root finding. Parameters are
         described in the class documentation. Finally calls
-        clear_results().
+        :meth:`clear_results`.
         """
 
         # TODO This violates DRY, do better.
@@ -115,7 +115,7 @@ class NearbyRootFinder(object):
         self.clear_results()
 
     def clear_results(self):
-        """ TODO Documentation """
+        """Clears the stored results from last call of :meth:`do_solve`"""
 
         self.solved  = False
         self.opt_res = None
@@ -163,7 +163,8 @@ class NearbyRootFinder(object):
         return [np.real(supp_err), np.imag(supp_err)]
 
     def do_solve(self):
-        """ TODO Documentation """
+        """Try to find a root of the continued fraction equation,
+        using the parameters that have been set in :meth:`set_params`."""
 
         self.opt_res = optimize.root(self,
                                      [np.real(self.omega_guess), np.imag(self.omega_guess)],
@@ -189,7 +190,15 @@ class NearbyRootFinder(object):
         return self.omega
 
     def get_cf_err(self):
-        """ TODO Documentation """
+        """Return the continued fraction error and the number of
+        iterations in the last evaluation of the continued fraction.
+
+        Returns
+        -------
+        cf_err: float
+
+        n_frac: int
+        """
 
         return self.cf_err, self.n_frac
 

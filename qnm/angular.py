@@ -1,4 +1,4 @@
-""" Solve the angular Teukolsky equation via spectral decomposition.
+"""Solve the angular Teukolsky equation via spectral decomposition.
 
 For a given complex QNM frequency ω, the separation constant and
 spherical-spheroidal decomposition are found as an eigenvalue and
@@ -13,12 +13,6 @@ Here ℓmin=max(\|m\|,\|s\|) (see :meth:`l_min`), and ℓmax can be chosen at
 run time. The C coefficients are returned as a complex ndarray, with
 the zeroth element corresponding to ℓmin.  You can get the associated
 ℓ values by calling :meth:`ells`.
-
-TODO More documentation.
-
-.. Note that numba's decorators confuse autodoc. Therefore you must
-   update docs/_autosummary/qnm.angular.rst if you add any functions
-   that are decorated by numba.
 """
 
 from __future__ import division, print_function, absolute_import

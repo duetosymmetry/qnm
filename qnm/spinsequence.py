@@ -1,6 +1,4 @@
 """ Follow a QNM labeled by (s,l,m,n) as spin varies from a=0 upwards.
-
-TODO Documentation.
 """
 
 
@@ -144,7 +142,8 @@ class KerrSpinSeq(object):
 
     # Change this to *extending* the sequence so this can be reused
     def do_find_sequence(self):
-        """ TODO Document """
+        """Solve for the "spin sequence", i.e. solve for the QNM as we
+        go up in spin."""
 
         logging.info("l={}, m={}, n={} starting".format(
             self.l, self.m, self.n))
