@@ -7,7 +7,7 @@ sudo: required
 dist: xenial
 branches:
   only:
-    add-test-infra #master
+    master
 python:
   - "2.7"
   - "3.6"
@@ -21,4 +21,4 @@ install:  # install your package and requirements
   - pip install -e .
 script:
   # run the test script
-  - pytest
+  - pytest -v

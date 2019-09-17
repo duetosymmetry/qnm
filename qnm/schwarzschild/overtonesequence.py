@@ -82,14 +82,14 @@ class SchwOvertoneSeq(object):
     >>> from qnm.schwarzschild.overtonesequence import SchwOvertoneSeq
     >>> seq = SchwOvertoneSeq(s=-1, l=3, n_max=5)
     >>> seq.find_sequence()
-    >>> print(seq.omega[5])
-    (0.503901745408196-1.1703558890487784j)
+    >>> "{:.10f}".format(seq.omega[5])
+    '0.5039017454-1.1703558890j'
 
     Later, you want to go out to n=8:
 
     >>> seq.extend(n_max=8)
-    >>> print(seq.omega[8])
-    (0.422790929389591-1.9136575597714867j)
+    >>> "{:.10f}".format(seq.omega[8])
+    '0.4227909294-1.9136575598j'
 
     """
 
