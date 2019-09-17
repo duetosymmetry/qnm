@@ -130,7 +130,7 @@ class NearbyRootFinder(object):
         self.poles = np.array([])
 
 
-    def __call__(self, x, tol):
+    def __call__(self, x):
         """Internal function for usage with optimize.root, for an
         instance of this class to act like a function for
         root-finding. optimize.root only works with reals so we pack
@@ -166,9 +166,13 @@ class NearbyRootFinder(object):
         """Try to find a root of the continued fraction equation,
         using the parameters that have been set in :meth:`set_params`."""
 
+        # Really want to use options = {'xtol': self.tol} here.
+        # However, that would require an estimate of the Jacobian at
+        # the location of the root, which would be used to set the
+        # tolerance for the continued fraction calculation.
         self.opt_res = optimize.root(self,
                                      [np.real(self.omega_guess), np.imag(self.omega_guess)],
-                                     self.tol)
+                                     tol = self.tol)
 
         if (not self.opt_res.success):
             tmp_opt_res = self.opt_res
