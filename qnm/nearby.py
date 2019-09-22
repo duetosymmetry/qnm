@@ -150,6 +150,13 @@ class NearbyRootFinder(object):
         #                                            self.n_inv,
         #                                            self.Nr, self.r_N)
 
+        # TODO!
+        # The tolerance that was sent to optimize.root is the desired
+        # tolerance for omega.
+        # However, the tolerance that's sent to the Lentz method is
+        # the desired tolerance for the value of the error function
+        # E(\omega) whose root we desire.  These should be related by
+        # the Jacobian, Etol = |dE/d\omega| omegatol.
         inv_err, self.cf_err, self.n_frac = radial.leaver_cf_inv_lentz(omega, self.a,
                                                           self.s, self.m, A,
                                                           self.n_inv, self.tol,
@@ -166,13 +173,11 @@ class NearbyRootFinder(object):
         """Try to find a root of the continued fraction equation,
         using the parameters that have been set in :meth:`set_params`."""
 
-        # Really want to use options = {'xtol': self.tol} here.
-        # However, that would require an estimate of the Jacobian at
-        # the location of the root, which would be used to set the
-        # tolerance for the continued fraction calculation.
+        # For the default (hybr) method, tol sets 'xtol', the
+        # tolerance on omega.
         self.opt_res = optimize.root(self,
                                      [np.real(self.omega_guess), np.imag(self.omega_guess)],
-                                     tol = self.tol)
+                                     method = 'hybr', tol = self.tol)
 
         if (not self.opt_res.success):
             tmp_opt_res = self.opt_res
