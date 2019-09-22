@@ -1,6 +1,7 @@
 import pytest
 import qnm
 import numpy as np
+from pathlib import Path
 
 class TestQnm(object):
     """
@@ -38,3 +39,13 @@ class TestQnm(object):
         old = leaver_cf_inv_lentz_old(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0)
         new = leaver_cf_inv_lentz(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0)
         assert np.all([old[i] == new[i] for i in range(3)])
+
+    def test_build_cache(self):
+        """Check the default cache-building functionality"""
+
+        qnm.cached._clear_disk_cache(delete_tarball=False)
+        qnm.modes_cache.seq_dict = {}
+        qnm.cached.build_package_default_cache(qnm.modes_cache)
+        assert 861 == len(qnm.modes_cache.seq_dict.keys())
+        qnm.modes_cache.write_all()
+        assert 861 == len(list(qnm.cached.get_cachedir().glob('*.pickle')))

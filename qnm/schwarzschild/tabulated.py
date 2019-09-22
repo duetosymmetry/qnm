@@ -156,13 +156,13 @@ class QNMDict(object):
 
         try:
             with dict_pickle_file.open('rb') as handle:
-                logging.info("Loading Schw QNM dict from file {}".format(dict_pickle_file))
+                logging.info('Loading Schw QNM dict from file {}'.format(dict_pickle_file))
                 loaded = pickle.load(handle)
                 self.seq_dict.update(loaded)
                 self.loaded_from_disk = True
         except UnicodeDecodeError as e:
             with dict_pickle_file.open('rb') as handle:
-                logging.info("Loading Schw QNM dict from file {}".format(dict_pickle_file))
+                logging.info('Trying latin1 encoding.')
                 loaded = pickle.load(handle, encoding='latin1')
                 self.seq_dict.update(loaded)
                 self.loaded_from_disk = True

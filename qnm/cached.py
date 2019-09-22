@@ -15,7 +15,6 @@ from __future__ import division, print_function, absolute_import
 
 import logging
 import pickle
-import os
 from pathlib import Path
 try:
     from urllib.request import urlretrieve # py 3
@@ -38,13 +37,11 @@ def get_cachedir():
     """
     Return the location of the cache directory.
 
-    TODO Use pathlib
-
     Returns
     -------
-    string
+    pathlib.Path object
     """
-    return os.path.dirname(os.path.realpath(__file__))
+    return Path(__file__).parent.resolve()
 
 def mode_pickle_path(s, l, m, n):
     """Construct the path to a pickle file for the mode (s, l, m, n)
@@ -65,7 +62,7 @@ def mode_pickle_path(s, l, m, n):
 
     Returns
     -------
-    string
+    pathlib.Path object
       `<cachedir>/data/s<s>_l<l>_m<m>_n<n>.pickle`
 
      """
@@ -82,8 +79,8 @@ def mode_pickle_path(s, l, m, n):
         s_sign, np.abs(s), l,
         m_sign, np.abs(m), n)
 
-    return os.path.abspath(
-        '{}/data/{}'.format(get_cachedir(), filename))
+    pickle_path = get_cachedir() / 'data' / filename
+    return pickle_path.resolve()
 
 def write_mode(spin_seq, pickle_path=None):
     """Write an instance of KerrSpinSeq to disk.
@@ -93,7 +90,7 @@ def write_mode(spin_seq, pickle_path=None):
     spin_seq: KerrSpinSeq
       The mode to write to disk.
 
-    pickle_path: string, optional [default: None]
+    pickle_path: string or pathlib.Path, optional [default: None]
       Path to file to write. If None, get the path from
       :meth:`mode_pickle_path()`.
 
@@ -107,15 +104,17 @@ def write_mode(spin_seq, pickle_path=None):
         pickle_path = mode_pickle_path(spin_seq.s, spin_seq.l,
                                        spin_seq.m, spin_seq.n)
 
-    _the_dir = os.path.dirname(pickle_path)
-    if not os.path.exists(_the_dir):
+    # Convert pickle_path to Path if it's a string
+    pickle_path = Path(pickle_path)
+    the_dir = pickle_path.parent
+    if not the_dir.exists():
         try:
-            os.makedirs(_the_dir)
+            the_dir.mkdir(parents=True, exist_ok=True)
         except:
-            logging.error("Could not create dir {} to store Kerr QNM sequence".format(_the_dir))
+            logging.error("Could not create dir {} to store Kerr QNM sequence".format(the_dir))
 
     try:
-        with open(pickle_path, 'wb') as handle:
+        with pickle_path.open('wb') as handle:
             logging.info("Writing Kerr QNM sequence to file {}".format(pickle_path))
             pickle.dump(spin_seq, handle, protocol=pickle.HIGHEST_PROTOCOL)
     except:
@@ -154,17 +153,17 @@ def load_cached_mode(s, l, m, n):
     pickle_path = mode_pickle_path(s, l, m, n)
 
     try:
-        with open(pickle_path, 'rb') as handle:
+        with pickle_path.open('rb') as handle:
             logging.info("Loading Kerr QNM sequence from file {}".format(pickle_path))
             spin_seq = pickle.load(handle)
     except UnicodeDecodeError as e:
-        with open(pickle_path, 'rb') as handle:
+        with pickle_path.open('rb') as handle:
             logging.info("Loading Kerr QNM sequence from file {}".format(pickle_path))
             spin_seq = pickle.load(handle, encoding='latin1')
     except:
+        logging.warn("Could not load Kerr QNM sequence from file {}.".format(pickle_path))
         if not hasattr(load_cached_mode, "have_warned"):
-            logging.error("Could not load Kerr QNM sequence from file {}. "
-                          "Do you need to run qnm.download_data()?".format(pickle_path))
+            logging.warn("Do you need to run qnm.download_data()?")
             load_cached_mode.have_warned = True
 
     return spin_seq
@@ -246,7 +245,6 @@ class KerrSeqCache(object):
 
         If the mode sequence is not available on disk, optionally
         compute it from scratch.
-        TODO maybe take param: dict of params to pass to KerrSpinSeq?
 
         Parameters
         ----------
@@ -303,7 +301,7 @@ class KerrSeqCache(object):
             return loaded_mode
 
         if (compute_if_not_found):
-            logging.info("mode not in cache, or on disk, trying to "
+            logging.info("Mode not in cache, or on disk, trying to "
                          "compute s={}, l={}, m={}, n={}"
                          .format(s, l, m, n))
             the_pars = dict(compute_pars) # Make a copy
@@ -320,7 +318,6 @@ class KerrSeqCache(object):
 
         TODO: Take an overwrite argument which will force overwrite or
         not.
-
         """
 
         for _, seq in self.seq_dict.items():
@@ -349,7 +346,7 @@ def build_package_default_cache(ksc):
     QNMDict(init=True)
 
     a_max   = .9995
-    tol     = 1e-10
+    tol     = np.sqrt(np.finfo(float).eps)
     delta_a = 2.5e-3
     Nr_max  = 6000
 
@@ -423,9 +420,9 @@ def download_data(overwrite=False):
     data_url = 'https://duetosymmetry.com/files/qnm/data.tar.bz2'
     filename = data_url.split('/')[-1]
     base_dir = get_cachedir()
-    dest     = base_dir + '/' + filename
+    dest     = base_dir / filename
 
-    if (os.path.exists(dest) and (overwrite is False)):
+    if (dest.exists() and (overwrite is False)):
         print("Destination path {} already exists, use overwrite=True "
               "to force an overwrite.".format(dest))
         return
@@ -443,15 +440,19 @@ def _decompress_data(tarball=None, dest_dir=None):
 
     if dest_dir is None:
         dest_dir = get_cachedir()
+    else:
+        dest_dir = Path(dest_dir)
     if tarball is None:
-        tarball = dest_dir + '/data.tar.bz2'
+        tarball = dest_dir / 'data.tar.bz2'
+    else:
+        tarball = Path(tarball)
 
     print("Trying to decompress file {}".format(tarball))
     with tarfile.open(tarball, "r:bz2") as tar:
         tar.extractall(dest_dir)
 
-    data_dir = dest_dir + '/data'
-    pickle_files = glob.glob(data_dir + '/*.pickle')
+    data_dir = dest_dir / 'data'
+    pickle_files = data_dir.glob('*.pickle')
     print("Data directory {} contains {} pickle files"
           .format(data_dir, len(pickle_files)))
 
@@ -460,20 +461,20 @@ def _clear_disk_cache(base_dir=None, delete_tarball=False):
     """Delete disk cache of precomputed spin sequences."""
 
     if base_dir is None:
-        base_dir = os.path.dirname(os.path.realpath(__file__))
+        base_dir = get_cachedir().parent.resolve()
 
-    data_dir = base_dir + '/data'
-    pickle_files = glob.glob(data_dir + '/*.pickle')
+    data_dir = base_dir / 'data'
+    pickle_files = data_dir.glob('*.pickle')
 
     for pickle_file in pickle_files:
         try:
-            os.remove(pickle_file)
+            pickle_file.unlink()
         except OSError:
             print('Could not remove file "{}"'.format(pickle_file))
 
     if delete_tarball:
-        tarball_path = base_dir + '/data.tar.bz2'
+        tarball_path = base_dir / 'data.tar.bz2'
         try:
-            os.remove(tarball_path)
+            tarball_path.unlink()
         except:
             print('Could not remove file "{}"'.format(tarball_path))
