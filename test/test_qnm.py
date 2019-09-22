@@ -48,4 +48,5 @@ class TestQnm(object):
         qnm.cached.build_package_default_cache(qnm.modes_cache)
         assert 861 == len(qnm.modes_cache.seq_dict.keys())
         qnm.modes_cache.write_all()
-        assert 861 == len(list(qnm.cached.get_cachedir().glob('*.pickle')))
+        cache_data_dir = qnm.cached.get_cachedir() / 'data'
+        assert 861 == len(list(cache_data_dir.glob('*.pickle')))
