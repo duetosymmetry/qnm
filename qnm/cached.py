@@ -430,7 +430,7 @@ def download_data(overwrite=False):
     print("Trying to fetch {}".format(data_url))
     with _TqdmUpTo(unit='B', unit_scale=True, miniters=1,
                    desc=filename) as t:
-        urlretrieve(data_url, filename=dest, reporthook=t.update_to)
+        urlretrieve(data_url, filename=str(dest), reporthook=t.update_to)
 
     _decompress_data(dest, base_dir)
 
