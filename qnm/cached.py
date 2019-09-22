@@ -448,13 +448,13 @@ def _decompress_data(tarball=None, dest_dir=None):
         tarball = Path(tarball)
 
     print("Trying to decompress file {}".format(tarball))
-    with tarfile.open(tarball, "r:bz2") as tar:
-        tar.extractall(dest_dir)
+    with tarfile.open(str(tarball), "r:bz2") as tar:
+        tar.extractall(str(dest_dir))
 
     data_dir = dest_dir / 'data'
     pickle_files = data_dir.glob('*.pickle')
     print("Data directory {} contains {} pickle files"
-          .format(data_dir, len(pickle_files)))
+          .format(data_dir, len(list(pickle_files))))
 
 ############################################################
 def _clear_disk_cache(base_dir=None, delete_tarball=False):
