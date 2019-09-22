@@ -80,7 +80,7 @@ def mode_pickle_path(s, l, m, n):
         m_sign, np.abs(m), n)
 
     pickle_path = get_cachedir() / 'data' / filename
-    return pickle_path.resolve()
+    return pickle_path
 
 def write_mode(spin_seq, pickle_path=None):
     """Write an instance of KerrSpinSeq to disk.
