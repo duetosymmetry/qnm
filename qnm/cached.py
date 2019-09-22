@@ -152,6 +152,9 @@ def load_cached_mode(s, l, m, n):
 
     pickle_path = mode_pickle_path(s, l, m, n)
 
+    if not pickle_path.exists():
+        return None
+
     try:
         with pickle_path.open('rb') as handle:
             logging.info("Loading Kerr QNM sequence from file {}".format(pickle_path))
