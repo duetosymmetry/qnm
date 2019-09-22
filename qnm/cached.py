@@ -16,6 +16,7 @@ from __future__ import division, print_function, absolute_import
 import logging
 import pickle
 import os
+from pathlib import Path
 try:
     from urllib.request import urlretrieve # py 3
 except ImportError:
@@ -32,6 +33,18 @@ from .schwarzschild.tabulated import QNMDict
 
 # TODO should all the functions be static member functions? No, I don't
 # think so
+
+def get_cachedir():
+    """
+    Return the location of the cache directory.
+
+    TODO Use pathlib
+
+    Returns
+    -------
+    string
+    """
+    return os.path.dirname(os.path.realpath(__file__))
 
 def mode_pickle_path(s, l, m, n):
     """Construct the path to a pickle file for the mode (s, l, m, n)
@@ -53,7 +66,7 @@ def mode_pickle_path(s, l, m, n):
     Returns
     -------
     string
-      `<dirname of this file>/data/s<s>_l<l>_m<m>_n<n>.pickle`
+      `<cachedir>/data/s<s>_l<l>_m<m>_n<n>.pickle`
 
      """
 
@@ -65,12 +78,12 @@ def mode_pickle_path(s, l, m, n):
     s_sign = '-' if (s<0) else ''
     m_sign = '-' if (m<0) else ''
 
+    filename = 's{}{}_l{}_m{}{}_n{}.pickle'.format(
+        s_sign, np.abs(s), l,
+        m_sign, np.abs(m), n)
+
     return os.path.abspath(
-        '{}/data/s{}{}_l{}_m{}{}_n{}.pickle'.format(
-            os.path.dirname(os.path.realpath(__file__)),
-            s_sign, np.abs(s), l,
-            m_sign, np.abs(m), n
-        ))
+        '{}/data/{}'.format(get_cachedir(), filename))
 
 def write_mode(spin_seq, pickle_path=None):
     """Write an instance of KerrSpinSeq to disk.
@@ -409,7 +422,7 @@ def download_data(overwrite=False):
 
     data_url = 'https://duetosymmetry.com/files/qnm/data.tar.bz2'
     filename = data_url.split('/')[-1]
-    base_dir = os.path.dirname(os.path.realpath(__file__))
+    base_dir = get_cachedir()
     dest     = base_dir + '/' + filename
 
     if (os.path.exists(dest) and (overwrite is False)):
@@ -429,7 +442,7 @@ def _decompress_data(tarball=None, dest_dir=None):
     """Decompress tarball of precomputed spin sequences."""
 
     if dest_dir is None:
-        dest_dir = os.path.dirname(os.path.realpath(__file__))
+        dest_dir = get_cachedir()
     if tarball is None:
         tarball = dest_dir + '/data.tar.bz2'
 

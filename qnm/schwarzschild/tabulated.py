@@ -5,7 +5,7 @@ from __future__ import division, print_function, absolute_import
 
 import logging
 import pickle
-import os
+from pathlib import Path
 
 import numpy as np
 
@@ -82,14 +82,12 @@ def default_pickle_file():
 
     Returns
     -------
-    string
+    Path object
       `<dirname of this file>/data/Schw_dict.pickle`
 
     """
 
-    return os.path.abspath(
-        '{}/data/Schw_dict.pickle'.format(
-            os.path.dirname(os.path.realpath(__file__))))
+    return Path(__file__).parent.resolve() / 'data' / 'Schw_dict.pickle'
 
 ############################################################
 
@@ -121,10 +119,9 @@ class QNMDict(object):
       Whether or not to call :meth:`load_dict()` when initializing
       this instance.
 
-    dict_pickle_file: string, optional [default: from default_pickle_file()]
+    dict_pickle_file: string or Path, optional [default: from default_pickle_file()]
       Path to pickle file that holds precomputed QNMs. If the value is
       None, get the default from :meth:`default_pickle_file()`.
-
     """
 
     # Borg pattern, the QNM table will be shared among all instances
@@ -149,19 +146,22 @@ class QNMDict(object):
 
         Parameters
         ----------
-        dict_pickle_file: string [default: from default_pickle_file()]
+        dict_pickle_file: string or Path [default: from default_pickle_file()]
           Filename for reading (or writing) dict of Schwarzschild QNMs
 
         """
 
+        # convert string to Path (does nothing to Path object)
+        dict_pickle_file = Path(dict_pickle_file)
+
         try:
-            with open(dict_pickle_file, 'rb') as handle:
+            with dict_pickle_file.open('rb') as handle:
                 logging.info("Loading Schw QNM dict from file {}".format(dict_pickle_file))
                 loaded = pickle.load(handle)
                 self.seq_dict.update(loaded)
                 self.loaded_from_disk = True
         except UnicodeDecodeError as e:
-            with open(dict_pickle_file, 'rb') as handle:
+            with dict_pickle_file.open('rb') as handle:
                 logging.info("Loading Schw QNM dict from file {}".format(dict_pickle_file))
                 loaded = pickle.load(handle, encoding='latin1')
                 self.seq_dict.update(loaded)
@@ -181,15 +181,14 @@ class QNMDict(object):
           Filename for reading (or writing) dict of Schwarzschild QNMs
         """
 
-        _the_dir = os.path.dirname(dict_pickle_file)
-        if not os.path.exists(_the_dir):
-            try:
-                os.makedirs(_the_dir)
-            except:
-                logging.warn("Could not create dir {} to store Schw QNM dict".format(_the_dir))
+        # convert string to Path (does nothing to Path object)
+        dict_pickle_file = Path(dict_pickle_file)
+
+        pickle_dir = dict_pickle_file.parent.resolve()
+        pickle_dir.mkdir(parents=True, exist_ok=True)
 
         try:
-            with open(dict_pickle_file, 'wb') as handle:
+            with dict_pickle_file.open('wb') as handle:
                 logging.info("Writing Schw QNM dict to file {}".format(dict_pickle_file))
                 pickle.dump(self.seq_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
         except:
