@@ -349,12 +349,16 @@ def build_package_default_cache(ksc):
     QNMDict(init=True)
 
     a_max   = .9995
-    tol     = np.sqrt(np.finfo(float).eps)
+    tol     = 1e-10
+    cf_tol  = np.sqrt(np.finfo(float).eps)
     delta_a = 2.5e-3
     Nr_max  = 6000
 
-    ksc.compute_pars.update({'a_max': a_max, 'tol': tol,
+    ksc.compute_pars.update({'a_max': a_max, 'tol': tol, 'cf_tol': cf_tol,
                              'delta_a': delta_a, 'Nr_max': Nr_max})
+
+    # Known modes that become algebraically special
+    modes_to_avoid = [(-1, 1, 0, 6)]
 
     reruns = []
 
@@ -366,24 +370,49 @@ def build_package_default_cache(ksc):
             ms=np.arange(-l,l+1)
             for m in ms:
                 for n in ns:
+                    if ((s, l, m, n) in modes_to_avoid):
+                        print("Skipping known mode {}".format((s, l, m, n)))
+                        continue
                     try:
                         ksc(s, l, m, n)
                     except:
                         reruns.append((s,l,m,n))
 
+    print('{} modes in cache, going to rerun {} modes'.format(len(ksc.seq_dict),
+                                                              len(reruns)))
+
     # Tweak the params a little bit for the reruns
     re2runs = []
-    ksc.compute_pars.update({'delta_a': 1.9e-3})
+    ksc.compute_pars.update({'delta_a': 1.9e-3, 'cf_tol': cf_tol * 0.25, 'tol': tol * 3.})
     for s, l, m, n in reruns:
         try:
             ksc(s, l, m, n)
         except:
             re2runs.append((s, l, m, n))
 
-    # Experimentally determined we only need one more case of reruns
-    ksc.compute_pars.update({'a_max': .9992, 'delta_a': 1.8e-3})
+    print('{} modes in cache, going to rerun {} modes'.format(len(ksc.seq_dict),
+                                                              len(re2runs)))
 
+    ksc.compute_pars.update({'a_max': .9992, 'delta_a': 1.7e-3,
+                             'cf_tol': cf_tol * 0.05, 'tol': tol * 10.,
+                             'Nr_max': Nr_max * 2})
+
+    re3runs = []
     for s, l, m, n in re2runs:
+        try:
+            ksc(s, l, m, n)
+        except:
+            re3runs.append((s, l, m, n))
+
+    print('{} modes in cache, going to rerun {} modes'.format(len(ksc.seq_dict),
+                                                              len(re3runs)))
+
+    ksc.compute_pars.update({'a_max': .9993, 'delta_a': 0.24e-3,
+                             'cf_tol': cf_tol * 0.01, 'tol': tol * 70.,
+                             'Nr_max': Nr_max * 3})
+
+    # This is the last round of reruns we need to do
+    for s, l, m, n in re3runs:
         ksc(s, l, m, n)
 
     return ksc
@@ -464,7 +493,7 @@ def _clear_disk_cache(base_dir=None, delete_tarball=False):
     """Delete disk cache of precomputed spin sequences."""
 
     if base_dir is None:
-        base_dir = get_cachedir().parent.resolve()
+        base_dir = get_cachedir()
 
     data_dir = base_dir / 'data'
     pickle_files = data_dir.glob('*.pickle')

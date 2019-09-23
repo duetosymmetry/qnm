@@ -60,8 +60,11 @@ class KerrSpinSeq(object):
     omega_guess: complex [default: from schwarzschild.QNMDict]
       Initial guess of omega for root-finding
 
-    tol: float [default: 1e-10]
-      Tolerance for root-finding
+    tol: float [default: sqrt(double epsilon)]
+      Tolerance for root-finding omega
+
+    cf_tol: float [defailt: 1e-10]
+      Tolerance for continued fraction calculation
 
     n: int [default: 0]
       Overtone number of interest (sets the inversion number for
@@ -95,7 +98,8 @@ class KerrSpinSeq(object):
         self.m           = kwargs.get('m',           2)
         self.l           = kwargs.get('l',           2)
         self.l_max       = kwargs.get('l_max',       20)
-        self.tol         = kwargs.get('tol',         1e-10)
+        self.tol         = kwargs.get('tol',         np.sqrt(np.finfo(float).eps))
+        self.cf_tol      = kwargs.get('cf_tol',      1e-10)
         self.n           = kwargs.get('n',           0)
 
         if ('omega_guess' in kwargs.keys()):
@@ -151,6 +155,9 @@ class KerrSpinSeq(object):
         i  = 0  # TODO Allow to start at other values
         _a = 0. # TODO Allow to start at other values
 
+        # Flag about whether we've warned re: imag axis
+        warned_imag_axis = False
+
         # Initializing the sequence, start with guesses
         A0 = swsphericalh_A(self.s, self.l, self.m)
         omega_guess = self.omega_guess
@@ -177,6 +184,17 @@ class KerrSpinSeq(object):
             # TODO Behavior based on these numbers? Should we continue
             # even if cf_err is larger than the desired error tol?
             cf_err, n_frac = self.solver.get_cf_err()
+
+            # Warn if we're very close to the imaginary axis
+            if ((np.abs(np.real(result)) < self.tol)
+                and not warned_imag_axis):
+                logging.warn("Danger! At a={}, found Re[omega]={}, "
+                             "twithin tol={} of the imaginary axis. "
+                             "this mode may become algebraically "
+                             "special, where Leaver's method would "
+                             "fail, or the mode may even disappear."
+                             .format(_a, result, self.tol))
+                warned_imag_axis = True
 
             # Done with this value of a
             self.a.append(_a)

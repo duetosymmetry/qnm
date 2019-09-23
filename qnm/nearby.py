@@ -46,8 +46,11 @@ class NearbyRootFinder(object):
     omega_guess: complex [default: .5-.5j]
       Initial guess of omega for root-finding
 
-    tol: float [default: 1e-10]
-      Tolerance for root-finding
+    tol: float [default: sqrt(double epsilon)]
+      Tolerance for root-finding omega
+
+    cf_tol: float [defailt: 1e-10]
+      Tolerance for continued fraction calculation
 
     n_inv: int [default: 0]
       Inversion number of radial infinite continued fraction,
@@ -78,7 +81,8 @@ class NearbyRootFinder(object):
         self.A0          = 4.+0.j
         self.l_max       = 20
         self.omega_guess = .5-.5j
-        self.tol         = 1e-10
+        self.tol         = np.sqrt(np.finfo(float).eps)
+        self.cf_tol      = 1e-10
         self.n_inv       = 0
         self.Nr          = 300
         self.Nr_min      = 300
@@ -101,6 +105,7 @@ class NearbyRootFinder(object):
         self.l_max       = kwargs.get('l_max',        self.l_max)
         self.omega_guess = kwargs.get('omega_guess',  self.omega_guess)
         self.tol         = kwargs.get('tol',          self.tol)
+        self.cf_tol      = kwargs.get('cf_tol',       self.cf_tol)
         self.n_inv       = kwargs.get('n_inv',        self.n_inv)
         self.Nr          = kwargs.get('Nr',           self.Nr)
         self.Nr_min      = kwargs.get('Nr_min',       self.Nr_min)
@@ -151,15 +156,11 @@ class NearbyRootFinder(object):
         #                                            self.Nr, self.r_N)
 
         # TODO!
-        # The tolerance that was sent to optimize.root is the desired
-        # tolerance for omega.
-        # However, the tolerance that's sent to the Lentz method is
-        # the desired tolerance for the value of the error function
-        # E(\omega) whose root we desire.  These should be related by
-        # the Jacobian, Etol = |dE/d\omega| omegatol.
+        # Determine the value to use for cf_tol based on
+        # the Jacobian, cf_tol = |d cf(\omega)/d\omega| tol.
         inv_err, self.cf_err, self.n_frac = radial.leaver_cf_inv_lentz(omega, self.a,
                                                           self.s, self.m, A,
-                                                          self.n_inv, self.tol,
+                                                          self.n_inv, self.cf_tol,
                                                           self.Nr_min, self.Nr_max)
         # logging.info("Lentz terminated with cf_err={}, n_frac={}".format(self.cf_err, self.n_frac))
 
