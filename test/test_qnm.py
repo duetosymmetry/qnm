@@ -31,7 +31,7 @@ class TestQnm(object):
         """
         grav_220 = qnm.modes_cache(s=-2,l=2,m=2,n=0)
         omega, A, C = grav_220(a=0.68)
-        assert omega == (0.5239751042900845 - 0.08151262363119974j)
+        assert np.allclose(omega, (0.5239751042900845 - 0.08151262363119974j))
 
     def test_example2(self):
         """ Check consistency between old and new Leaver solvers """
@@ -46,7 +46,7 @@ class TestQnm(object):
         qnm.cached._clear_disk_cache(delete_tarball=False)
         qnm.modes_cache.seq_dict = {}
         qnm.cached.build_package_default_cache(qnm.modes_cache)
-        assert 861 == len(qnm.modes_cache.seq_dict.keys())
+        assert 860 == len(qnm.modes_cache.seq_dict.keys())
         qnm.modes_cache.write_all()
         cache_data_dir = qnm.cached.get_cachedir() / 'data'
-        assert 861 == len(list(cache_data_dir.glob('*.pickle')))
+        assert 860 == len(list(cache_data_dir.glob('*.pickle')))
