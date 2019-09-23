@@ -436,7 +436,13 @@ class _TqdmUpTo(tqdm):
             self.total = tsize
         self.update(b * bsize - self.n)  # will also set self.n = b * bsize
 
+
 ############################################################
+
+# NOTE This URL is hardcoded. The data version to use may need to
+# be updated if fields inside classes change.
+_data_url = 'https://duetosymmetry.com/files/qnm/data-0.4.0.tar.bz2'
+
 def download_data(overwrite=False):
     """Fetch and decompress tarball of precomputed spin sequences from
     the web.
@@ -449,8 +455,7 @@ def download_data(overwrite=False):
 
     """
 
-    data_url = 'https://duetosymmetry.com/files/qnm/data.tar.bz2'
-    filename = data_url.split('/')[-1]
+    filename = _data_url.split('/')[-1]
     base_dir = get_cachedir()
     dest     = base_dir / filename
 
@@ -459,10 +464,10 @@ def download_data(overwrite=False):
               "to force an overwrite.".format(dest))
         return
 
-    print("Trying to fetch {}".format(data_url))
+    print("Trying to fetch {}".format(_data_url))
     with _TqdmUpTo(unit='B', unit_scale=True, miniters=1,
                    desc=filename) as t:
-        urlretrieve(data_url, filename=str(dest), reporthook=t.update_to)
+        urlretrieve(_data_url, filename=str(dest), reporthook=t.update_to)
 
     _decompress_data(dest, base_dir)
 
@@ -475,7 +480,8 @@ def _decompress_data(tarball=None, dest_dir=None):
     else:
         dest_dir = Path(dest_dir)
     if tarball is None:
-        tarball = dest_dir / 'data.tar.bz2'
+        filename = _data_url.split('/')[-1]
+        tarball = dest_dir / filename
     else:
         tarball = Path(tarball)
 
