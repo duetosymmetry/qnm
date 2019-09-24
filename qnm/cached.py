@@ -17,7 +17,10 @@ import logging
 import pickle
 import os
 import sys
-from pathlib import Path
+try:
+    from pathlib import Path # py 3
+except ImportError:
+    from pathlib2 import Path # py 2
 try:
     from urllib.request import urlretrieve # py 3
 except ImportError:
@@ -42,9 +45,7 @@ def get_home():
     If the user's home directory cannot be found, return None.
     """
     try:
-        # With py3 std pathlib we could use Path.home(), but packaged
-        # pathlib for py2 lacks the function.
-        return os.path.expanduser('~')
+        return str(Path.home())
     except Exception:
         return None
 

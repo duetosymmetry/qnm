@@ -1,7 +1,10 @@
 import pytest
 import qnm
 import numpy as np
-from pathlib import Path
+try:
+    from pathlib import Path # py 3
+except ImportError:
+    from pathlib2 import Path # py 2
 
 class TestQnm(object):
     """
