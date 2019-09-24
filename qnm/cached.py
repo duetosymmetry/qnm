@@ -110,7 +110,7 @@ def mode_pickle_path(s, l, m, n):
 
     Returns
     -------
-    pathlib.Path object
+    pathlib.Path object or None
       `<cachedir>/data/s<s>_l<l>_m<m>_n<n>.pickle`
 
      """
@@ -155,6 +155,9 @@ def write_mode(spin_seq, pickle_path=None):
     if (pickle_path is None):
         pickle_path = mode_pickle_path(spin_seq.s, spin_seq.l,
                                        spin_seq.m, spin_seq.n)
+        if pickle_path is None:
+            logging.error('No cache dir found, not writing anything.')
+            return
 
     # Convert pickle_path to Path if it's a string
     pickle_path = Path(pickle_path)
@@ -204,7 +207,7 @@ def load_cached_mode(s, l, m, n):
 
     pickle_path = mode_pickle_path(s, l, m, n)
 
-    if not pickle_path.exists():
+    if (pickle_path is None) or (not pickle_path.exists()):
         return None
 
     try:
