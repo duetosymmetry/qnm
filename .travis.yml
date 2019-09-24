@@ -1,8 +1,9 @@
 language: python
 cache:
   pip: true
-  # directories:
-  #   - $TRAVIS_BUILD_DIR/test/data/
+  directories:
+    - $HOME/.cache/qnm/
+    - $HOME/.qnm/
 sudo: required
 dist: xenial
 branches:
