@@ -9,7 +9,7 @@ import logging
 import numpy as np
 from scipy import optimize, interpolate
 
-from .angular import l_min, swsphericalh_A
+from .angular import l_min, swsphericalh_A, C_and_sep_const_closest
 from .nearby import NearbyRootFinder
 
 from .schwarzschild.approx import Schw_QNM_estimate
@@ -327,7 +327,7 @@ class KerrSpinSeq(object):
             s=0, # No smoothing!
             k=k, ext=0)
 
-    def __call__(self, a, store=False):
+    def __call__(self, a, store=False, interp_only=False, resolve_if_found=False):
         """Solve for omega, A, and C[] at a given spin a.
 
         This uses the interpolants, based on the solved sequence, for
@@ -342,6 +342,16 @@ class KerrSpinSeq(object):
           Whether or not to save newly solved data in sequence.
           Warning, this can produce a slowdown if a lot of data
           needs to be moved.
+
+        interp_only: bool, optional [default: False]
+          If False, use the Leaver solver to polish the interpolated
+          guess. If True, just use the interpolated guess.
+
+        resolve_if_found: bool, optional [default: False]
+          If False, and the value of `a` is found in the sequence, the
+          previously-found solution is returned. If True, the Leaver
+          solver will be used to polish the root with the current
+          parameters for the solver.
 
         Returns
         -------
@@ -360,9 +370,20 @@ class KerrSpinSeq(object):
                 and (a >= 0.) and (a < 1.)):
             raise ValueError("a={} is not a float in the range [0,1)".format(a))
 
-        # If this was a previously computed value, just return the
-        # earlier results
-        if (a in self.a):
+        # Validate inputs
+        if interp_only:
+            if store:
+                logging.warn("store=True will be ignored when "
+                             "interp_only=True.  Setting to False.")
+                store = False
+            if resolve_if_found:
+                logging.warn("resolve_if_found=True will be ignored when "
+                             "interp_only=True.  Setting to False.")
+                resolve_if_found = False
+
+        # If this was a previously computed value, and the user
+        # doesn't want to re-solve, just return the earlier results
+        if ((not resolve_if_found) and (a in self.a)):
             a_ind = self.a.index(a)
 
             return self.omega[a_ind], self.A[a_ind], self.C[a_ind]
@@ -377,6 +398,16 @@ class KerrSpinSeq(object):
 
         omega_guess = complex(o_r, o_i)
         A_guess     = complex(A_r, A_i)
+
+        if interp_only:
+            # Return the interpolated (or extrapolated) values.
+            # For the C coefficients, just get the eigenvector at this
+            # omega_guess closest to this A_guess
+            c = a * omega_guess
+            A_guess, C_guess = \
+                C_and_sep_const_closest(A_guess, self.s, c,
+                                        self.m, self.l_max)
+            return omega_guess, A_guess, C_guess
 
         self.solver.set_params(a=a, omega_guess=omega_guess,
                                A_closest_to=A_guess)
@@ -393,13 +424,16 @@ class KerrSpinSeq(object):
         # If we got here, then this new value of a was not already in
         # the list
         if store:
-            # Where do we want to insert? Before the first point with
-            # a larger spin
-            try:
-                insert_ind = next(i for i, _a in
-                                  enumerate( self.a ) if _a > a)
-            except StopIteration:
-                insert_ind = len(self.a)
+            if (a in self.a):
+                insert_ind = self.a.index(a)
+            else:
+                # Where do we want to insert? Before the first point with
+                # a larger spin
+                try:
+                    insert_ind = next(i for i, _a in
+                                      enumerate( self.a ) if _a > a)
+                except StopIteration:
+                    insert_ind = len(self.a)
 
             self.a.insert(insert_ind, a)
             self.omega.insert(insert_ind, result)
