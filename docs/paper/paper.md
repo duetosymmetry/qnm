@@ -147,15 +147,17 @@ Development of ``qnm`` is hosted on
 [PyPI](https://pypi.org/project/qnm/); it can be installed with the
 single command ``pip install qnm``.  Documentation is automatically
 built on [Read the Docs](https://qnm.readthedocs.io/), and can be
-accessed interactively via Python docstrings.  The ``qnm`` package is
+accessed interactively via Python docstrings.  Automated testing is
+run on [Travis CI](https://travis-ci.org/duetosymmetry/qnm).  The
+``qnm`` package is
 part of the [Black Hole Perturbation Theory
 Toolkit](https://bhptoolkit.org/).
 
 # Acknowledgements
 
-We acknowledge E Berti and GB Cook for helpful correspondence, and E
-Berti for making testing data available.  We further acknowledge M
-Giesler, I Hawke, L Magaña Zertuche, and V Varma for
+We acknowledge E Berti and GB Cook for helpful correspondence and for
+making testing data available.  We further acknowledge M Giesler, I
+Hawke, Duncan Macleod, L Magaña Zertuche, Matt Pitkin, and V Varma for
 contributions/testing/feedback/suggestions.
 
 # References
