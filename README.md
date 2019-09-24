@@ -104,7 +104,7 @@ details](#spherical-spheroidal-decomposition)).
 Visual inspections of modes are very useful to check if the solver is
 behaving well. This is easily accomplished with matplotlib. Here are
 some partial examples (for the full examples, see the file
-`notebooks/examples.ipynb` in the source repo):
+[`notebooks/examples.ipynb`](notebooks/examples.ipynb) in the source repo):
 
 ```python
 import numpy as np
@@ -145,6 +145,21 @@ for mode, seq in modes.items():
 Which results in the following figure (modulo formatting):
 
 ![example_2m0 plot](notebooks/example_2m0.png)
+
+## Precision and validation
+
+The default tolerances for continued fractions, `cf_tol`, is 1e-10, and
+for complex root-polishing, `tol`, is DBL_EPSILON≅1.5e-8.  These can
+be changed at runtime so you can re-polish the cached values to higher
+precision.
+
+[Greg Cook's precomputed data
+tables](https://zenodo.org/record/2650358) (which were computed with
+arbitrary-precision arithmetic) can be used for validating the results
+of this code.  See the comparison notebook
+[`notebooks/Comparison-against-Cook-data.ipynb`](notebooks/Comparison-against-Cook-data.ipynb)
+to see such a comparison, which can be modified to compare any of the
+available modes.
 
 ## Spherical-spheroidal decomposition
 
