@@ -15,6 +15,8 @@ from __future__ import division, print_function, absolute_import
 
 import logging
 import pickle
+import os
+import sys
 from pathlib import Path
 try:
     from urllib.request import urlretrieve # py 3
@@ -33,15 +35,61 @@ from .schwarzschild.tabulated import QNMDict
 # TODO should all the functions be static member functions? No, I don't
 # think so
 
+# Taken from matplotlib
+def get_home():
+    """
+    Return the user's home directory.
+    If the user's home directory cannot be found, return None.
+    """
+    try:
+        return str(Path.home())
+    except Exception:
+        return None
+
 def get_cachedir():
     """
-    Return the location of the cache directory.
+    Return the location of the cache directory.  This follows a
+    pattern similar to matplotlib's treatment of config/cache dirs.
+
+    The directory is chosen as follows:
+    1. If the QNMCACHEDIR environment variable is supplied, choose that.
+    2a. On Linux, follow the XDG specification and look first in
+        `$XDG_CACHE_HOME`, if defined, or `$HOME/.cache`.
+    2b. On other platforms, choose `$HOME/.qnm`.
+    3. If the chosen directory exists and is writable, use that as the
+       configuration directory.
+    4. A writable directory could not be found; return None.
 
     Returns
     -------
-    pathlib.Path object
+    pathlib.Path object or None
     """
-    return Path(__file__).parent.resolve()
+    xdg_cache_dir = (os.environ.get('XDG_CACHE_HOME')
+                     or (str(Path(get_home(), ".cache"))
+                         if get_home()
+                         else None))
+
+    cachedir = os.environ.get('QNMCACHEDIR')
+    if cachedir:
+        cachedir = Path(cachedir).resolve()
+    elif sys.platform.startswith(('linux', 'freebsd')) and xdg_cache_dir:
+        cachedir = Path(xdg_cache_dir, "qnm")
+    elif get_home():
+        cachedir = Path(get_home(), ".qnm")
+    else:
+        cachedir = None
+
+    if cachedir:
+        try:
+            cachedir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
+        else:
+            if os.access(str(cachedir), os.W_OK) and cachedir.is_dir():
+                return cachedir
+
+    # If all else fails...
+    return None
 
 def mode_pickle_path(s, l, m, n):
     """Construct the path to a pickle file for the mode (s, l, m, n)
@@ -79,8 +127,12 @@ def mode_pickle_path(s, l, m, n):
         s_sign, np.abs(s), l,
         m_sign, np.abs(m), n)
 
-    pickle_path = get_cachedir() / 'data' / filename
-    return pickle_path
+    cache_dir = get_cachedir()
+    if cache_dir is not None:
+        pickle_path = get_cachedir() / 'data' / filename
+        return pickle_path
+    else:
+        return None
 
 def write_mode(spin_seq, pickle_path=None):
     """Write an instance of KerrSpinSeq to disk.
@@ -457,7 +509,11 @@ def download_data(overwrite=False):
 
     filename = _data_url.split('/')[-1]
     base_dir = get_cachedir()
-    dest     = base_dir / filename
+    if base_dir is not None:
+        dest     = base_dir / filename
+    else:
+        print('No cache dir found, not downloading anything.')
+        return
 
     if (dest.exists() and (overwrite is False)):
         print("Destination path {} already exists, use overwrite=True "
@@ -469,21 +525,19 @@ def download_data(overwrite=False):
                    desc=filename) as t:
         urlretrieve(_data_url, filename=str(dest), reporthook=t.update_to)
 
-    _decompress_data(dest, base_dir)
+    _decompress_data()
 
 ############################################################
-def _decompress_data(tarball=None, dest_dir=None):
+def _decompress_data():
     """Decompress tarball of precomputed spin sequences."""
 
+    dest_dir = get_cachedir()
     if dest_dir is None:
-        dest_dir = get_cachedir()
-    else:
-        dest_dir = Path(dest_dir)
-    if tarball is None:
-        filename = _data_url.split('/')[-1]
-        tarball = dest_dir / filename
-    else:
-        tarball = Path(tarball)
+        print('No cache dir found, not decompressing anything.')
+        return
+
+    filename = _data_url.split('/')[-1]
+    tarball = dest_dir / filename
 
     print("Trying to decompress file {}".format(tarball))
     with tarfile.open(str(tarball), "r:bz2") as tar:
@@ -495,11 +549,14 @@ def _decompress_data(tarball=None, dest_dir=None):
           .format(data_dir, len(list(pickle_files))))
 
 ############################################################
-def _clear_disk_cache(base_dir=None, delete_tarball=False):
+def _clear_disk_cache(delete_tarball=False):
     """Delete disk cache of precomputed spin sequences."""
 
+    base_dir = get_cachedir()
+
     if base_dir is None:
-        base_dir = get_cachedir()
+        print('No cache dir found, not deleting anything.')
+        return
 
     data_dir = base_dir / 'data'
     pickle_files = data_dir.glob('*.pickle')
