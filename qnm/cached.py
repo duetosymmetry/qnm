@@ -42,7 +42,9 @@ def get_home():
     If the user's home directory cannot be found, return None.
     """
     try:
-        return str(Path.home())
+        # With py3 std pathlib we could use Path.home(), but packaged
+        # pathlib for py2 lacks the function.
+        return os.path.expanduser('~')
     except Exception:
         return None
 
