@@ -19,7 +19,7 @@ setuptools.setup(
     version=__version__,
     author="Leo C. Stein",
     author_email="leo.stein@gmail.com",
-    description="Calculate quasinormal modes of Kerr black holes.",
+    description="Package for computing Kerr quasinormal mode frequencies, separation constants, and spherical-spheroidal mixing coefficients",
     keywords='black holes quasinormal modes physics scientific computing numerical methods',
     long_description=long_description,
     long_description_content_type="text/markdown",
