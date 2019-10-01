@@ -7,20 +7,20 @@ LATEXFILE=paper.tex
 
 # some variables for the paper
 REPOSITORY=https://github.com/duetosymmetry/qnm
-ARCHIVE=https://doi.org/10.5281/zenodo.2593978
+ARCHIVE=https://doi.org/10.5281/zenodo.3459790
 REVIEW=https://github.com/openjournals/joss-reviews/issues/1683
-ARCHIVEDOI=https://doi.org/10.5281/zenodo.2593978
+ARCHIVEDOI=https://doi.org/10.5281/zenodo.3459790
 FORMATTEDDOI=10.21105/joss.01683
 YEAR=2019
 TITLE="qnm: A Python package for calculating Kerr quasinormal modes, separation constants, and spherical-spheroidal mixing coefficients"
 AUTHOR="Stein"
-ISSUE=40
+ISSUE=42
 VOLUME=4
 PAGE=1683
 JOURNALNAME="Journal of Open Source Software"
-PUBLISHED="XXX XXX 2019"
+PUBLISHED="01 October 2019"
 SUBMITTED="21 August 2019"
-PAPERURL=https://www.theoj.org/joss-papers/joss.XXXXX/10.21105.joss.XXXXX.pdf
+PAPERURL=https://www.theoj.org/joss-papers/10.21105/joss.01683.pdf
 
 latex.template:
 	# get JOSS template
