@@ -105,11 +105,10 @@ eigenvalue problem.
 frequencies, angular separation constants, and spherical-spheroidal
 mixing coefficients, for given values of $(\ell, m, n)$ and spin $a$.
 There are several QNM codes available, but some
-([London](https://github.com/llondon6/kerr_public)) implement either
+[@LondonGithub] implement either
 analytic fitting formulae (which only exist for a range of $s, \ell,
 m, n$) or interpolation from tabulated data (so the user can not
-root-polish); others
-([Berti](https://pages.jh.edu/~eberti2/ringdown/)) are in proprietary
+root-polish); others [@BertiWeb] are in proprietary
 languages such as Mathematica.  We are not aware of any packages that
 provide spherical-spheroidal mixing coefficients, which are necessary
 for multi-mode ringdown GW modeling.
