@@ -57,7 +57,12 @@ __bibtex__ = r"""@article{Stein:2019mop,
       title          = "{qnm: A Python package for calculating Kerr quasinormal
                         modes, separation constants, and spherical-spheroidal
                         mixing coefficients}",
+      journal        = "J. Open Source Softw.",
+      volume         = "4",
       year           = "2019",
+      number         = "42",
+      pages          = "1683",
+      doi            = "10.21105/joss.01683",
       eprint         = "1908.10377",
       archivePrefix  = "arXiv",
       primaryClass   = "gr-qc",
