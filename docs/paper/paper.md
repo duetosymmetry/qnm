@@ -22,15 +22,15 @@ Black holes can be characterized from far away by their spectroscopic
 gravitational-wave ``fingerprints,'' in analogy to electromagnetic
 spectroscopy of atoms, ions, and molecules.  The idea of using the
 quasi-normal modes (QNMs) of black holes (BHs) for gravitational-wave
-(GW) spectroscopy was first made explicit by Detweiler
-[@Detweiler:1980gk].  QNMs of rotating Kerr BHs in general relativity
+(GW) spectroscopy was first made explicit by
+@Detweiler:1980gk.  QNMs of rotating Kerr BHs in general relativity
 (GR) depend only on the mass and spin of the BH.  Thus GWs containing
 QNMs can be used to infer the remnant BH properties in a binary
 merger, or as a test of GR by checking the consistency between the
 inspiral and ringdown portions of a GW signal
 [@TheLIGOScientific:2016src; @Isi:2019aib].
 
-For a review of QNMs see [@Berti:2009kk].  A Kerr BH's QNMs are the
+For a review of QNMs see @Berti:2009kk.  A Kerr BH's QNMs are the
 homogeneous (source-free) solutions to the Teukolsky equation
 [@Teukolsky:1973ha] subject to certain physical conditions.  The
 Teukolsky equation can apply to different physical fields based on
@@ -48,13 +48,13 @@ harmonic numbers $(\ell, m)$ with $\ell\ge 2$ (or $\ell \ge |s|$ for
 fields of other spin weight), $-\ell \le m \le +\ell$, and overtone
 number $n \ge 0$.
 
-There are several analytic techniques, e.g. [@Dolan:2009nk], to
+There are several analytic techniques, e.g. one presented by @Dolan:2009nk, to
 approximate the desired complex frequency and separation constant
 $(\omega_{\ell, m, n}(a), A_{\ell, m, n}(a))$ as a function of spin
 parameter $0 \le a < M$ (we follow the convention of using units where
 the total mass is $M=1$).  These analytic techniques are useful as
-starting guesses before applying the numerical method of Leaver
-[@Leaver:1985ax] for root-polishing.  Leaver's method uses Frobenius
+starting guesses before applying the numerical method of
+@Leaver:1985ax for root-polishing.  Leaver's method uses Frobenius
 expansions of the radial and angular Teukolsky equations to find
 3-term recurrence relations that must be satisfied at a complex
 frequency $\omega$ and separation constant $A$.  The recurrence
@@ -68,7 +68,7 @@ functions.  This is typically accomplished by complex root-polishing,
 alternating between the radial and angular continued fractions.
 
 A refinement of this method was put forth by
-[@Cook:2014cta] (see also Appendix A of [@Hughes:1999bq]).  Instead of
+@Cook:2014cta (see also Appendix A of @Hughes:1999bq).  Instead of
 solving the angular Teukolsky equation ``from the endpoint'' using
 Leaver's approach, one can use a spectral expansion with a good choice
 of basis functions.  The solutions to the angular problem are the
@@ -80,10 +80,10 @@ $${}_s Y_{\ell m}(\theta, \phi; a\omega) = {\sum_{\ell'=\ell_{\min} (s,m)}^{\ell
 
 where $\ell_{\min} = \max(|m|, |s|)$, and the coefficients
 $C_{\ell' \ell m}(a\omega)$ are called the spherical-spheroidal mixing
-coefficients (we follow the conventions of [@Cook:2014cta], but
-compare [@Berti:2014fga]).  When recast in this spectral form, the
+coefficients (we follow the conventions of @Cook:2014cta, but
+compare @Berti:2014fga).  When recast in this spectral form, the
 angular equation becomes very easy to solve via standard matrix
-eigenvector routines, see [@Cook:2014cta] for details.
+eigenvector routines, see @Cook:2014cta for details.
 If one picks values for $(s, \ell, m, a, \omega)$, then
 the separation constant $A(a\omega)$ is returned as an eigenvalue, and
 a vector of mixing coefficients $C_{\ell' \ell m}(a\omega)$ are
@@ -139,7 +139,7 @@ Leaver's method, and instead focus efforts on making a single robust,
 fast, high-precision, and easy-to-use code for the whole community.
 In the future, this code can be extended to incorporate new features
 (like special handling of algebraically special modes) or to apply to
-more general BH solutions (e.g. solving for QNMs of Kerr-Newman or
+more general BH solutions (e.g., solving for QNMs of Kerr-Newman or
 Kerr-de Sitter).
 
 Development of ``qnm`` is hosted on
