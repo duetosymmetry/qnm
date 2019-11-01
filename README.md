@@ -2,6 +2,7 @@
 [![PyPI version](https://badge.fury.io/py/qnm.svg)](https://badge.fury.io/py/qnm)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2593978.svg)](https://zenodo.org/record/2593978)
 [![JOSS status](https://joss.theoj.org/papers/85532a74baaa67a24518de1365f1bcf5/status.svg)](https://joss.theoj.org/papers/85532a74baaa67a24518de1365f1bcf5)
+[![arXiv:1908.10377](https://img.shields.io/badge/arXiv-1908.10377-B31B1B.svg)](https://arxiv.org/abs/1908.10377)
 [![ascl:1910.022](https://img.shields.io/badge/ascl-1910.022-blue.svg?colorB=262255)](http://ascl.net/1910.022)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/duetosymmetry/qnm/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/duetosymmetry/qnm.svg?branch=master)](https://travis-ci.org/duetosymmetry/qnm)
