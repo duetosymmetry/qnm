@@ -6,9 +6,9 @@ try:
 except ImportError:
     from pathlib2 import Path # py 2
 
-class TestQnm(object):
+class QnmTestDownload(object):
     """
-    A class for testing aspects of the qnm module.
+    Base class so that each test will automatically download_data
     """
     @classmethod
     def setup_class(cls):
@@ -17,6 +17,7 @@ class TestQnm(object):
         """
         qnm.download_data()
 
+class TestQnmFileOps(QnmTestDownload):
     def test_cache_file_operations(self):
         """Test file operations and downloading the on-disk cache.
         """
@@ -28,7 +29,8 @@ class TestQnm(object):
         print("Decompressing tarball")
         qnm.cached._decompress_data()
 
-    def test_example(self):
+class TestQnmOneMode(QnmTestDownload):
+    def test_one_mode(self):
         """
         An example of a test
         """
@@ -36,12 +38,18 @@ class TestQnm(object):
         omega, A, C = grav_220(a=0.68)
         assert np.allclose(omega, (0.5239751042900845 - 0.08151262363119974j))
 
-    def test_example2(self):
+class TestQnmNewLeaverSolver(QnmTestDownload):
+    def test_compare_old_new_Leaver(self):
         """ Check consistency between old and new Leaver solvers """
         from qnm.radial import leaver_cf_inv_lentz_old, leaver_cf_inv_lentz
         old = leaver_cf_inv_lentz_old(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0)
         new = leaver_cf_inv_lentz(omega=.4 - 0.2j, a=0.02, s=-2, m=2, A=4.+0.j, n_inv=0)
         assert np.all([old[i] == new[i] for i in range(3)])
+
+class TestQnmSolveInterface(QnmTestDownload):
+    """
+    Test the various interface options for solving
+    """
 
     def test_interp_only(self):
         """Check that we get reasonable values (but not identical!)
@@ -102,6 +110,7 @@ class TestQnm(object):
         assert np.allclose(A_new, A_old) and not np.equal(A_new, A_old)
         assert np.allclose(C_new, C_old) and not all(np.equal(C_new, C_old))
 
+class TestQnmBuildCache(QnmTestDownload):
     def test_build_cache(self):
         """Check the default cache-building functionality"""
 
@@ -111,4 +120,6 @@ class TestQnm(object):
         assert 860 == len(qnm.modes_cache.seq_dict.keys())
         qnm.modes_cache.write_all()
         cache_data_dir = qnm.cached.get_cachedir() / 'data'
+
+        # Magic number, default num modes is 860
         assert 860 == len(list(cache_data_dir.glob('*.pickle')))

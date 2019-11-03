@@ -23,4 +23,5 @@ install:  # install your package and requirements
   - pip install -e .
 script:
   # run the test script
-  - travis_wait 30 pytest -v
+  #- travis_wait 30 pytest -v
+  - pytest -v
