@@ -20,6 +20,7 @@
     "https://arxiv.org/abs/1908.10377"
   ],
   "codeRepository": "https://github.com/duetosymmetry/qnm",
+  "programmingLanguage": "python",
   "referencePublication": [
     {
       "@type": "ScholarlyArticle",
