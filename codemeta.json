@@ -1,0 +1,32 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "qnm: Kerr quasinormal modes, separation constants, and spherical-spheroidal mixing coefficients calculator",
+  "description": "qnm computes the Kerr quasinormal mode frequencies, angular separation constants, and spherical-spheroidal mixing coefficients. The qnm package includes a Leaver solver with the Cook-Zalutskiy spectral approach to the angular sector, and a caching mechanism to avoid repeating calculations. A large cache of low ℓ, m, n modes is available for download and can be installed with a single function call and interpolated to provide good initial guess for root-polishing at new values of spin.",
+  "identifier": "ascl:1910.022",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Leo C.",
+      "familyName": "Stein",
+      "id": "https://orcid.org/0000-0001-7559-9597"
+    }
+  ],
+  "citation": "https://inspirehep.net/record/1751578",
+  "relatedLink": [
+    "https://pypi.org/project/qnm/",
+    "https://qnm.readthedocs.io/",
+    "https://doi.org/10.5281/zenodo.2593978",
+    "https://arxiv.org/abs/1908.10377"
+  ],
+  "codeRepository": "https://github.com/duetosymmetry/qnm",
+  "referencePublication": [
+    {
+      "@type": "ScholarlyArticle",
+      "url": "https://inspirehep.net/record/1751578",
+      "id": "https://doi.org/10.21105/joss.01683"
+    }
+  ],
+  "version": "0.4.0",
+  "license": "https://spdx.org/licenses/MIT.html"
+}
