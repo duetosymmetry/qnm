@@ -26,7 +26,6 @@ setuptools.setup(
     url="https://github.com/duetosymmetry/qnm/",
     packages=setuptools.find_packages(),
     package_data={'qnm':['schwarzschild/data/*']}, # TODO
-    include_package_data=True,
     install_requires=[
         'numpy',
         'scipy',
