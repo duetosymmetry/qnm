@@ -1,5 +1,6 @@
 [![github](https://img.shields.io/badge/GitHub-qnm-blue.svg)](https://github.com/duetosymmetry/qnm)
 [![PyPI version](https://badge.fury.io/py/qnm.svg)](https://badge.fury.io/py/qnm)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/qnm.svg)](https://anaconda.org/conda-forge/qnm)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2593978.svg)](https://zenodo.org/record/2593978)
 [![JOSS status](https://joss.theoj.org/papers/85532a74baaa67a24518de1365f1bcf5/status.svg)](https://joss.theoj.org/papers/85532a74baaa67a24518de1365f1bcf5)
 [![arXiv:1908.10377](https://img.shields.io/badge/arXiv-1908.10377-B31B1B.svg)](https://arxiv.org/abs/1908.10377)
@@ -33,10 +34,17 @@ root-finding at some value of a.
 ## Installation
 
 ### PyPI
-_**qnm**_ is available through [PyPI](https://pypi.org/project/qnm/):
+_**qnm**_ is available on [PyPI](https://pypi.org/project/qnm/):
 
 ```shell
 pip install qnm
+```
+
+### Conda
+_**qnm**_ is available on [conda-forge](https://anaconda.org/conda-forge/qnm):
+
+```shell
+conda install -c conda-forge qnm
 ```
 
 ### From source
