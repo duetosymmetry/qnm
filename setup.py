@@ -30,8 +30,7 @@ setuptools.setup(
         "Source Code": "https://github.com/duetosymmetry/qnm",
     },
     packages=setuptools.find_packages(),
-    data_files = [("", ["LICENSE"])],
-    package_data={'qnm':['schwarzschild/data/*']}, # TODO
+    package_data={'qnm':['schwarzschild/data/*','LICENSE']}, # TODO
     install_requires=[
         'numpy',
         'scipy',
