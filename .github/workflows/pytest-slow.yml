@@ -1,16 +1,15 @@
-name: Python package test
+name: Run pytest for slow tests
 
 on: [push]
 
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7]
 
     steps:
     - uses: actions/checkout@v1
@@ -35,4 +34,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest -v
+        pytest -vv -m slow

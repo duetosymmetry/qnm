@@ -110,6 +110,7 @@ class TestQnmSolveInterface(QnmTestDownload):
         assert np.allclose(A_new, A_old) and not np.equal(A_new, A_old)
         assert np.allclose(C_new, C_old) and not all(np.equal(C_new, C_old))
 
+@pytest.mark.slow
 class TestQnmBuildCache(QnmTestDownload):
     def test_build_cache(self):
         """Check the default cache-building functionality"""
