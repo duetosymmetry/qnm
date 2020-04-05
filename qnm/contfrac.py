@@ -9,10 +9,14 @@ import numpy as np
 
 # TODO some documentation here, better documentation throughout
 
-def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
-    """ Compute a continued fraction via modified Lentz's method.
+# TODO Should we make sure that `lentz` can be jitted?
 
-    This implementation is by the book [1]_.
+def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30, args=None):
+    """Compute a continued fraction via modified Lentz's method.
+
+    This implementation is by the book [1]_.  The value to compute is:
+      b_0 + a_1/( b_1 + a_2/( b_2 + a_3/( b_3 + ...)))
+    where a_n = a(n, *args) and b_n = b(n, *args).
 
     Parameters
     ----------
@@ -31,6 +35,13 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     tiny: float [default: 1.e-30]
       Very small number to control convergence of Lentz's method when
       there is cancellation in a denominator.
+
+    args: tuple [default: None]
+      Additional arguments to pass to the user-defined functions a, b.
+      If given, the additional arguments are passed to all
+      user-defined functions.  So if, for example, `a` has the
+      signature `a(n, x, y)`, then `b` must have the same signature,
+      and args must be a tuple of length 2, `args=(x,y)`.
 
     Returns
     -------
@@ -96,7 +107,7 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     >>> lentz(e_a, e_b, tol=1.e-15)
     (2.7182818284590464, 3.3306690738754696e-16, 16)
 
-    cotan(1):
+    Compute cotan(1):
 
     >>> def cot1_a(n):
     ...     return -1.
@@ -107,9 +118,32 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     >>> lentz(cot1_a, cot1_b, tol=1.e-15)
     (0.6420926159343306, 1.1102230246251565e-16, 9)
 
+    Compute tan(x):
+
+    >>> def tanx_a(n, x):
+    ...     if (n==1):
+    ...         return x
+    ...     else:
+    ...         return -x*x
+    ...
+    >>> def tanx_b(n, x):
+    ...     if (n==0):
+    ...         return 0.
+    ...     else:
+    ...         return 2*n-1
+    ...
+    >>> lentz(tanx_a, tanx_b, args=(1.,), tol=1.e-15)
+    (1.5574077246549018, 2.220446049250313e-16, 10)
+
     """
 
-    f_old = b(0)
+    if args is None:
+        args = ()
+
+    if type(args) is not tuple:
+        raise ValueError("args={} must be of type tuple".format(args))
+
+    f_old = b(0, *args)
 
     if (f_old == 0):
         f_old = tiny
@@ -123,7 +157,7 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
 
     while ((not conv) and (j < N_max)):
 
-        aj, bj = a(j), b(j)
+        aj, bj = a(j, *args), b(j, *args)
 
         D_new = bj + aj * D_old
 
