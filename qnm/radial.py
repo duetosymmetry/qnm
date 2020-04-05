@@ -215,13 +215,13 @@ def rad_b(i, n_inv, D):
     n = i + n_inv
     return (-2.*n*n + (D[1] + 2.)*n + D[3])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
 
-@njit(cache=True)
+#Note that we do not jit the following function, since lentz is not jitted.
+
 def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
                             tol=1.e-10, N_min=0, N_max=np.Inf):
     """ Legacy function. Same as :meth:`leaver_cf_inv_lentz` except
-    calling :meth:`qnm.contfrac.lentz` with temporary functions that
-    are defined inside this function. Numba does not speed up
-    this type of code. However it remains here for testing purposes.
+    calling :meth:`qnm.contfrac.lentz`.  We do not jit this function
+    since lentz is not jitted.  It remains here for testing purposes.
     See documentation for :meth:`leaver_cf_inv_lentz` for parameters
     and return value.
 

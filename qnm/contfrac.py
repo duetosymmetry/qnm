@@ -1,6 +1,6 @@
 """ Infinite continued fractions via Lentz's method.
 
-TODO Documentation.
+TODO More documentation.
 """
 
 from __future__ import division, print_function, absolute_import
@@ -9,7 +9,7 @@ import numpy as np
 
 # TODO some documentation here, better documentation throughout
 
-# TODO Should we make sure that `lentz` can be jitted?
+# Note that if we jitted `lentz`, it would only be able to run on jitted functions.
 
 def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30, args=None):
     """Compute a continued fraction via modified Lentz's method.
