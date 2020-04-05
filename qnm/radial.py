@@ -196,6 +196,26 @@ def leaver_cf_trunc_inversion(omega, a, s, m, A,
 
 # TODO possible choices for r_N: 0., 1., approximation using (34)-(38)
 
+# Definitions for a_i, b_i for continued fraction below
+# In defining the below a, b sequences, I have cleared a fraction
+# compared to the usual way of writing the radial infinite
+# continued fraction. The point of doing this was that so both
+# terms, a(n) and b(n), tend to 1 as n goes to infinity. Further,
+# We can analytically divide through by n in the numerator and
+# denominator to make the numbers closer to 1.
+
+@njit(cache=True)
+def rad_a(i, n_inv, D):
+    n = i + n_inv - 1
+    return -(n*n + (D[0] + 1.)*n + D[0])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
+
+@njit(cache=True)
+def rad_b(i, n_inv, D):
+    if (i==0): return 0
+    n = i + n_inv
+    return (-2.*n*n + (D[1] + 2.)*n + D[3])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
+
+@njit(cache=True)
 def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
                             tol=1.e-10, N_min=0, N_max=np.Inf):
     """ Legacy function. Same as :meth:`leaver_cf_inv_lentz` except
@@ -233,22 +253,9 @@ def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
     for i in range(0, n_inv): # n_inv is not included
         conv1 = alpha[i] / (beta[i] - gamma[i] * conv1)
 
-    # In defining the below a, b sequences, I have cleared a fraction
-    # compared to the usual way of writing the radial infinite
-    # continued fraction. The point of doing this was that so both
-    # terms, a(n) and b(n), tend to 1 as n goes to infinity. Further,
-    # We can analytically divide through by n in the numerator and
-    # denominator to make the numbers closer to 1.
-    def a(i):
-        n = i + n_inv - 1
-        return -(n*n + (D[0] + 1.)*n + D[0])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
-
-    def b(i):
-        if (i==0): return 0
-        n = i + n_inv
-        return (-2.*n*n + (D[1] + 2.)*n + D[3])/(n*n + (D[2] - 3.)*n + D[4] - D[2] + 2.)
-
-    conv2, cf_err, n_frac = lentz(a, b, tol=tol, N_min=N_min, N_max=N_max)
+    conv2, cf_err, n_frac = lentz(rad_a, rad_b,
+                                  args=(n_inv, D),
+                                  tol=tol, N_min=N_min, N_max=N_max)
 
     return (beta[n_inv]
             - gamma[n_inv] * conv1
