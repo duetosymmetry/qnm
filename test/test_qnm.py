@@ -97,18 +97,17 @@ class TestQnmSolveInterface(QnmTestDownload):
         k = int(n/2)
         a = grav_220.a[k]
 
+        grav_220.solver.solved = False
         omega_old, A_old, C_old = grav_220(a=a, resolve_if_found=False)
-
-        old_tol = grav_220.solver.tol
-        old_cf_tol = grav_220.solver.cf_tol
-
-        grav_220.solver.set_params(tol = old_tol * 0.1, cf_tol = old_cf_tol * 0.1)
+        solved_1 = grav_220.solver.solved
 
         omega_new, A_new, C_new = grav_220(a=a, resolve_if_found=True)
+        solved_2 = grav_220.solver.solved
 
-        assert np.allclose(omega_new, omega_old) and not np.equal(omega_new, omega_old)
-        assert np.allclose(A_new, A_old) and not np.equal(A_new, A_old)
-        assert np.allclose(C_new, C_old) and not all(np.equal(C_new, C_old))
+        assert (solved_1 is False) and (solved_2 is True)
+        assert np.allclose(omega_new, omega_old)
+        assert np.allclose(A_new, A_old)
+        assert np.allclose(C_new, C_old)
 
 @pytest.mark.slow
 class TestQnmBuildCache(QnmTestDownload):
