@@ -73,6 +73,7 @@ All of these can be installed through pip or conda.
 
 Automatically-generated API documentation is available on [Read the Docs: qnm](https://qnm.readthedocs.io/).
 
+For a didactic introduction, you can [watch my talk at the Spring 2020 BHPToolkit Workshop](https://www.youtube.com/watch?v=9jHxs4HiMSg&t=15062s) (starting around 4:11:02 in the stream.  You can also [follow along with the `qnm` presentation notebook](https://bit.ly/qnm-pres).
 
 ## Usage
 
