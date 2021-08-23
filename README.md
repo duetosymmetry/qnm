@@ -6,7 +6,8 @@
 [![arXiv:1908.10377](https://img.shields.io/badge/arXiv-1908.10377-B31B1B.svg)](https://arxiv.org/abs/1908.10377)
 [![ascl:1910.022](https://img.shields.io/badge/ascl-1910.022-blue.svg?colorB=262255)](http://ascl.net/1910.022)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/duetosymmetry/qnm/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/duetosymmetry/qnm.svg?branch=master)](https://travis-ci.org/duetosymmetry/qnm)
+[![pytest for not-slow tests](https://github.com/duetosymmetry/qnm/actions/workflows/pytest-not-slow.yml/badge.svg)](https://github.com/duetosymmetry/qnm/actions/workflows/pytest-not-slow.yml)
+[![pytest for slow tests](https://github.com/duetosymmetry/qnm/actions/workflows/pytest-slow.yml/badge.svg)](https://github.com/duetosymmetry/qnm/actions/workflows/pytest-slow.yml)
 [![Documentation Status](https://readthedocs.org/projects/qnm/badge/?version=latest)](https://qnm.readthedocs.io/en/latest/?badge=latest)
 
 
