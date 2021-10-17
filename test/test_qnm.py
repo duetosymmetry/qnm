@@ -109,6 +109,30 @@ class TestQnmSolveInterface(QnmTestDownload):
         assert np.allclose(A_new, A_old)
         assert np.allclose(C_new, C_old)
 
+class TestMirrorModeTransformation(QnmTestDownload):
+    @pytest.mark.parametrize(  "s, l, m, n, a",
+                             [(-2, 2, 2, 0, 0.1),  # Low spin
+                              (-2, 2, 2, 0, 0.9),  # High spin
+                              (-2, 2, 2, 4, 0.7),  # Different overtone
+                              (-2, 3, 2, 0, 0.7),  # l odd
+                              (-2, 3, 1, 0, 0.7),  # l and m odd
+                              (-1, 3, 1, 0, 0.7),  # s, l, and m odd
+                              ])
+    def test_mirror_mode_transformation(self, s, l, m, n, a):
+        import copy
+
+        mode = qnm.modes_cache(s=s, l=l, m=m, n=n)
+        om, A, C = mode(a=a)
+
+        solver = copy.deepcopy(mode.solver) # need to import copy -- don't want to actually modify this mode's solver
+        solver.clear_results()
+        solver.set_params(a=a, m=-m, A_closest_to=A.conj(), omega_guess=-om.conj())
+        om_prime = solver.do_solve()
+
+        assert np.allclose(-om.conj() , solver.omega)
+        assert np.allclose(A.conj(), solver.A)
+        assert np.allclose((-1)**(l + qnm.angular.ells(s, m, mode.l_max)) * C.conj(), solver.C)
+
 @pytest.mark.slow
 class TestQnmBuildCache(QnmTestDownload):
     def test_build_cache(self):
