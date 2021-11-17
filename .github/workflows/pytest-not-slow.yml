@@ -1,6 +1,8 @@
 name: Run pytest for not-slow tests
 
-on: [push]
+on:
+  push:
+  workflow_dispatch: # This allows us to manually trigger
 
 jobs:
   build:
