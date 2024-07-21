@@ -27,7 +27,6 @@ except ImportError:
     from urllib import  urlretrieve # py 2
 from tqdm import tqdm
 import tarfile
-import glob
 
 import numpy as np
 

@@ -10,7 +10,7 @@ from __future__ import division, print_function, absolute_import
 import logging
 
 import numpy as np
-from scipy import optimize, interpolate
+from scipy import optimize
 
 from ..angular import l_min, swsphericalh_A
 from ..nearby import NearbyRootFinder

@@ -12,7 +12,6 @@ from scipy import optimize, interpolate
 from .angular import l_min, swsphericalh_A, C_and_sep_const_closest
 from .nearby import NearbyRootFinder
 
-from .schwarzschild.approx import Schw_QNM_estimate
 from .schwarzschild.tabulated import QNMDict
 
 # TODO some documentation here, better documentation throughout
