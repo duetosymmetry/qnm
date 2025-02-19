@@ -11,7 +11,7 @@ import numpy as np
 
 # Note that if we jitted `lentz`, it would only be able to run on jitted functions.
 
-def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30, args=None):
+def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.inf, tiny=1.e-30, args=None):
     """Compute a continued fraction via modified Lentz's method.
 
     This implementation is by the book [1]_.  The value to compute is:
@@ -29,7 +29,7 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30, args=None):
     N_min: int [default: 0]
       Minimum number of iterations to evaluate.
 
-    N_max: int or comparable [default: np.Inf]
+    N_max: int or comparable [default: np.inf]
       Maximum number of iterations to evaluate.
 
     tiny: float [default: 1.e-30]
@@ -185,7 +185,7 @@ def lentz(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30, args=None):
     # Success or failure can be assessed by the user
     return f_new, np.abs(Delta - 1.), j-1
 
-def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
+def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.inf, tiny=1.e-30):
     """ Compute a continued fraction via modified Lentz's method,
     using generators rather than functions.
 
@@ -202,7 +202,7 @@ def lentz_gen(a, b, tol=1.e-10, N_min=0, N_max=np.Inf, tiny=1.e-30):
     N_min: int [default: 0]
       Minimum number of iterations to evaluate.
 
-    N_max: int or comparable [default: np.Inf]
+    N_max: int or comparable [default: np.inf]
       Maximum number of iterations to evaluate.
 
     tiny: float [default: 1.e-30]
