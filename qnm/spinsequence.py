@@ -261,7 +261,7 @@ class KerrSpinSeq(object):
                 s=0, # No smoothing!
                 k=2, ext=0)
 
-            if (True or (len(self.a) > np.Inf)): # Only do the curvature estimate after a while
+            if (True or (len(self.a) > np.inf)): # Only do the curvature estimate after a while
                 # Their second derivatives
                 d2_o_r = interp_o_r.derivative(2)
                 d2_o_i = interp_o_i.derivative(2)

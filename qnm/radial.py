@@ -218,7 +218,7 @@ def rad_b(i, n_inv, D):
 #Note that we do not jit the following function, since lentz is not jitted.
 
 def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
-                            tol=1.e-10, N_min=0, N_max=np.Inf):
+                            tol=1.e-10, N_min=0, N_max=np.inf):
     """ Legacy function. Same as :meth:`leaver_cf_inv_lentz` except
     calling :meth:`qnm.contfrac.lentz`.  We do not jit this function
     since lentz is not jitted.  It remains here for testing purposes.
@@ -264,7 +264,7 @@ def leaver_cf_inv_lentz_old(omega, a, s, m, A, n_inv,
 
 @njit(cache=True)
 def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
-                        tol=1.e-10, N_min=0, N_max=np.Inf):
+                        tol=1.e-10, N_min=0, N_max=np.inf):
     """Compute the n_inv inversion of the infinite continued
     fraction for solving the radial Teukolsky equation, using
     modified Lentz's method.
@@ -301,7 +301,7 @@ def leaver_cf_inv_lentz(omega, a, s, m, A, n_inv,
     N_min: int, optional [default: 0]
       Minimum number of iterations through Lentz's method.
 
-    N_max: int or comparable, optional [default: np.Inf]
+    N_max: int or comparable, optional [default: np.inf]
       Maximum number of iterations for Lentz's method.
 
     Returns
