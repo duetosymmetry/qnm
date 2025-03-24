@@ -135,7 +135,7 @@ class KerrSpinSeq(object):
         self._interp_A_r = None
         self._interp_A_i = None
 
-        # We need and instance of root finder
+        # We need an instance of root finder
         self.solver = NearbyRootFinder(s=self.s, m=self.m,
                                        l_max=self.l_max,
                                        tol=self.tol,

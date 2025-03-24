@@ -36,7 +36,6 @@ setuptools.setup(
         'scipy',
         'numba',
         'tqdm',
-        'pathlib2 ; python_version < \'3.4\'',
     ],
     classifiers=[
         "Intended Audience :: Science/Research",
