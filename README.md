@@ -67,8 +67,6 @@ All of these can be installed through pip or conda.
 * [scipy](https://www.scipy.org/install.html)
 * [numba](http://numba.pydata.org/numba-doc/latest/user/installing.html)
 * [tqdm](https://tqdm.github.io) (just for `qnm.download_data()` progress)
-* [pathlib2](https://pypi.org/project/pathlib2/) (backport of
-  `pathlib` to pre-3.4 python)
 
 ## Documentation
 
