@@ -2,6 +2,13 @@ name: Run pytest for not-slow tests
 
 on:
   push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
   workflow_dispatch: # This allows us to manually trigger
 
 jobs:
