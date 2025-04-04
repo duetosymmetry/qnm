@@ -8,6 +8,10 @@ import logging
 
 import numpy as np
 from scipy import optimize, interpolate
+try:
+    NoConvergence = optimize.NoConvergence
+except AttributeError:  # scipy < 1.13.0
+    NoConvergence = optimize.nonlin.NoConvergence
 
 from .angular import l_min, swsphericalh_A, C_and_sep_const_closest
 from .nearby import NearbyRootFinder
@@ -170,9 +174,9 @@ class KerrSpinSeq(object):
             result = self.solver.do_solve()
 
             if (result is None):
-                raise optimize.nonlin.NoConvergence('Failed to find '
-                                                    'QNM in sequence '
-                                                    'at a={}'.format(_a))
+                raise NoConvergence(
+                    'Failed to find QNM in sequence at a={}'.format(_a),
+                )
 
             # TODO This probably doesn't belong here
             # Ensure we start on the "positive frequency"
@@ -415,9 +419,9 @@ class KerrSpinSeq(object):
         result = self.solver.do_solve()
 
         if (result is None):
-            raise optimize.nonlin.NoConvergence('Failed to find '
-                                                'QNM in sequence '
-                                                'at a={}'.format(a))
+            raise NoConvergence(
+                'Failed to find QNM in sequence at a={}'.format(a),
+            )
 
         cf_err, n_frac = self.solver.get_cf_err()
 

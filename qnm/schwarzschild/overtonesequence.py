@@ -11,6 +11,10 @@ import logging
 
 import numpy as np
 from scipy import optimize, interpolate
+try:
+    NoConvergence = optimize.NoConvergence
+except AttributeError:  # scipy < 1.13.0
+    NoConvergence = optimize.nonlin.NoConvergence
 
 from ..angular import l_min, swsphericalh_A
 from ..nearby import NearbyRootFinder
@@ -145,7 +149,7 @@ class SchwOvertoneSeq(object):
 
         Raises
         ------
-        optimize.nonlin.NoConvergence
+        scipy.optimize.NoConvergence
           If a root can't be found within a few [TODO make param?]
           attempted inversion numbers.
 
@@ -205,9 +209,9 @@ class SchwOvertoneSeq(object):
 
                     if (np.abs(cur_inv_n - n) > 2):
                         # Got too far away, give up
-                        raise optimize.nonlin.NoConvergence('Failed to find '
-                                                            'QNM in sequence '
-                                                            'at n={}'.format(n))
+                        raise NoConvergence(
+                            'Failed to find QNM in sequence at n={}'.format(n),
+                        )
                     else:
                         logging.info("Trying inversion number {}".format(cur_inv_n))
                         # Try again
