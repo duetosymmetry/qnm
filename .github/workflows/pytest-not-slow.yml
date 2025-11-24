@@ -19,7 +19,7 @@ jobs:
       configurations: ${{ steps.matrix.outputs.configurations }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -57,7 +57,7 @@ jobs:
     runs-on: ${{ matrix.configuration.os }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Set up Python ${{ matrix.configuration.python-version }}
       uses: actions/setup-python@v6
