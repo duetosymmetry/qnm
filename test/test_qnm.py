@@ -147,3 +147,27 @@ class TestQnmBuildCache(QnmTestDownload):
 
         # Magic number, default num modes is 860
         assert 860 == len(list(cache_data_dir.glob('*.pickle')))
+
+class TestKerrSpinSeqSolverOptions(QnmTestDownload):
+    """Options accepted by :class:`KerrSpinSeq` must reach its root finder."""
+
+    def _run(self, cf_tol, Nr_min=0):
+        from qnm.spinsequence import KerrSpinSeq
+        seq = KerrSpinSeq(s=-2, l=2, m=2, n=0, a_max=0.3, delta_a=0.1,
+                          Nr=10, Nr_min=Nr_min, cf_tol=cf_tol)
+        seq.do_find_sequence()
+        return seq
+
+    def test_cf_tol_reaches_solver(self):
+        # cf_tol used to be stored on the sequence and dropped when the
+        # NearbyRootFinder was built, so the solver silently kept its own
+        # 1e-10 no matter what the caller asked for.
+        loose = self._run(1e-4)
+        tight = self._run(1e-12)
+        assert tight.n_frac[-1] > loose.n_frac[-1]
+        assert tight.omega[-1] != loose.omega[-1]
+
+    def test_nr_min_reaches_solver(self):
+        seq = self._run(1e-10, Nr_min=3)
+        assert seq.Nr_min == 3
+        assert seq.solver.Nr_min == 3
