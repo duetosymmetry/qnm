@@ -113,7 +113,7 @@ class KerrSpinSeq(object):
             self.omega_guess = qnm_dict(self.s, self.l, self.n)[0]
 
         self.Nr          = kwargs.get('Nr',          300)
-        self.Nr_min      = self.Nr
+        self.Nr_min      = kwargs.get('Nr_min',      self.Nr)
         self.Nr_max      = kwargs.get('Nr_max',      4000)
         self.r_N         = kwargs.get('r_N',         0.j)
 
@@ -143,6 +143,7 @@ class KerrSpinSeq(object):
         self.solver = NearbyRootFinder(s=self.s, m=self.m,
                                        l_max=self.l_max,
                                        tol=self.tol,
+                                       cf_tol=self.cf_tol,
                                        n_inv=self.n, Nr=self.Nr,
                                        Nr_min=self.Nr_min,
                                        Nr_max=self.Nr_max,
